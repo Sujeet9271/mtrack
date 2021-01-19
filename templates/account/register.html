@@ -15,16 +15,17 @@
 			<img src="{% static 'image/signup.svg' %}">
 		</div>
 		<div class="login-content">
-			<div class="alert-danger">
-				{% for message in messages %}
-				<h4>{{message}} </h4>
-				{% endfor %%}
-			</div>
+			
 			
 			<form method="POST" action="{% url 'register' %}">
                 {% csrf_token %}
 				<img src="{% static 'image/avatar.svg' %}">
 				<h2 class="title">Welcome</h2>
+				<div class="alert-danger">
+					{% for message in messages %}
+					<h4>{{message}} </h4>
+					{% endfor %%}
+				</div>
            		<div class="input-div one">
            		   <div class="i">
            		   		<i class="fas fa-user"></i>
