@@ -1,0 +1,18 @@
+{% extends 'master/base.html' %}
+{% block 'title' %}
+ExpenseTracker| Expenses
+{% endblock %}
+
+
+{% block 'active_page' %}
+ <a class="navbar-brand" href="{% url 'expenses_home' %}">Expenses</a>
+{% endblock %}
+
+{% block 'content' %}
+<div class="container pt-3">
+    <div class="row">
+        {% include 'partials/sidebar.html' %}
+    </div>
+</div>
+
+{% endblock %}

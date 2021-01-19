@@ -1,0 +1,49 @@
+{% extends 'master/base.html' %}
+{% block 'title' %}
+ExpenseTracker| Income
+{% endblock %}
+
+{% block 'dropdown'%}
+                <li class="dropdown">
+                    <a href="#" class="active dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">GOTO <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/expenses/expenses_home">Expenses</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/income/income_home">Income</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                    </ul>
+                </li>
+{% endblock %}
+
+{% block 'content' %}
+<div class="container pt-3">
+    <div class="row">
+        {% include 'partials/inc_sidebar.html' %}
+        <div class="col-md-8">
+            {% if msg %}
+                <div class="alert alert-success">
+                    {{msg}}
+                </div>
+            {% endif %}
+            {% if errmsg %}
+                <div class="alert alert-danger">
+                    {{errmsg}}
+                </div>
+            {% endif %}
+
+<div class="jumbotron">
+
+            <form action="{% url 'inc_create' %}" method="post">
+                {{form}}
+                {% csrf_token %}
+                <br>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+</div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
