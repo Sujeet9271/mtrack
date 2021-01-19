@@ -15,7 +15,12 @@
 			<img src="{% static 'image/signup.svg' %}">
 		</div>
 		<div class="login-content">
-
+			<div class="alert-danger">
+				{% for message in messages %}
+				<h4>{{message}} </h4>
+				{% endfor %%}
+			</div>
+			
 			<form method="POST" action="{% url 'register' %}">
                 {% csrf_token %}
 				<img src="{% static 'image/avatar.svg' %}">
@@ -79,9 +84,7 @@
 				<input type="submit" class="btn" value="Register">
 				<a href="{% url 'register' %}">Already a user? Login here!</a>
             </form>
-             {% for message in messages %}
-                <h3>{{message}} </h3>
-                {% endfor %%}
+             
         </div>
     </div>
     <script type="text/javascript" src="{% static 'js/main_login.js' %}"></script>
