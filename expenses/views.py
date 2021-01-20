@@ -107,13 +107,13 @@ def create(request):  # Adding Expense
                 'form': form,
             }
 
-            return render(request, 'expenses/create.html', context)
+            return render(request, 'expenses/created.html', context)
         else:
             context = {
                 'errmsg': 'Could not Add',
                 'form': form,
             }
-            return render(request, 'expenses/create.html', context)
+            return render(request, 'expenses/created.html', context)
 
 
 def edit(request, id):
