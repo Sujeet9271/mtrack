@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Income
 from django.contrib.auth.decorators import login_required
 from .forms import IncomeForm
+from django.db.models import Sum
 
 
 @login_required(login_url='/auth/login/')
@@ -64,3 +65,9 @@ def inc_delete(request, id):
 
     except:
         return redirect('incomes')
+
+
+def total_income(request, id):
+    total = Income.objects.filter(user_id=request.user.id).aggregate(Sum('income'))
+    context = {'total': total}
+    return render(request, 'income.html', context)

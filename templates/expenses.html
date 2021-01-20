@@ -13,6 +13,7 @@
     <th>Date</th>
     <th>Cost </th>
     <th>Action</th>
+    <th>Total</th>
 
      {% for e in expenses %}
         <tr>
@@ -21,10 +22,14 @@
             <td>{{e.description}}</td>
             <td>{{e.date}}</td>
             <td>{{e.costs}}</td>
+
             <td><a href="{% url 'exp_edit' e.id %}">edit</span></a>|<a href="#" onclick="_delete('{% url 'exp_delete' e.id %}')">delete</a> </td>
             <td></td>
+            <td>{{total}}</td>
         </tr>
      {% endfor %}
+
+
 </table>
 
 {% endblock %}

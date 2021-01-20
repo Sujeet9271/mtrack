@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.db.models import Sum
 from .models import Expenses, Category
 from django.contrib.auth.decorators import login_required
 from .forms import ExpensesForm
@@ -6,9 +7,13 @@ from .forms import ExpensesForm
 
 @login_required(login_url='/auth/login/')
 def expenses(request):  # Expenditure_detail page
-    expenses = Expenses.objects.filter(user_id=request.user.id)  # Select * from Expenses
+    expenses = Expenses.objects.filter(user_id=request.user.id)
+    total = Expenses.objects.filter(user_id=request.user.id).aggregate(Sum('costs'))
+
+    # Select * from Expenses
     context = {
-        'expenses': expenses
+        'expenses': expenses,
+        'total': total['costs__sum'],
     }
     return render(request, 'expenses.html', context)
 
@@ -136,3 +141,9 @@ def delete_category(request, id):
     a = Category.objects.get(id=id)
     a.delete()
     return redirect('exp_category')
+
+
+def total_expense(request, id):
+    total = Expenses.objects.filter(user_id=request.user.id).aggregate(Sum('costs'))
+    context = {'total': total}
+    return render(request, 'expenses.html', context)

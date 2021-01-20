@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% load static %}
+{% load staticfiles %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -35,6 +35,9 @@ body {
             <li class="nav-item">
               <a class="nav-link" href="{% url 'expenses_home' %}">Expense</a>
             </li>
+              <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">Home</a>
+            </li>
 
           </ul>
 
@@ -44,22 +47,20 @@ body {
 
         </div>
     </nav>
+ <div class="container pt-5">
+    <div class="jumbotron" style="background: rgba(200, 54, 54, 0.1); ">
+                <form class="form">
+                <label>Income:</label>
+                <input class="form-control" type="number" name="income" value="{{income}}" readonly>
+                    <label>Expenses:</label>
+                <input class="form-control" type="number" name="expense" value="{{expenses}}" readonly>
+                    <label>Savings:</label>
+                <input class="form-control" type="number" name="savings" value="{{savings}}" readonly>
+            </form>
+        <div class="container pt-3"><a href="{% url 'home' %}"><button class="btn btn-primary" value="Add Data">ADD DATA</button></a></div>
 
-<div class="container pt-3">
-    <a class="btn btn-primary" href="{% url 'income_home'%}" role="button">Income</a>
-</div><br>
-<div class="row">
- <div class="container pt-3">
-        <a class="btn btn-primary" href="{% url 'expenses_home'%}" role="button">Expenses</a>
-</div>
-</div><br>
-<div class="row">
- <div class="container pt-3">
-        <a class="btn btn-primary" href="{% url 'home' %}" role="button">Home</a>
-
-</div>
-</div>
-
+    </div>
+    </div>
 
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -70,3 +71,5 @@ body {
 
 </body>
 </html>
+
+
