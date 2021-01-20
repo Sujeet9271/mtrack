@@ -17,21 +17,22 @@ ExpenseTracker| Expenses
                     {{msg}}
                 </div>
             {% endif %}
+            
             {% if errmsg %}
                 <div class="alert alert-danger">
                     {{errmsg}}
                 </div>
             {% endif %}
-<div class="jumbotron">
+                    <div class="jumbotron">
 
-    <form action="{% url 'exp_create' %}" method="post">
-                {{form}}
-                {% csrf_token %}
-                <br>
-                <button type="submit" class="btn btn-primary">Save</button>
-            </form>
+                                <form action="{% url 'exp_create' %}" method="post">
+                                            {{form}}
+                                            {% csrf_token %}
+                                            <br>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                </form>
 
-</div>
+                    </div>
 
 
         </div>
