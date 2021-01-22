@@ -27,20 +27,6 @@ def login(request):
             return render(request, 'account/login.html', context)
 
 
-# def login(request):
-#     if request.method=="POST":
-#         username = request.POST['username']
-#         password = request.POST['password']
-#         user = auth.authenticate(username=username, password=password)
-#         if user is not None:
-#             auth.login(request, user)
-#             return redirect('dashboard')
-#         else:
-#             messages.error(request, 'Username or Password incorrect')
-#             return redirect('login')
-#     else:
-#         return render(request, 'account/login.html')
-
 
 def register(request):
     if request.method == 'POST':
@@ -59,15 +45,12 @@ def register(request):
                 return redirect('register')
             else:
                 user = User.objects.create_user(username=username, password=password1, first_name=first_name, last_name=last_name, email=email)
-                user.save();
+                user.save()
                 messages.info(request, "Registered successfully")
-
-            return redirect('auth_user')
+                return redirect('auth_user')
         else:
             messages.error(request, "Confirmed Password doesn't match")
             return redirect('register')
-
-
     else:
         return render(request, 'account/register.html')
 
