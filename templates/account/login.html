@@ -48,7 +48,7 @@
 								   </div>
 
 							</div>
-
+									{% csrf_token %}
 							<input type="submit" class="btn" value="Login">
 
 							<a href="{% url 'register' %}">New User? Register here!</a>
@@ -60,6 +60,13 @@
 		</div>
 
 		<script type="text/javascript" src="{% static 'js/main_login.js' %}"></script>
+	{% if errmsg %}
+			<script>
+
+				alert("{{errmsg}}")
+
+			</script>
+		 {% endif %}
 
 	</body>
 
