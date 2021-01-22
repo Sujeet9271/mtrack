@@ -7,15 +7,32 @@ from .forms import ExpensesForm
 
 @login_required(login_url='/auth/login/')
 def expenses(request):  # Expenditure_detail page
-    expenses = Expenses.objects.filter(user_id=request.user.id)
-    total = Expenses.objects.filter(user_id=request.user.id).aggregate(Sum('costs'))
+    if request.method=="POST":
+        from_date=request.POST.get('from_date')
+        to_date=request.POST.get('to_date')
 
-    # Select * from Expenses
-    context = {
-        'expenses': expenses,
-        'total': total['costs__sum'],
-    }
-    return render(request, 'expenses.html', context)
+        # search_expenses=Expenses.objects.raw('select id,title,costs,description,date from expenses_expenses where date between "'+from_date+'" and "'+to_date+'" order by"'+from_date+ '"')
+        search_expenses=Expenses.objects.filter(user_id=request.user.id,date__range=[from_date, to_date]).order_by('date')
+        total = Expenses.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('costs'))
+
+
+
+        print(search_expenses)
+
+        context = {
+            'expenses': search_expenses,
+            'total': total['costs__sum'],
+        }
+        return render(request, 'expenses.html', context)
+    else:
+        expenses = Expenses.objects.filter(user_id=request.user.id).order_by('date')
+        total = Expenses.objects.filter(user_id=request.user.id).aggregate(Sum('costs'))
+        # Select * from Expenses
+        context = {
+            'expenses': expenses,
+            'total': total['costs__sum'],
+        }
+        return render(request, 'expenses.html', context)
 
 
 @login_required(login_url='/auth/login/')
@@ -89,6 +106,7 @@ def exp_category(request):  # Category Page
 #         }
 #         return render(request, 'expenses/create.html', context)
 
+@login_required(login_url='/auth/login/')
 def create(request):  # Adding Expense
 
     if request.method == 'GET':
@@ -116,6 +134,7 @@ def create(request):  # Adding Expense
             return render(request, 'expenses/created.html', context)
 
 
+@login_required(login_url='/auth/login/')
 def edit(request, id):
     data = Expenses.objects.get(pk=id)
     form = ExpensesForm(request.user.id, request.POST or None, instance=data)
@@ -128,6 +147,7 @@ def edit(request, id):
     return render(request, 'expenses/edit.html', context)
 
 
+@login_required(login_url='/auth/login/')
 def exp_delete(request, id):
     try:
         a = Expenses.objects.get(pk=id)
@@ -137,12 +157,14 @@ def exp_delete(request, id):
         return redirect('expenses')
 
 
+@login_required(login_url='/auth/login/')
 def delete_category(request, id):
     a = Category.objects.get(id=id)
     a.delete()
     return redirect('exp_category')
 
 
+@login_required(login_url='/auth/login/')
 def total_expense(request, id):
     total = Expenses.objects.filter(user_id=request.user.id).aggregate(Sum('costs'))
     context = {'total': total}

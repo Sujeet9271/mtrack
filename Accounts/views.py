@@ -9,6 +9,7 @@ from income.models import Income
 
 
 
+
 def login(request):
     if request.method == 'GET':
         return render(request, 'account/login.html')
@@ -78,24 +79,50 @@ def _logout(request):
 
 @login_required(login_url='/auth/login/')
 def dashboard(request):
-    income = Income.objects.filter(user_id=request.user.id).aggregate(Sum('income'))
-    expenses = Expenses.objects.filter(user_id=request.user.id).aggregate(Sum('costs'))
-    if income['income__sum'] is None:
-        income['income__sum']=0
-    if expenses['costs__sum'] is None:
-        expenses['costs__sum']=0
+    if request.method == "POST":
+        from_date = request.POST.get('from_date')
+        to_date = request.POST.get('to_date')
 
-    if (income['income__sum'] < expenses['costs__sum']):
-        savings = 0
+
+        income = Income.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('income'))
+        expenses = Expenses.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('costs'))
+
+        if income['income__sum'] is None:
+            income['income__sum'] = 0
+        if expenses['costs__sum'] is None:
+            expenses['costs__sum'] = 0
+
+        if (income['income__sum'] < expenses['costs__sum']):
+            savings = 0
+        else:
+            savings = income['income__sum'] - expenses['costs__sum']
+
+        context = {
+            'expenses': expenses['costs__sum'],
+            'income': income['income__sum'],
+            'savings': savings,
+        }
+        return render(request, 'account/dashboard.html', context)
+
     else:
-        savings = income['income__sum'] - expenses['costs__sum']
-    context = {
-        'expenses': expenses['costs__sum'],
-        'income': income['income__sum'],
-        'savings': savings,
-    }
-    return render(request, 'account/dashboard.html',context)
+        income = Income.objects.filter(user_id=request.user.id).aggregate(Sum('income'))
+        expenses = Expenses.objects.filter(user_id=request.user.id).aggregate(Sum('costs'))
 
+        if income['income__sum'] is None:
+            income['income__sum'] = 0
+        if expenses['costs__sum'] is None:
+            expenses['costs__sum'] = 0
+
+        if (income['income__sum'] < expenses['costs__sum']):
+            savings = 0
+        else:
+            savings = income['income__sum'] - expenses['costs__sum']
+        context = {
+            'expenses': expenses['costs__sum'],
+            'income': income['income__sum'],
+            'savings': savings,
+        }
+        return render(request, 'account/dashboard.html',context)
 
 
 

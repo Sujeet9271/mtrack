@@ -4,22 +4,77 @@
 {% endblock %}
 
 {% block 'content' %}
-<table class="table table-hover table-light">
+<center><hr>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>From:</label><input class="" type="date" name="from_date" id="from_date" required><br>
+        <label>To:</label><input class="" type="date" name="to_date" id="to_date" required><br>
+
+<!--        <label>Month:<input type="month" name="month"></label>-->
+
+        <button class="btn btn-primary btn-hover" type="submit" value="show">Show</button>
+    </form></hr>
+</center>
+<table class="table table-hover table-dark">
+    <th>ID</th>
     <th>Income</th>
     <th>Source
     <th>Date</th>
     <th>Action</th>
 
-     {% for e in income %}
+    {% if income %}
+
+        {% for e in income %}
         <tr>
+            <td>{{e.id}}</td>
             <td>{{e.income}}</td>
             <td>{{e.source}}</td>
             <td>{{e.date}}</td>
-            <td><a href="{% url 'inc_edit' e.id %}">edit</a>|<a href="#" onclick="_delete('{% url 'inc_delete' e.id %}')">delete</a> </td>
+
+            <td><a href="#" onclick="_delete('{% url 'inc_delete' e.id %}'")>edit</a>|<a href="#" onclick="_delete('{% url 'inc_delete' e.id %}')">delete</a> </td>
             <td></td>
         </tr>
      {% endfor %}
+
+    {% endif %}
+
+    {% if income_month %}
+
+        {% for e in income_month %}
+        <tr>
+            <td>{{e.id}}</td>
+            <td>{{e.income}}</td>
+            <td>{{e.source}}</td>
+            <td>{{e.date}}</td>
+
+            <td><a href="#" onclick="_delete('{% url 'inc_delete' e.id %}'")>edit</a>|<a href="#" onclick="_delete('{% url 'inc_delete' e.id %}')">delete</a> </td>
+            <td></td>
+        </tr>
+     {% endfor %}
+
+    {% endif %}
 </table>
 
+<script>
+
+     function _delete(url){
+     bootbox.confirm("Confirmation to delete?", function(result){
+        if(result){
+            window.location.href=url
+            }
+     });
+    }
+    function _edit(url){
+     bootbox.confirm("Confirmation to edit?", function(result){
+        if(result){
+            window.location.href=url
+            }
+     });
+    }
+
+  document.getElementById("to_date").valueAsDate = new Date();
+
+</script>
 {% endblock %}
-|

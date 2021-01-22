@@ -27,15 +27,3 @@ def home(request):
 def developing(request):
     return render(request,'developing.html')
 
-def money_details(request):
-    income = Income.objects.filter(user_id=request.user.id).aggregate(Sum('income'))
-    expenses = Expenses.objects.filter(user_id=request.user.id).aggregate(Sum('costs'))
-    savings = income['income__sum']-expenses['costs__sum']
-    context = {
-        'Money Detail': 'Money Detail',
-        'expenses': expenses['costs__sum'],
-        'income': income['income__sum'],
-        'savings': savings,
-    }
-    return render(request, 'money.html', context)
-
