@@ -1,35 +1,20 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <head>
 
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>
-ExpenseTracker| Expenses
-</title>
-    <style>
-<!--            body {-->
-<!--              background-image: url("/static/image/background.svg");-->
-<!--              background-repeat: no-repeat;-->
-<!--              background-attachment: fixed;-->
-<!--              background-size: cover;-->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-<!--            }-->
-
-
-    </style>
-
-
-
+        <title>ExpenseTracker| Expenses</title>
 
 </head>
-<body>
 
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#85bb65;">
+    <body>
+
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#85bb65;">
         <a class="navbar-brand" href="/auth/dashboard">ExpenseTracker</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -59,50 +44,43 @@ ExpenseTracker| Expenses
         </div>
     </nav>
 
+        <div class="container pt-3">
+                <div class="row">
 
-<div class="container pt-3">
-    <div class="row">
-        <div class="col-md-4">
-            <ul class="list-group">
-                <li class="list-group-item"><a href="/expenses/category/">Categories</a></li>
-                <li class="list-group-item"><a href="/expenses/create/">Add Expenses</a></li>
-                <li class="list-group-item"><a href="/expenses/">Expenditure Details</a></li>
-            </ul>
-</div>
-        <div class="col-md-8">
+                    <div class="col-md-4">
 
-                    <div class="container pt-5">
+                        <ul class="list-group">
 
-                                                <div class="container pt-5">
+                                <li class="list-group-item"><a href="/expenses/category/">Categories</a></li>
+                                <li class="list-group-item"><a href="/expenses/create/">Add Expenses</a></li>
+                                <li class="list-group-item"><a href="/expenses/">Expenditure Details</a></li>
 
-                                                <div class="alert alert-success">
-                                                    Added Successfully
-                                                </div>
+                        </ul>
 
+                    </div>
 
+                    <div class="col-md-8">
 
-                                            </div>
+                        <div class="container pt-5">
 
+                            <div class="container pt-5">
 
+                                <div class="alert alert-success">
+                                        Added Successfully
+                                </div>
 
-                                            </div>
+                            </div>
 
+                        </div>
 
+                </div>
+
+                </div>
         </div>
-    </div>
-</div>
 
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-
-
-
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="/static/js/bootbox.min.js"></script>
-
-
-
-</body>
+    </body>
 </html>

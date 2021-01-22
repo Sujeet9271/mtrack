@@ -6,6 +6,7 @@ ExpenseTracker| Expenses
 
 {% block 'content' %}
 <div class="container pt-3">
+
     <div class="row">
         {% include 'partials/sidebar.html' %}
         <div class="col-md-8">
@@ -29,19 +30,35 @@ ExpenseTracker| Expenses
 
                 </form>
             </div>
+
             <table class="table table-hover">
+
                 <th>Category</th>
                 <th>Action</th>
+
                 {% for d in data %}
                     <tr>
+
                         <td>{{d.title}}</td>
-                        <td><a href="{% url 'category_delete' d.id %}">delete</a></td>
+                        <td><a href="#" onclick="_delete('{% url 'category_delete' e.id %}')">delete</a></td>
+
                     </tr>
                 {% endfor %}
+
             </table>
 
         </div>
-    </div>
-</div>
 
+    </div>
+
+</div>
+<script>
+    function _delete(url){
+     bootbox.confirm("Deleting the category will result in deleting all the values of this category. Confirmation to delete.", function(result){
+        if(result){
+            window.location.href=url
+            }
+     });
+    }
+</script>
 {% endblock %}

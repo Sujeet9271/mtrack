@@ -10,7 +10,7 @@
     <title>{% block 'title' %} {% endblock %}</title>
     <style>
 <!--            body {-->
-/* <!--              background-image: url("{% static 'image/background.svg' %}");--> */
+/* <!--              background-image: url("{% static 'image/<Enter Image>' %}");--> */
 <!--              background-repeat: no-repeat;-->
 <!--              background-attachment: fixed;-->
 <!--              background-size: cover;-->
@@ -66,16 +66,6 @@
     <script src="{% static 'js/bootbox.min.js' %}"></script>
 
 
-<script>
-    function _delete(url){
-     alert(url)
-     bootbox.confirm("Confirmation to delete?", function(result){
-        if(result){
-            window.location.href=url
-            }
-     });
-    }
-</script>
 
 
 </body>

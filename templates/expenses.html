@@ -3,7 +3,6 @@
  Expenses
 {% endblock %}
 
-<!--{% block 'add' %} <li class="inactive"><a href="/admin/expenses/">Add<span class="sr-only">(current)</span></a></li> {% endblock %}-->
 
 {% block 'content' %}
 <center>
@@ -58,6 +57,7 @@
             }
      });
     }
+
     function _edit(url){
      bootbox.confirm("Confirmation to edit?", function(result){
         if(result){
@@ -67,16 +67,7 @@
     }
 
   document.getElementById("to_date").valueAsDate = new Date();
-<!--    document.getElementById("from_date").valueAsDate = new Date().setMonth(12);-->
 
-
-
-
-<!--    function myFunction() {-->
-<!--  var d = new Date();-->
-<!--  d.setMonth(4);-->
-<!--  document.getElementById("from_date").innerHTML = d;-->
-<!--}-->
 </script>
 
 {% endblock %}
