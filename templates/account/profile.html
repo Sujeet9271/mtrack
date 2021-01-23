@@ -1,10 +1,96 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>ExpenseTracker</title>
+    <style>
+body {
+<!--  background-image: url("{% static 'image/background.svg' %}");-->
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
 </head>
 <body>
 
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color:#85bb65;">
+        <a class="navbar-brand" href="{% url 'dashboard' %}">ExpenseTracker</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+
+          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'income_home' %}">Income <span class="sr-only">(current)</span></a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'expenses_home' %}">Expense</a>
+            </li>
+              <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">Home</a>
+            </li>
+
+          </ul>
+
+          <a href="{% url 'profile' %}"><button class="btn btn-outline-success my-2 my-sm-0" type="submit">Profile</button></a>
+
+          <a href="{% url 'logout' %}"><button class="btn btn-outline-success my-2 my-sm-0" type="submit">LogOut</button></a>
+
+        </div>
+    </nav>
+ <div class="container pt-5">
+    <div class="jumbotron" style="background: rgba(133, 187, 101, 0.1); ">
+
+                <div class="container">
+
+                      <form>
+                             <fieldset>
+
+    <legend>Profile:</legend>
+                     {% for data in data %}
+
+                                 <label for="username">Username:</label>
+                                <input type="text" id="username" name="username" value="{{ data.username }}" readonly><br><br>
+                                <label for="first_name">First name:</label>
+                                <input type="text" id="first_name" name="first_name" value="{{ data.first_name}}" readonly><br><br>
+                                <label for="last_name">Last name:</label>
+                                <input type="text" id="last_name" name="last-name" value="{{ data.last_name}}" readonly><br><br>
+                                 <label for="email">Email:</label>
+                                <input type="email" id="email" name="email" value="{{ data.email}}" readonly><br><br>
+
+
+                                                      <button class="btn btn-primary">Save</button>
+
+
+
+
+                        {% endfor %}
+                            </fieldset>
+                      </form>
+
+
+                </div>
+
+    </div>
+ </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="{% static 'js/bootbox.min.js' %}"></script>
+
+
 </body>
 </html>
+
+
