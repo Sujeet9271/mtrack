@@ -108,4 +108,12 @@ def dashboard(request):
         return render(request, 'account/dashboard.html',context)
 
 
+def profile(request):
+    if request.method == "GET":
+        data = User.objects.filter(id=request.user.id)
+<<<<<<< HEAD
+        return render(request,'account/profile.html',{'data':data})
+=======
+        return render(request'account/profile.html',{'data':data})
+>>>>>>> 1284e8b53e5b6cf84071e5529ae0132a67a0d0e5
 
