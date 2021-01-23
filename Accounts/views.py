@@ -107,3 +107,11 @@ def dashboard(request):
         }
         return render(request, 'account/dashboard.html',context)
 
+
+
+def profile(request):
+    if request.method == "GET":
+        data = User.objects.filter(id=request.user.id)
+        return render(request, 'account/profile.html', {'data': data})
+
+
