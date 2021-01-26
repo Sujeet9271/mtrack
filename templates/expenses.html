@@ -4,6 +4,25 @@
 {% endblock %}
 
 
+{% block 'css' %}
+
+<style>
+
+    .hiddenRow {
+        padding: 0 4px !important;
+        background-color: #eeeeee;
+        font-size: 13px;
+    }
+    .accordian-body span{
+        color:#a2a2a2 !important;
+    }
+    
+    </style>
+    
+{% endblock %}
+
+
+
 {% block 'content' %}
 <center>
     <hr>
@@ -11,8 +30,8 @@
     <form method="POST">
 
         {% csrf_token %}
-        <label>From:</label><input class="" type="date" name="from_date" id="from_date" required><br>
-        <label>To:</label><input class="" type="date" name="to_date" id="to_date" required><br>
+        <label>From:</label><input class="form-control" type="date" name="from_date" id="from_date" required><br>
+        <label>To:</label><input class="form-control" type="date" name="to_date" id="to_date" required><br>
         <button class="btn btn-primary btn-hover" type="submit" value="show">Show</button>
 
     </form>
@@ -21,34 +40,43 @@
 </center>
 
 
-<table class="table table-hover table-dark">
+<table class="table table-hover table-bordered" style="border-collapse:collapse;">
+    <thead>
+        <th>Title</th>        
+        <th>Date</th>
+        <th>Cost </th>
+        <th>Action</th>   
+    </thead>
 
-    <th>Title</th>
-    <th>Category</th>
-    <th>Description</th>
-    <th>Date</th>
-    <th>Cost </th>
-    <th>Action</th>
-    <th>Total</th>
+  <tbody>
+    {% for e in expenses %}
+    <tr colspan="6" data-toggle="collapse" data-target="#{{e.id}}" class="accordion-toggle">
+        <td>{{e.title}}</td>      
+        <td>{{e.date}}</td>
+        <td>{{e.costs}}</td>
+        <td><a href="#" onclick="_edit('{% url 'exp_edit' e.id %}')">edit</span></a>|<a href="#" onclick="_delete('{% url 'exp_delete' e.id %}')">delete</a> </td>
+        <td></td>
+        
+    </tr>
+    <tr class="p">
+        <td colspan="6" class="hiddenRow">
+            <div class="accordian-body collapse p-3" id="{{e.id}}">
+                <p>Date : <span>{{e.date}}</span> </p>
+                <p>Category : <span>{{e.category}}</span> </p>
+                <p>Name : <span>{{e.title}}</span> </p>
+                <p>Cost : <span>{{e.costs}}</span></p>
+                <p>Description : <span>{{e.description}}</span></p>
+            </div> 
+        </td> 
+    </tr>
+ {% endfor %}
+  </tbody>
 
-     {% for e in expenses %}
-        <tr>
-
-            <td>{{e.title}}</td>
-            <td>{{e.category}}</td>
-            <td>{{e.description}}</td>
-            <td>{{e.date}}</td>
-            <td>{{e.costs}}</td>
-            <td>{{e.total}}</td>
-
-            <td><a href="#" onclick="_edit('{% url 'exp_edit' e.id %}')">edit</span></a>|<a href="#" onclick="_delete('{% url 'exp_delete' e.id %}')">delete</a> </td>
-            <td></td>
-            <td>{{total}}</td>
-        </tr>
-     {% endfor %}
+    
 
 
 </table>
+
 <script>
      function _delete(url){
      bootbox.confirm("Confirmation to delete?", function(result){
@@ -57,7 +85,6 @@
             }
      });
     }
-
     function _edit(url){
      bootbox.confirm("Confirmation to edit?", function(result){
         if(result){
@@ -68,6 +95,10 @@
 
   document.getElementById("to_date").valueAsDate = new Date();
 
-</script>
+    $('.accordion-toggle').click(function(){
+	$('.hiddenRow').hide();
+	$(this).next('tr').find('.hiddenRow').show();
+    });
+    </script>
 
 {% endblock %}
