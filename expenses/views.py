@@ -125,13 +125,13 @@ def create(request):  # Adding Expense
                 'form': form,
             }
 
-            return render(request, 'expenses/created.html', context)
+            return render(request, 'expenses/create.html', context)
         else:
             context = {
                 'errmsg': 'Could not Add',
                 'form': form,
             }
-            return render(request, 'expenses/created.html', context)
+            return render(request, 'expenses/create.html', context)
 
 
 @login_required(login_url='/auth/login/')
@@ -140,11 +140,12 @@ def edit(request, id):
     form = ExpensesForm(request.user.id, request.POST or None, instance=data)
     if form.is_valid():
         form.save()
-
-    context = {
-        'form': form
-    }
-    return render(request, 'expenses/edit.html', context)
+        context = {
+            'form': form,
+            'msg': 'Edited Successfully!!'
+        }
+        return render(request, 'expenses/edit.html', context)
+    return render(request, 'expenses/edit.html',{'form':form})
 
 
 @login_required(login_url='/auth/login/')
