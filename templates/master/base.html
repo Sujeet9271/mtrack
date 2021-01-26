@@ -8,19 +8,10 @@
 
 
     <title>{% block 'title' %} {% endblock %}</title>
-    <style>
-<!--            body {-->
-/* <!--              background-image: url("{% static 'image/<Enter Image>' %}");--> */
-<!--              background-repeat: no-repeat;-->
-<!--              background-attachment: fixed;-->
-<!--              background-size: cover;-->
+   
 
-<!--            }-->
-
-
-    </style>
-
-    {% block 'css' %}{% endblock %}
+    {% block 'css' %}
+    {% endblock %}
 
 
 </head>
@@ -57,6 +48,7 @@
     </nav>
 
     {% block 'content' %}
+
     {% endblock %}
 
 
