@@ -32,10 +32,12 @@ ExpenseTracker| Expenses
 <script>
 
           document.getElementById("id_date").valueAsDate = new Date();
-          
+
           {% if msg %}
                    alert("{{msg}}")
-          {% else %}
+        {% endif %}
+        
+          {% if errmsg %}
                    alert("{{errmsg}}")
           {% endif %}
 
