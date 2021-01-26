@@ -122,7 +122,7 @@ def create(request):  # Adding Expense
             data.save()
             context = {
                 'msg': 'Added Successfully',
-                'form': form,
+            'form': ExpensesForm(request.user.id)
             }
 
             return render(request, 'expenses/create.html', context)
