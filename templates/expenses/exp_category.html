@@ -40,7 +40,7 @@ ExpenseTracker| Expenses
                     <tr>
 
                         <td>{{d.title}}</td>
-                        <td><a href="#" onclick="_delete('{% url 'category_delete' e.id %}')">delete</a></td>
+                        <td><a href="#" onclick="_delete('{% url 'category_delete' d.id %}')">delete</a></td>
 
                     </tr>
                 {% endfor %}
