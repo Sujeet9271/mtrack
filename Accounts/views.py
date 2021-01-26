@@ -6,6 +6,9 @@ from django.contrib.auth.models import User, auth
 from django.db.models import Sum
 from expenses.models import Expenses
 from income.models import Income
+from.forms import ProfileForm,UserForm
+from django.views import generic
+from django.urls import reverse_lazy
 
 
 
@@ -27,6 +30,20 @@ def login(request):
             return render(request, 'account/login.html', context)
 
 
+# def login(request):
+#     if request.method=="POST":
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = auth.authenticate(username=username, password=password)
+#         if user is not None:
+#             auth.login(request, user)
+#             return redirect('dashboard')
+#         else:
+#             messages.error(request, 'Username or Password incorrect')
+#             return redirect('login')
+#     else:
+#         return render(request, 'account/login.html')
+
 
 def register(request):
     if request.method == 'POST':
@@ -46,11 +63,15 @@ def register(request):
             else:
                 user = User.objects.create_user(username=username, password=password1, first_name=first_name, last_name=last_name, email=email)
                 user.save()
+                user.profile.save()
                 messages.info(request, "Registered successfully")
-                return redirect('auth_user')
+
+            return redirect('auth_user')
         else:
             messages.error(request, "Confirmed Password doesn't match")
             return redirect('register')
+
+
     else:
         return render(request, 'account/register.html')
 
@@ -66,12 +87,14 @@ def dashboard(request):
         from_date = request.POST.get('from_date')
         to_date = request.POST.get('to_date')
 
-
         income = Income.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('income'))
+        print('income :',income)
         expenses = Expenses.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('costs'))
+        print('expenses :',expenses)
 
         if income['income__sum'] is None:
             income['income__sum'] = 0
+
         if expenses['costs__sum'] is None:
             expenses['costs__sum'] = 0
 
@@ -93,6 +116,7 @@ def dashboard(request):
 
         if income['income__sum'] is None:
             income['income__sum'] = 0
+
         if expenses['costs__sum'] is None:
             expenses['costs__sum'] = 0
 
@@ -107,11 +131,27 @@ def dashboard(request):
         }
         return render(request, 'account/dashboard.html',context)
 
-
-
+@login_required(login_url='/auth/login/')
 def profile(request):
-    if request.method == "GET":
-        data = User.objects.filter(id=request.user.id)
-        return render(request, 'account/profile.html', {'data': data})
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = ProfileForm(request.POST, instance=request.user.profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, ('Your profile was successfully updated!'))
+            return redirect('profile')
+        else:
+            messages.error(request, ("Couldn't Update"))
+    else:
+        user_form = UserForm(instance=request.user)
+        profile_form = ProfileForm(instance=request.user.profile)
+        return render(request, 'account/profile.html', {
+            'user_form': user_form,
+            'profile_form': profile_form
+        })
+
+
+
 
 
