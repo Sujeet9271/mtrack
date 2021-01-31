@@ -18,8 +18,8 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#85bb65;">
-        <a class="navbar-brand" href="{% url 'dashboard' %}">ExpenseTracker</a>
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#85bb65; background: rgba(133, 187, 101, 0.75);">
+    <a class="navbar-brand" href="{% url 'dashboard' %}">ExpenseTracker</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -42,9 +42,9 @@
 
           </ul>
 
-          <a href="{% url 'profile' %}"><button class="btn btn-outline-success my-2 my-sm-0" type="submit">Profile</button></a>
+          <a href="{% url 'profile' %}"><button class="btn btn-outline-success my-2 my-sm-0" style="margin:5px;" type="submit">Profile</button></a>
 
-          <a href="{% url 'logout' %}"><button class="btn btn-outline-success my-2 my-sm-0" type="submit">LogOut</button></a>
+          <a href="{% url 'logout' %}"><button class="btn btn-outline-success my-2 my-sm-0" style="margin:5px;" type="submit">LogOut</button></a>
 
         </div>
     </nav>
