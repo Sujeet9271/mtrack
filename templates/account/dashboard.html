@@ -74,15 +74,19 @@
                             </div>
 
                             <div class="container pt-3">
-
-                                            <label>Income:</label>
-                                            <input class="form-control" type="number" name="income" value="{{income}}" readonly>
-                                                <label>Expenses:</label>
-                                            <input class="form-control" type="number" name="expense" value="{{expenses}}" readonly>
-                                                <label>Savings:</label>
-                                            <input class="form-control" type="number" name="savings" value="{{savings}}" readonly>
+                                <fieldset>
+                                    <legend>Total Money Details</legend>
+                                    
+                                    <label>Income:</label>
+                                    <input class="form-control" type="number" name="income" value="{{income}}" readonly>
+                                        <label>Expenses:</label>
+                                    <input class="form-control" type="number" name="expense" value="{{expenses}}" readonly>
+                                        <label>Savings:</label>
+                                    <input class="form-control" type="number" name="savings" value="{{savings}}" readonly>
 
                                     <div class="container pt-3"><a href="{% url 'home' %}"><button class="btn btn-primary" value="Add Data">ADD DATA</button></a></div>
+                                </fieldset>
+
 
                             </div>
 
