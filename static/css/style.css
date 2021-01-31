@@ -1,6 +1,7 @@
 .glyphicon-trash{
 color:red;}
 body {
+    overflow: auto;
 
  background-color: #fff;
 }
