@@ -4,58 +4,54 @@
 {% endblock %}
 
 {% block 'content' %}
-<center><hr>
+    <center><hr>
 
-    <form method="POST">
-        {% csrf_token %}
+            <form method="POST">
+                {% csrf_token %}
+        
+                <label>From:</label><input class="" type="date" name="from_date" id="from_date" required><br>
+                <label>To:</label><input class="" type="date" name="to_date" id="to_date" required><br>
+                
+                <button class="btn btn-primary btn-hover" type="submit" value="show">Show</button>
+            </form>
+    
+    
+    </hr></center>
+<div class="container-fluid pt-3">
+    
+    <table class="table table-hover table-light">
 
-        <label>From:</label><input class="" type="date" name="from_date" id="from_date" required><br>
-        <label>To:</label><input class="" type="date" name="to_date" id="to_date" required><br>
-
-<!--        <label>Month:<input type="month" name="month"></label>-->
-
-        <button class="btn btn-primary btn-hover" type="submit" value="show">Show</button>
-    </form></hr>
-</center>
-<table class="table table-hover table-dark">
-    <th>ID</th>
-    <th>Income</th>
-    <th>Source
+    <th>Source</th>
+      <th>Income</th>
     <th>Date</th>
     <th>Action</th>
 
-    {% if income %}
 
         {% for e in income %}
-        <tr>
-            <td>{{e.id}}</td>
-            <td>{{e.income}}</td>
-            <td>{{e.source}}</td>
-            <td>{{e.date}}</td>
+                    <tr colspan="6" data-toggle="collapse" data-target="#{{e.id}}" class="accordion-toggle">
+                        <td>{{e.source}}</td>
+                        <td>{{e.income}}</td>
+                        <td>{{e.date}}</td>
+                        <td><a href="#" onclick="_edit('{% url 'inc_edit' e.id %}')">e</a>|<a href="#" onclick="_delete('{% url 'inc_delete' e.id %}')">d</a> </td>
+                    </tr>
+                    <tr class="p">
+                        <td colspan="6" class="hiddenRow">
+                            <div class="accordian-body collapse p-3" id="{{e.id}}">
+                                <p>Date : <span>{{e.date}}</span> </p>
+                                <p>Day : <span>{{e.date|date:'l'}}</span> </p>
+                                <p>Source : <span>{{e.source}}</span> </p>
+                                <p>Income : <span>{{e.income}}</span> </p>
 
-            <td><a href="#" onclick="_delete('{% url 'inc_delete' e.id %}'")>edit</a>|<a href="#" onclick="_delete('{% url 'inc_delete' e.id %}')">delete</a> </td>
-            <td></td>
-        </tr>
+                            </div>
+                        </td>
+                    </tr>
      {% endfor %}
 
-    {% endif %}
 
-    {% if income_month %}
 
-        {% for e in income_month %}
-        <tr>
-            <td>{{e.id}}</td>
-            <td>{{e.income}}</td>
-            <td>{{e.source}}</td>
-            <td>{{e.date}}</td>
-
-            <td><a href="#" onclick="_delete('{% url 'inc_delete' e.id %}'")>edit</a>|<a href="#" onclick="_delete('{% url 'inc_delete' e.id %}')">delete</a> </td>
-            <td></td>
-        </tr>
-     {% endfor %}
-
-    {% endif %}
 </table>
+
+</div>
 
 <script>
 

@@ -8,6 +8,7 @@ ExpenseTracker| Income
 {% endblock %}
 
 {% block 'content' %}
+
 <div class="container pt-3">
     <div class="row">
         {% include 'partials/inc_sidebar.html' %}
@@ -19,7 +20,7 @@ ExpenseTracker| Income
 
                                <fieldset>
                                     <legend>This Week's Income:</legend>
-                                    <table class="table table-hover">
+                                    <table class="table table-hover table-light">
                                         <thead>
                                             <th>Source</th>
                                             <th>Income</th>
@@ -46,12 +47,16 @@ ExpenseTracker| Income
         </div>
 
     </div>
-
-
-
-
-
 </div>
+
+<script>
+
+    $('.accordion-toggle').click(function(){
+        $('.hiddenRow').hide();
+        $(this).next('tr').find('.hiddenRow').show();
+        });
+
+</script>
 
 
 {% endblock %}

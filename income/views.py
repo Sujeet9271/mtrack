@@ -77,12 +77,12 @@ def edit(request, id):
     form = IncomeForm(request.user.id, request.POST or None, instance=data)
     if form.is_valid():
         form.save()
-
-    context = {
-        'form': form
-    }
-    return render(request, 'incomes/edit.html', context)
-
+        context = {
+            'form': form,
+            'msg': 'Edited Successfully!!'
+        }
+        return render(request, 'incomes/edit.html', context)
+    return render(request, 'incomes/edit.html', {'form': form})
 
 @login_required(login_url='/auth/login/')
 def inc_delete(request, id):
