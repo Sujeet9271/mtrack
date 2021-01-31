@@ -90,7 +90,7 @@ def dashboard(request):
         # income = Income.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('income'))
 
         # expenses = Expenses.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('costs'))
-        from_month = request.POST.get('from_month')
+        from_month = int(request.POST.get('from_month')[5:])
         income = Income.objects.select_related().filter(user_id=request.user.id, date__month = from_month)
         expenses = Expenses.objects.select_related().filter(user_id=request.user.id, date__month = from_month)
 
