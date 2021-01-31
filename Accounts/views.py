@@ -70,14 +70,18 @@ def _logout(request):
 def dashboard(request):
     if request.method == "POST":
 
-        from_month = int(request.POST.get('from_month')[5:])
+        from_month = request.POST.get('from_month')
+        year = int(from_month[:4])
+        print('year',year)
+        month=int(from_month[5:])
+        
         # from_date = request.POST.get('from_date')
         # to_date = request.POST.get('to_date')
 
 
 
-        income_total = Income.objects.filter(user_id=request.user.id, date__month=from_month).aggregate(Sum('income'))
-        expenses_total = Expenses.objects.filter(user_id=request.user.id, date__month=from_month).aggregate(Sum('costs'))
+        income_total = Income.objects.filter(user_id=request.user.id, date__year=year, date__month=month).aggregate(Sum('income'))
+        expenses_total = Expenses.objects.filter(user_id=request.user.id, date__year=year, date__month=month).aggregate(Sum('costs'))
 
         if income_total['income__sum'] is None:
             income_total['income__sum'] = 0
