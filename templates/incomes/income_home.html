@@ -20,22 +20,32 @@ ExpenseTracker| Income
 
                                <fieldset>
                                     <legend>This Week's Income:</legend>
-                                    <table class="table table-hover table-light">
+                                    <table class="table table-hover">
                                         <thead>
-                                            <th>Source</th>
-                                            <th>Income</th>
-                                            <th>Date</th>
+                                                    <th>Source</th>
+                                                    <th>Income</th>
+                                                    <th>Date</th>
                                         </thead>
+
                                         <tbody>
                                                 {% for e in income %}
+                                                    <tr colspan="6" data-toggle="collapse" data-target="#{{e.id}}" class="accordion-toggle">
+                                                        <td>{{e.source}}</td>
+                                                        <td>{{e.income}}</td>
+                                                        <td>{{e.date}}</td>
+                                                    </tr>
+                                                    <tr class="p">
+                                                        <td colspan="6" class="hiddenRow">
+                                                            <div class="accordian-body collapse p-3" id="{{e.id}}">
+                                                                <p>Date : <span>{{e.date}}</span>
+                                                                <p>Day : <span>{{e.date|date:'l'}}</span> </p>
+                                                                <p>Source : <span>{{e.source}}</span> </p>
+                                                                <p>Income : <span>{{e.income}}</span> </p>
 
-                                                                <tr>
-                                                                    <td>{{e.source}}</td>
-                                                                    <td>{{e.income}}</td>
-                                                                    <td>{{e.date}}</td>
-                                                                </tr>
-
-                                                    {% endfor %}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                        {% endfor %}
                                         </tbody>
                                     </table>
                                </fieldset>
