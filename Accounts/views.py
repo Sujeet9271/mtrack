@@ -7,8 +7,6 @@ from django.db.models import Sum
 from expenses.models import Expenses
 from income.models import Income
 from.forms import ProfileForm,UserForm
-from django.views import generic
-from django.urls import reverse_lazy
 
 
 
@@ -30,19 +28,6 @@ def login(request):
             return render(request, 'account/login.html', context)
 
 
-# def login(request):
-#     if request.method=="POST":
-#         username = request.POST['username']
-#         password = request.POST['password']
-#         user = auth.authenticate(username=username, password=password)
-#         if user is not None:
-#             auth.login(request, user)
-#             return redirect('dashboard')
-#         else:
-#             messages.error(request, 'Username or Password incorrect')
-#             return redirect('login')
-#     else:
-#         return render(request, 'account/login.html')
 
 
 def register(request):
@@ -84,31 +69,31 @@ def _logout(request):
 @login_required(login_url='/auth/login/')
 def dashboard(request):
     if request.method == "POST":
+
+        from_month = int(request.POST.get('from_month')[5:])
         # from_date = request.POST.get('from_date')
         # to_date = request.POST.get('to_date')
 
-        # income = Income.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('income'))
-
-        # expenses = Expenses.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('costs'))
-        from_month = int(request.POST.get('from_month')[5:])
-        income = Income.objects.select_related().filter(user_id=request.user.id, date__month = from_month)
-        expenses = Expenses.objects.select_related().filter(user_id=request.user.id, date__month = from_month)
 
 
-        if income['income__sum'] is None:
-            income['income__sum'] = 0
+        income_total = Income.objects.filter(user_id=request.user.id, date__month=from_month).aggregate(Sum('income'))
+        expenses_total = Expenses.objects.filter(user_id=request.user.id, date__month=from_month).aggregate(Sum('costs'))
 
-        if expenses['costs__sum'] is None:
-            expenses['costs__sum'] = 0
+        if income_total['income__sum'] is None:
+            income_total['income__sum'] = 0
 
-        if (income['income__sum'] < expenses['costs__sum']):
+        if expenses_total['costs__sum'] is None:
+            expenses_total['costs__sum'] = 0
+
+        if (income_total['income__sum'] < expenses_total['costs__sum']):
             savings = 0
         else:
-            savings = income['income__sum'] - expenses['costs__sum']
+            savings = income_total['income__sum'] - expenses_total['costs__sum']
+
 
         context = {
-            'expenses': expenses['costs__sum'],
-            'income': income['income__sum'],
+            'expenses': expenses_total['costs__sum'],
+            'income': income_total['income__sum'],
             'savings': savings,
         }
         return render(request, 'account/dashboard.html', context)
@@ -127,11 +112,13 @@ def dashboard(request):
             savings = 0
         else:
             savings = income['income__sum'] - expenses['costs__sum']
+        
+        
         context = {
             'expenses': expenses['costs__sum'],
             'income': income['income__sum'],
             'savings': savings,
-        }
+            }
         return render(request, 'account/dashboard.html',context)
 
 @login_required(login_url='/auth/login/')
@@ -145,16 +132,12 @@ def profile(request):
             messages.success(request, ('Your profile was successfully updated!'))
             return redirect('profile')
         else:
-            messages.error(request, ("Couldn't Update"))
+            messages.error(request, ('Please correct the error below.'))
     else:
         user_form = UserForm(instance=request.user)
         profile_form = ProfileForm(instance=request.user.profile)
-        return render(request, 'account/profile.html', {
-            'user_form': user_form,
-            'profile_form': profile_form
-        })
 
-
+    return render(request, 'account/profile.html', {'user_form': user_form,'profile_form': profile_form})
 
 
 
