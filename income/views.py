@@ -3,6 +3,7 @@ from .models import Income
 from django.contrib.auth.decorators import login_required
 from .forms import IncomeForm
 from django.db.models import Sum
+import datetime
 
 
 @login_required(login_url='/auth/login/')
@@ -34,7 +35,13 @@ def incomes(request):
 
 @login_required(login_url='/auth/login/')
 def incomes_home(request):
-    return render(request, 'incomes/income_home.html')
+    x = datetime.datetime.now()
+    x = x.strftime("%W")  # to get current week
+    print(x)
+
+    income = Income.objects.select_related().filter(user_id=request.user.id, date__week=x)
+    print(income)
+    return render(request, 'incomes/income_home.html',{'income':income})
 
 
 @login_required(login_url='/auth/login/')

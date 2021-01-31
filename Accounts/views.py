@@ -84,13 +84,16 @@ def _logout(request):
 @login_required(login_url='/auth/login/')
 def dashboard(request):
     if request.method == "POST":
-        from_date = request.POST.get('from_date')
-        to_date = request.POST.get('to_date')
+        # from_date = request.POST.get('from_date')
+        # to_date = request.POST.get('to_date')
 
-        income = Income.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('income'))
-        print('income :',income)
-        expenses = Expenses.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('costs'))
-        print('expenses :',expenses)
+        # income = Income.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('income'))
+
+        # expenses = Expenses.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('costs'))
+        from_month = request.POST.get('from_month')
+        income = Income.objects.select_related().filter(user_id=request.user.id, date__month = from_month)
+        expenses = Expenses.objects.select_related().filter(user_id=request.user.id, date__month = from_month)
+
 
         if income['income__sum'] is None:
             income['income__sum'] = 0

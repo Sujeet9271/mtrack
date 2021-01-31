@@ -3,21 +3,21 @@ from django.db.models import Sum
 from .models import Expenses, Category
 from django.contrib.auth.decorators import login_required
 from .forms import ExpensesForm
+import datetime
+
+
 
 
 @login_required(login_url='/auth/login/')
 def expenses(request):  # Expenditure_detail page
-    if request.method=="POST":
-        from_date=request.POST.get('from_date')
-        to_date=request.POST.get('to_date')
+    if request.method == "POST":
+        from_date = request.POST.get('from_date')
+        to_date = request.POST.get('to_date')
 
         # search_expenses=Expenses.objects.raw('select id,title,costs,description,date from expenses_expenses where date between "'+from_date+'" and "'+to_date+'" order by"'+from_date+ '"')
-        search_expenses=Expenses.objects.filter(user_id=request.user.id,date__range=[from_date, to_date]).order_by('date')
-        total = Expenses.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('costs'))
+        search_expenses = Expenses.objects.select_related().filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
+        total = Expenses.objects.select_related().filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('costs'))
 
-
-
-        print(search_expenses)
 
         context = {
             'expenses': search_expenses,
@@ -25,8 +25,8 @@ def expenses(request):  # Expenditure_detail page
         }
         return render(request, 'expenses.html', context)
     else:
-        expenses = Expenses.objects.filter(user_id=request.user.id).order_by('date')
-        total = Expenses.objects.filter(user_id=request.user.id).aggregate(Sum('costs'))
+        expenses = Expenses.objects.select_related().filter(user_id=request.user.id).order_by('date')
+        total = Expenses.objects.select_related().filter(user_id=request.user.id).aggregate(Sum('costs'))
         # Select * from Expenses
         context = {
             'expenses': expenses,
@@ -37,7 +37,11 @@ def expenses(request):  # Expenditure_detail page
 
 @login_required(login_url='/auth/login/')
 def expenses_home(request):
-    return render(request, 'expenses/expenses_home.html')
+    x = datetime.datetime.now()
+    x = x.strftime("%W") # to get current week
+
+    expense = Expenses.objects.select_related().filter(user_id=request.user.id, date__week=x)
+    return render(request, 'expenses/expenses_home.html', {'expense': expense})
 
 
 @login_required(login_url='/auth_user')
@@ -66,45 +70,7 @@ def exp_category(request):  # Category Page
             return render(request, 'expenses/exp_category.html', context)
 
 
-# def create(request):
-#
-#     if request.method == 'POST':
-#         title = request.POST['title']
-#         costs = request.POST['costs']
-#         description = request.POST['description']
-#         date = request.POST['date']
-#         category = Category(title=request.POST['category'], user=request.user)
-#
-#
-#
-#
-#         form = Expenses(title=title, costs=costs, description=description, date=date, category=category)
-#         if form.is_valid():
-#             data = form.save(commit=False)
-#             data.user = request.user
-#             data.save()
-#             context = {
-#                 'msg': 'Added Successfully',
-#                 'form': form,
-#                 'category':Category.objects.filter(user_id= request.user.id),
-#             }
-#
-#             return render(request, 'expenses/create.html', context)
-#
-#         else:
-#             context = {
-#                 'errmsg': 'Could not Add',
-#                 'form': form,
-#                 'category': Category.objects.filter(user_id= request.user.id),
-#
-#             }
-#             return render(request, 'expenses/create.html', context)
-#     else:
-#         context = {
-#             'form': ExpensesForm(request.user.id),
-#             'category': Category.objects.filter(user_id= request.user.id),
-#         }
-#         return render(request, 'expenses/create.html', context)
+
 
 @login_required(login_url='/auth/login/')
 def create(request):  # Adding Expense
@@ -122,9 +88,8 @@ def create(request):  # Adding Expense
             data.save()
             context = {
                 'msg': 'Added Successfully',
-            'form': ExpensesForm(request.user.id)
+                'form': ExpensesForm(request.user.id),
             }
-
             return render(request, 'expenses/create.html', context)
         else:
             context = {

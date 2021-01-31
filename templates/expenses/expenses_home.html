@@ -2,17 +2,72 @@
 {% block 'title' %}
 ExpenseTracker| Expenses
 {% endblock %}
-
+{% block 'css' %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+{% endblock %}
 
 {% block 'active_page' %}
  <a class="navbar-brand" href="{% url 'expenses_home' %}">Expenses</a>
 {% endblock %}
 
 {% block 'content' %}
+
 <div class="container pt-3">
+
     <div class="row">
+
         {% include 'partials/sidebar.html' %}
+
+        <div class="col-md-8">
+
+                <div class="container pt-3">
+
+                     <div class="jumbotron">
+
+                               <fieldset>
+                                    <legend>This Week's expenses:</legend>
+                                   {% if expense %}
+                                        <table class="table table-hover">
+                                        <thead>
+                                            <th>Category</th>
+                                            <th>Title</th>
+                                            <th>Costs</th>
+                                        </thead>
+                                        <tbody>
+                                                {% for e in expense %}
+                                                                <tr colspan="6" data-toggle="collapse" data-target="#{{e.id}}" class="accordion-toggle">
+                                                                    <td>{{e.category}}</td>
+                                                                    <td>{{e.title}}</td>
+                                                                    <td>{{e.costs}}</td>
+                                                                </tr>
+                                                                <tr class="p">
+                                                                    <td colspan="6" class="hiddenRow">
+                                                                        <div class="accordian-body collapse p-3" id="{{e.id}}">
+                                                                            <p>Date : <span>{{e.date}}</span> </p>
+                                                                            <p>Category : <span>{{e.category}}</span> </p>
+                                                                            <p>Name : <span>{{e.title}}</span> </p>
+                                                                            <p>Cost : <span>{{e.costs}}</span></p>
+                                                                            <p>Description : <span>{{e.description}}</span></p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                    {% endfor %}
+                                        </tbody>
+                                    </table>
+                                   {% else %}
+                                        No expenses this week
+                                   {% endif %}
+                               </fieldset>
+
+                     </div>
+
+                </div>
+
+        </div>
+
     </div>
+
 </div>
+
 
 {% endblock %}

@@ -3,13 +3,55 @@
 ExpenseTracker| Income
 {% endblock %}
 
-{% block 'active_page' %} <a class="navbar-brand" href="{% url 'income_home' %}">Income</a> {% endblock %}
+{% block 'css' %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+{% endblock %}
 
 {% block 'content' %}
 <div class="container pt-3">
     <div class="row">
         {% include 'partials/inc_sidebar.html' %}
+        <div class="col-md-8">
+
+                <div class="container pt-3">
+
+                     <div class="jumbotron">
+
+                               <fieldset>
+                                    <legend>This Week's Income:</legend>
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <th>Source</th>
+                                            <th>Income</th>
+                                            <th>Date</th>
+                                        </thead>
+                                        <tbody>
+                                                {% for e in income %}
+
+                                                                <tr>
+                                                                    <td>{{e.source}}</td>
+                                                                    <td>{{e.income}}</td>
+                                                                    <td>{{e.date}}</td>
+                                                                </tr>
+
+                                                    {% endfor %}
+                                        </tbody>
+                                    </table>
+                               </fieldset>
+
+                     </div>
+
+                </div>
+
+        </div>
+
     </div>
+
+
+
+
+
 </div>
+
 
 {% endblock %}

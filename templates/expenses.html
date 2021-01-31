@@ -5,17 +5,19 @@
 
 
 {% block 'css' %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.23/b-1.6.5/b-colvis-1.6.5/b-flash-1.6.5/fh-3.1.7/r-2.2.7/sp-1.2.2/datatables.min.css"/>
 
-<style>
 
-    .hiddenRow {
-        padding: 0 4px !important;
-        background-color: #eeeeee;
-        font-size: 13px;
-    }
-    .accordian-body span{
-        color:#a2a2a2 !important;
-    }
+    <style>
+
+            .hiddenRow {
+                padding: 0 4px !important;
+                background-color: #eeeeee;
+                font-size: 13px;
+            }
+            .accordian-body span{
+                color:#a2a2a2 !important;
+            }
     
     </style>
     
@@ -48,57 +50,63 @@
         <th>Action</th>   
     </thead>
 
-  <tbody>
-    {% for e in expenses %}
-    <tr colspan="6" data-toggle="collapse" data-target="#{{e.id}}" class="accordion-toggle">
-        <td>{{e.title}}</td>      
-        <td>{{e.date}}</td>
-        <td>{{e.costs}}</td>
-        <td><a href="#" onclick="_edit('{% url 'exp_edit' e.id %}')">edit</span></a>|<a href="#" onclick="_delete('{% url 'exp_delete' e.id %}')">delete</a> </td>
-        <td></td>
-        
-    </tr>
-    <tr class="p">
-        <td colspan="6" class="hiddenRow">
-            <div class="accordian-body collapse p-3" id="{{e.id}}">
-                <p>Date : <span>{{e.date}}</span> </p>
-                <p>Category : <span>{{e.category}}</span> </p>
-                <p>Name : <span>{{e.title}}</span> </p>
-                <p>Cost : <span>{{e.costs}}</span></p>
-                <p>Description : <span>{{e.description}}</span></p>
-            </div> 
-        </td> 
-    </tr>
- {% endfor %}
-  </tbody>
+    <tbody>
+        {% for e in expenses %}
+                    <tr colspan="6" data-toggle="collapse" data-target="#{{e.id}}" class="accordion-toggle">
+                        <td>{{e.title}}</td>
+                        <td>{{e.date}}</td>
+                        <td>{{e.costs}}</td>
+                        <td><a href="#" onclick="_edit('{% url 'exp_edit' e.id %}')">edit</span></a>|<a href="#" onclick="_delete('{% url 'exp_delete' e.id %}')">delete</a> </td>
+                        <td></td>
+
+                    </tr>
+                    <tr class="p">
+                        <td colspan="6" class="hiddenRow">
+                            <div class="accordian-body collapse p-3" id="{{e.id}}">
+                                <p>Date : <span>{{e.date}}</span> </p>
+                                <p>Category : <span>{{e.category}}</span> </p>
+                                <p>Name : <span>{{e.title}}</span> </p>
+                                <p>Cost : <span>{{e.costs}}</span></p>
+                                <p>Description : <span>{{e.description}}</span></p>
+                            </div>
+                        </td>
+                    </tr>
+        {% endfor %}
+
+    </tbody>
 
     
 
 
 </table>
+{% block 'js'%}
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.23/b-1.6.5/b-colvis-1.6.5/b-flash-1.6.5/fh-3.1.7/r-2.2.7/sp-1.2.2/datatables.min.js"></script>
 
-<script>
-     function _delete(url){
-     bootbox.confirm("Confirmation to delete?", function(result){
-        if(result){
-            window.location.href=url
-            }
-     });
-    }
-    function _edit(url){
-     bootbox.confirm("Confirmation to edit?", function(result){
-        if(result){
-            window.location.href=url
-            }
-     });
-    }
+    <script>
+         function _delete(url){
+         bootbox.confirm("Confirmation to delete?", function(result){
+            if(result){
+                window.location.href=url
+                }
+         });
+        }
+        function _edit(url){
+         bootbox.confirm("Confirmation to edit?", function(result){
+            if(result){
+                window.location.href=url
+                }
+         });
+        }
 
-  document.getElementById("to_date").valueAsDate = new Date();
+      document.getElementById("to_date").valueAsDate = new Date();
 
-    $('.accordion-toggle').click(function(){
-	$('.hiddenRow').hide();
-	$(this).next('tr').find('.hiddenRow').show();
-    });
+        $('.accordion-toggle').click(function(){
+        $('.hiddenRow').hide();
+        $(this).next('tr').find('.hiddenRow').show();
+        });
     </script>
+
+{% endblock %}
+
 
 {% endblock %}
