@@ -34,6 +34,7 @@ ExpenseTracker| Income
 
                                <fieldset>
                                     <legend>This Week's Income:</legend>
+                                    {% if income %}
                                     <table class="table table-hover">
                                         <thead>
                                                     <th>Source</th>
@@ -62,6 +63,9 @@ ExpenseTracker| Income
                                         {% endfor %}
                                         </tbody>
                                     </table>
+                                    {% else %}
+                                    No income this week
+                                    {% endif %}
                                </fieldset>
 
                      </div>
