@@ -40,74 +40,87 @@
     </hr>
 </center>
 
-<div class="container-fluid pt-3">
-    <table class="table table-hover table-light" style="border-collapse:collapse;">
-        <thead>
-            <th>Title</th>        
-            <th>Date</th>
-            <th>Cost </th>
-            <th>Action</th>   
-        </thead>
-    
-        <tbody>
-            {% for e in expenses %}
-                        <tr colspan="6" data-toggle="collapse" data-target="#{{e.id}}" class="accordion-toggle">
-                            <td>{{e.title}}</td>
-                            <td>{{e.date}}</td>
-                            <td>{{e.costs}}</td>
-                            <td><a href="#" onclick="_edit('{% url 'exp_edit' e.id %}')">edit</span></a>|<a href="#" onclick="_delete('{% url 'exp_delete' e.id %}')">delete</a> </td>
-                            <td></td>
-    
-                        </tr>
-                        <tr class="p">
-                            <td colspan="6" class="hiddenRow">
-                                <div class="accordian-body collapse p-3" id="{{e.id}}">
-                                    <p>Date : <span>{{e.date}}</span> </p>
-                                    <p>Category : <span>{{e.category}}</span> </p>
-                                    <p>Name : <span>{{e.title}}</span> </p>
-                                    <p>Cost : <span>{{e.costs}}</span></p>
-                                    <p>Description : <span>{{e.description}}</span></p>
-                                </div>
-                            </td>
-                        </tr>
-            {% endfor %}
-    
-        </tbody>
-    
-        
-    
-    
-    </table>
+<div class="container pt-3">
+    <input type="text" id="myInput" onkeyup="function()" placeholder="Category,title,...">
+
+</div>
+<div class="container-fluid table-responsive pt-3">
+
+
+ <table class="table table-hover table-light"  style="border-collapse:collapse;">
+     <thead>
+     <th>Category</th>
+         <th>Title</th>
+         <th>Date</th>
+         <th>Cost </th>
+         <th>Action</th>
+     </thead>
+
+     <tbody id="expenses">
+         {% for e in expenses %}
+                     <tr colspan="6" data-toggle="collapse" data-target="#{{e.id}}" class="accordion-toggle">
+                         <td>{{e.category}}</td>
+                         <td>{{e.title}}</td>
+                         <td>{{e.date}}</td>
+                         <td>{{e.costs}}</td>
+                         <td><a href="#" onclick="_edit('{% url 'exp_edit' e.id %}')">e</a>|<a href="#" onclick="_delete('{% url 'exp_delete' e.id %}')">d</a> </td>
+                         <td></td>
+
+                     </tr>
+                     <tr class="p">
+                         <td colspan="6" class="hiddenRow">
+                             <div class="accordian-body collapse p-3" id="{{e.id}}">
+                                 <p>Date : <span>{{e.date}}</span> </p>
+                                 <p>Day : <span>{{e.date|date:'l'}}</span> </p>
+                                 <p>Category : <span>{{e.category}}</span> </p>
+                                 <p>Name : <span>{{e.title}}</span> </p>
+                                 <p>Cost : <span>{{e.costs}}</span></p>
+                                 <p>Description : <span>{{e.description}}</span></p>
+                             </div>
+                         </td>
+                     </tr>
+         {% endfor %}
+
+     </tbody>
+ </table>
+
 </div>
 
 
+ <script>
+      function _delete(url){
+      bootbox.confirm("Confirmation to delete?", function(result){
+         if(result){
+             window.location.href=url
+             }
+      });
+     }
+     function _edit(url){
+      bootbox.confirm("Confirmation to edit?", function(result){
+         if(result){
+             window.location.href=url
+             }
+      });
+     }
 
+   document.getElementById("to_date").valueAsDate = new Date();
 
-    <script>
-         function _delete(url){
-         bootbox.confirm("Confirmation to delete?", function(result){
-            if(result){
-                window.location.href=url
-                }
-         });
-        }
-        function _edit(url){
-         bootbox.confirm("Confirmation to edit?", function(result){
-            if(result){
-                window.location.href=url
-                }
-         });
-        }
+     $('.accordion-toggle').click(function(){
+     $('.hiddenRow').hide();
+     $(this).next('tr').find('.hiddenRow').show();
+     });
+ </script>
 
-      document.getElementById("to_date").valueAsDate = new Date();
-
-        $('.accordion-toggle').click(function(){
-        $('.hiddenRow').hide();
-        $(this).next('tr').find('.hiddenRow').show();
-        });
-    </script>
-
-
+<script>
+$(document).ready(function(){
+$("#myInput").on("keyup", function() {
+ var value = $(this).val().toLowerCase();
+ $("#expenses tr").filter(function() {
+   $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+ });
+});
+});
+</script>
 
 
 {% endblock %}
