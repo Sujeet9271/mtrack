@@ -1,114 +1,166 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw==" crossorigin="anonymous"></script>
 
-    <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-            <link rel="stylesheet" href="{% static 'css/style.css' %}">
-            <title>ExpenseTracker</title>
-            <style>
-                body {
-                <!--  background-image: url("{% static 'image/background.svg' %}");-->
-                  background-repeat: no-repeat;git
-                  background-attachment: fixed;
-                  background-size: cover;
-                }
-            </style>
-    </head>
-    <body>
+    <title>ExpenseTracker</title>
+    <style>
+body {
+<!--  background-image: url("{% static 'image/background.svg' %}");-->
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
+</head>
+<body>
 
-        <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#85bb65; background: rgba(133, 187, 101, 0.75);">
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#85bb65; background: rgba(133, 187, 101, 0.75);">
+        <a class="navbar-brand" href="{% url 'dashboard' %}">ExpenseTracker</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-                    <a class="navbar-brand" href="{% url 'dashboard' %}">ExpenseTracker</a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-                          <span class="navbar-toggler-icon"></span>
-                        </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
 
-                    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
-                          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'income_home' %}">Income <span class="sr-only">(current)</span></a>
+            </li>
 
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'home' %}">Home</a>
-                                    </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'expenses_home' %}">Expense</a>
+            </li>
+              <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">Home</a>
+            </li>
 
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'income_home' %}">Income <span class="sr-only">(current)</span></a>
-                                    </li>
+          </ul>
 
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{% url 'expenses_home' %}">Expense</a>
-                                    </li>
-                                      
+          <a href="{% url 'profile' %}"><button class="btn btn-outline-success my-2 my-sm-0" style="margin:5px;"  type="submit">Profile</button></a>
 
-                          </ul>
+          <a href="{% url 'logout' %}"><button class="btn btn-outline-success my-2 my-sm-0" style="margin:5px;" type="submit">LogOut</button></a>
 
-                          <a href="{% url 'profile' %}"><button class="btn btn-outline-success my-2 my-sm-0" style="margin:5px;" type="submit">Profile</button></a>
+        </div>
+    </nav>
+ <div class="container pt-5">
+    <div class="jumbotron" style="background: rgba(133, 187, 101, 0.1); ">
+                <div class="container">
+                      <form class="form" method="POST">
 
-                          <a href="{% url 'logout' %}"><button class="btn btn-outline-success my-2 my-sm-0" style="margin:5px;" type="submit">LogOut</button></a>
+                            {% csrf_token %}
+                            <label>From Month:</label>
+                            <input class="form-control input" type="text" name="from_month" placeholder="Select Month" id="from_month" onfocus="(this.type='month')" required>
 
-                    </div>
+                                    <div class="container pt-3">
+                                        <button type="submit" class="btn btn-primary" value="Show Data">SHOW DATA</button>
 
-            </nav>
-
-            <div class="container pt-5">
-
-                <div class="jumbotron" style="background: rgba(133, 187, 101, 0.1); ">
-
-                            <div class="container">
-
-                                  <form class="form" method="POST">
-
-                                        {% csrf_token %}
-                                        <label>From Month:</label>
-                                            <input class="form-control input" type="month" name="from_month" placeholder="From Month" id="from_month" required>
-                                        <!-- <label>To Date:</label>
-                                            <input class="form-control input" type="date" name="to_date" placeholder="To Date" id="to_date" required> -->
-                                        <div class="container pt-3">
-                                            <button type="submit" class="btn btn-primary" value="Show Data">SHOW DATA</button>
-                                        </div>
-                                  </form>
-
-                            </div>
-
-                            <div class="container pt-3">
-                                <fieldset>
-                                    <legend>Total Money Details</legend>
-                                    
-                                    <label>Income:</label>
-                                    <input class="form-control" type="number" name="income" value="{{income}}" readonly>
-                                        <label>Expenses:</label>
-                                    <input class="form-control" type="number" name="expense" value="{{expenses}}" readonly>
-                                        <label>Savings:</label>
-                                    <input class="form-control" type="number" name="savings" value="{{savings}}" readonly>
-
-                                    <div class="container pt-3"><a href="{% url 'home' %}"><button class="btn btn-primary" value="Add Data">ADD DATA</button></a></div>
-                                </fieldset>
-
-
-                            </div>
+                                    </div>
+                        </form>
 
                 </div>
 
-            </div>
+                <div class="container pt-3">
+
+                    <fieldset>
+
+                                    <legend>
+                                        Total Details:
+                                    </legend>
+
+                                    <label>Income:</label>
+                                        <input class="form-control" type="number" name="income" value="{{income}}" readonly>
+                                    <label>Expenses:</label>
+                                        <input class="form-control" type="number" name="expense" value="{{expenses}}" readonly>
+                                    <label>Savings:</label>
+                                        <input class="form-control" type="number" name="savings" value="{{savings}}" readonly>
+
+                                    <div class="container pt-3"><a href="{% url 'home' %}"><button class="btn btn-primary" value="Add Data">ADD DATA</button></a></div>
+
+                    </fieldset>
 
 
-                <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-                <script src="{% static 'js/bootbox.min.js' %}"></script>
 
-            <script>
-
-                  document.getElementById("to_date").valueAsDate = new Date();
-
-            </script>
+                </div>
 
 
-    </body>
 
+
+
+
+    </div>
+    <div class="container mt-2">
+      <canvas id="details" width="50%" height="50%">      </canvas>
+    </div>
+ </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="{% static 'js/bootbox.min.js' %}"></script>
+
+<script>
+  const renderdetailChart=(amount,sources) => {
+          var ctx = document.getElementById('details').getContext('2d');
+          var detailChart = new Chart(ctx, {
+              type: 'doughnut',
+              data: {
+                  labels:sources,
+                  datasets: [{
+                      label: 'Money Detail',
+                      data:amount ,
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  title:{
+                      display:true,
+                      text:'Money Detail',
+                  },
+              },                
+          });
+  }
+  
+  
+  const getdetailChartData = () => {
+      var sources = {{details_label|safe}};
+          var amount = {{details_data|safe}}; 
+          console.log(amount)
+          console.log(sources)  
+          
+          
+                  renderdetailChart(amount,sources)
+              
+          };
+  
+  document.onload = getdetailChartData(); 
+  </script>
+
+
+</body>
 </html>
 
 

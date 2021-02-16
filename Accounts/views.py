@@ -74,14 +74,13 @@ def dashboard(request):
         year = int(from_month[:4])
         print('year',year)
         month=int(from_month[5:])
-        
         # from_date = request.POST.get('from_date')
         # to_date = request.POST.get('to_date')
 
 
 
-        income_total = Income.objects.filter(user_id=request.user.id, date__year=year, date__month=month).aggregate(Sum('income'))
-        expenses_total = Expenses.objects.filter(user_id=request.user.id, date__year=year, date__month=month).aggregate(Sum('costs'))
+        income_total = Income.objects.filter(user_id=request.user.id,date__year=year, date__month=month).aggregate(Sum('income'))
+        expenses_total = Expenses.objects.filter(user_id=request.user.id,date__year=year, date__month=month).aggregate(Sum('costs'))
 
         if income_total['income__sum'] is None:
             income_total['income__sum'] = 0
@@ -94,11 +93,19 @@ def dashboard(request):
         else:
             savings = income_total['income__sum'] - expenses_total['costs__sum']
 
+        detail_dict={}
+        detail_dict['Expense']= expenses_total['costs__sum']
+        detail_dict['Income']= income_total['income__sum']
+        detail_dict['Savings']= savings
+        details_label=[key for key in detail_dict.keys()]
+        details_data=[value for value in detail_dict.values()]
 
         context = {
             'expenses': expenses_total['costs__sum'],
             'income': income_total['income__sum'],
             'savings': savings,
+            'details_label': json.dumps(details_label),
+            'details_data': json.dumps(details_data)
         }
         return render(request, 'account/dashboard.html', context)
 
@@ -118,12 +125,21 @@ def dashboard(request):
             savings = income['income__sum'] - expenses['costs__sum']
         
         
+        detail_dict={}
+        detail_dict['Expense']= expenses['costs__sum']
+        detail_dict['Income']= income['income__sum']
+        detail_dict['Savings']= savings
+        details_label=[key for key in detail_dict.keys()]
+        details_data=[value for value in detail_dict.values()]
+
         context = {
             'expenses': expenses['costs__sum'],
             'income': income['income__sum'],
             'savings': savings,
-            }
-        return render(request, 'account/dashboard.html',context)
+            'details_label': json.dumps(details_label),
+            'details_data': json.dumps(details_data)
+        }
+        return render(request, 'account/dashboard.html', context)
 
 @login_required(login_url='/auth/login/')
 def profile(request):
