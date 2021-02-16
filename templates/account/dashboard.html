@@ -50,55 +50,63 @@ body {
         </div>
     </nav>
  <div class="container pt-5">
-    <div class="jumbotron" style="background: rgba(133, 187, 101, 0.1); ">
-                <div class="container">
-                      <form class="form" method="POST">
+   <div class="row">
+     <div class="col col-md-6">
+      <div class="jumbotron" style="background: rgba(133, 187, 101, 0.1); ">
+        <div class="container">
+              <form class="form" method="POST">
+  
+                    {% csrf_token %}
+                    <label>From Month:</label>
+                    <input class="form-control input" type="text" name="from_month" placeholder="Select Month" id="from_month" onfocus="(this.type='month')" onblur="(this.type='text')" required>
+  
+                            <div class="container pt-3">
+                                <button type="submit" class="btn btn-primary" value="Show Data">SHOW DATA</button>
+  
+                            </div>
+                </form>  
+        </div>
+  
+        <div class="container pt-3">
+  
+            <fieldset>
+  
+                            <legend>
+                                Total Details:
+                            </legend>
+  
+                            <label>Income:</label>
+                                <input class="form-control" type="number" name="income" value="{{income}}" readonly>
+                            <label>Expenses:</label>
+                                <input class="form-control" type="number" name="expense" value="{{expenses}}" readonly>
+                            <label>Savings:</label>
+                                <input class="form-control" type="number" name="savings" value="{{savings}}" readonly>
+  
+                            <div class="container pt-3"><a href="{% url 'home' %}"><button class="btn btn-primary" value="Add Data">ADD DATA</button></a></div>
+  
+            </fieldset>
+  
+  
+  
+        </div>
+  
+  
+  
+  
+  
+  
+  </div>
+     </div>
+     <div class="col-md-6">
+      <div class="container">
+        <canvas id="details" width="50%" height="50%"></canvas>
+        </div>
+     </div>
+    
 
-                            {% csrf_token %}
-                            <label>From Month:</label>
-                            <input class="form-control input" type="text" name="from_month" placeholder="Select Month" id="from_month" onfocus="(this.type='month')" required>
-
-                                    <div class="container pt-3">
-                                        <button type="submit" class="btn btn-primary" value="Show Data">SHOW DATA</button>
-
-                                    </div>
-                        </form>
-
-                </div>
-
-                <div class="container pt-3">
-
-                    <fieldset>
-
-                                    <legend>
-                                        Total Details:
-                                    </legend>
-
-                                    <label>Income:</label>
-                                        <input class="form-control" type="number" name="income" value="{{income}}" readonly>
-                                    <label>Expenses:</label>
-                                        <input class="form-control" type="number" name="expense" value="{{expenses}}" readonly>
-                                    <label>Savings:</label>
-                                        <input class="form-control" type="number" name="savings" value="{{savings}}" readonly>
-
-                                    <div class="container pt-3"><a href="{% url 'home' %}"><button class="btn btn-primary" value="Add Data">ADD DATA</button></a></div>
-
-                    </fieldset>
-
-
-
-                </div>
-
-
-
-
-
-
-    </div>
-    <div class="container mt-2">
-      <canvas id="details" width="50%" height="50%">      </canvas>
-    </div>
- </div>
+</div>
+   </div>
+    
 
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -117,12 +125,12 @@ body {
                       label: 'Money Detail',
                       data:amount ,
                       backgroundColor: [
-                          'rgba(255, 99, 132, 0.2)',
-                          'rgba(54, 162, 235, 0.2)',
-                          'rgba(255, 206, 86, 0.2)',
-                          'rgba(75, 192, 192, 0.2)',
-                          'rgba(153, 102, 255, 0.2)',
-                          'rgba(255, 159, 64, 0.2)'
+                          'rgba(255, 99, 132, 0.5)',
+                          'rgba(54, 162, 235, 0.5)',
+                          'rgba(255, 206, 86, 0.5)',
+                          'rgba(75, 192, 192, 0.5)',
+                          'rgba(153, 102, 255, 0.5)',
+                          'rgba(255, 159, 64, 0.5)'
                       ],
                       borderColor: [
                           'rgba(255, 99, 132, 1)',
@@ -132,14 +140,23 @@ body {
                           'rgba(153, 102, 255, 1)',
                           'rgba(255, 159, 64, 1)'
                       ],
-                      borderWidth: 1
+                      borderWidth: 2
                   }]
               },
               options: {
                   title:{
+                    display:true,
+                    text:'Money Details'
+                  },
+                  legend:{
                       display:true,
                       text:'Money Detail',
+                      position:'bottom',
+                      
+                     
+
                   },
+                  
               },                
           });
   }
@@ -148,12 +165,7 @@ body {
   const getdetailChartData = () => {
       var sources = {{details_label|safe}};
           var amount = {{details_data|safe}}; 
-          console.log(amount)
-          console.log(sources)  
-          
-          
-                  renderdetailChart(amount,sources)
-              
+              renderdetailChart(amount,sources)              
           };
   
   document.onload = getdetailChartData(); 

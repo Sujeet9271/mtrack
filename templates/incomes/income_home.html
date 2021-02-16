@@ -11,7 +11,7 @@ ExpenseTracker| Income
 <div class="container pt-3">
     <div class="row">
         {% include 'partials/inc_sidebar.html' %}
-        <div class="col-md-8">
+        <div class="col-sm-8">
 
                 <div class="container pt-3">
 
@@ -54,10 +54,12 @@ ExpenseTracker| Income
                                </fieldset>
 
                      </div>
-
-                     <div class="container">
-                         <canvas id="incomeChart" width=50% height=50%></canvas>
-                     </div>
+                    <div class="container">
+                        <div class="container">
+                            <canvas id="incomeChart" ></canvas>
+                        </div>
+                    </div>
+                     
 
                 </div>
 
@@ -80,15 +82,15 @@ ExpenseTracker| Income
                 data: {
                     labels:sources,
                     datasets: [{
-                        label: 'Income BY Source',
+                        label: 'Income By Source',
                         data:amount ,
                         backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                            'rgba(255, 159, 64, 0.5)'
                         ],
                         borderColor: [
                             'rgba(255, 99, 132, 1)',
@@ -98,15 +100,23 @@ ExpenseTracker| Income
                             'rgba(153, 102, 255, 1)',
                             'rgba(255, 159, 64, 1)'
                         ],
-                        borderWidth: 1
+                        borderWidth: 2
                     }]
                 },
                 options: {
-                    title:{
-                        display:true,
-                        text:'Income By Source',
-                    },
-                },                
+                  title:{
+                    display:true,
+                    text:'Money Details'
+                  },
+                  legend:{
+                      display:true,
+                      text:'Money Detail',
+                      position:'right',
+                      align:'center'                    
+                  },
+                  responsive:true
+                  
+              },                
             });
     }
     
