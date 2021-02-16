@@ -3,7 +3,8 @@ from .models import Income
 from django.contrib.auth.decorators import login_required
 from .forms import IncomeForm
 from django.db.models import Sum
-import datetime
+from datetime import datetime
+import json
 
 
 @login_required(login_url='/auth/login/')
@@ -35,13 +36,38 @@ def incomes(request):
 
 @login_required(login_url='/auth/login/')
 def incomes_home(request):
-    x = datetime.datetime.now()
-    x = x.strftime("%W")  # to get current week
-    print(x)
+    today=datetime.now()
+    current_year=today.year
+    current_month=today.month
+    incomes = Income.objects.filter(user_id=request.user.id, date__year=current_year,date__month=current_month)
+    incomedata = {}
 
-    income = Income.objects.select_related().filter(user_id=request.user.id, date__week=x)
-    print(income)
-    return render(request, 'incomes/income_home.html',{'income':income})
+    def source_sum(source): 
+        inc = incomes.filter(source=source).aggregate(Sum('income'))       
+        return inc['income__sum']
+    
+    source_list=[]
+
+    for income in incomes:
+        source_list.append(income.source)       
+
+    source_list=list(set(source_list))
+        
+    for income in incomes:
+        for source in source_list:
+            incomedata[source]=source_sum(source)
+
+    sources=[source for source in incomedata.keys()]
+    amount=[amount for amount in incomedata.values()] 
+
+    context={
+        'income':incomes,
+        'month': today.strftime('%B'),
+        'sources':sources,
+        'amount':amount
+    }
+
+    return render(request, 'incomes/income_home.html',context)
 
 
 @login_required(login_url='/auth/login/')

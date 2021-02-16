@@ -5,123 +5,163 @@
 {% block 'css' %}
 
 
-    <style>
-            #myInput {
-              font-size: 16px;
-              padding: 12px 20px 12px 40px;
-              border: 1px solid #ddd;
-              margin-bottom: 12px;
-            }
-            .hiddenRow {
-                padding: 0 4px !important;
-                background-color: #eeeeee;
-                font-size: 20px;
-            }
-            .accordian-body span{
-                color:#a2a2a2 !important;
-            }
+<style type="text/css">
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        background: transparent;
+        bottom: 0;
+        color: transparent;
+        cursor: pointer;
+        height: auto;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: auto;
+    }
+</style>
+<style>
+    #myInput {
+      font-size: 16px;
+      padding: 12px 20px 12px 40px;
+      border: 1px solid #ddd;
+      margin-bottom: 12px;
+    }
+    #from_date {
+      font-size: 16px;
+      padding: 12px 20px 12px 40px;
+      border: 1px solid #ddd;
+      margin-bottom: 12px;
+    }
+    #to_date {
+      font-size: 16px;
+      padding: 12px 20px 12px 40px;
+      border: 1px solid #ddd;
+      margin-bottom: 12px;
+    }
+    .hiddenRow {
+        padding: 0 4px !important;
+        background-color: #eeeeee;
+        font-size: 20px;
+    }
+    .accordian-body span{
+        color:#a2a2a2 !important;
+    }
 
-    </style>
+</style>
 
 {% endblock %}
-
 {% block 'content' %}
-    <center><hr>
+<hr>
+    <form method="POST">
 
-            <form method="POST">
-                {% csrf_token %}
-        
-                <label>From:</label><input class="" type="date" name="from_date" id="from_date" required><br>
-                <label>To:</label><input class="" type="date" name="to_date" id="to_date" required><br>
+    {% csrf_token %}
+    <div class="container-fluid">
+        <div class="row">
+            
+                <div class="col-lg-2 col-md-4 pt-3">
+                    <input  type="text" class="form-control" name="from_date" id="from_date" placeholder="From Date" onfocus="(this.type='date')" required><br>
+                </div>
+    
+                <div class="col-lg-2 col-md-4 pt-3">
+                    <input  type="text" class="form-control" name="to_date" id="to_date" placeholder="To Date" onfocus="(this.type='date')" required><br>
+                </div>
                 
-                <button class="btn btn-primary btn-hover" type="submit" value="show">Show</button>
-            </form>
+                <div class="col-lg-2 col-md-4 pt-4">
+                     <button class="btn btn-primary btn-hover" type="submit" value="Show">Show</button>
+                </div>
+                <div class="col-lg-2 col-md-4 pt-3">
+                    <input type="text" id="myInput" onkeyup="function()" placeholder="Search Category,title,...">
+                    
+                </div>
+                
+        </div>
+    </div>
     
     
-    </hr></center>
-    
-    <div class="container pt-3">
-        <input type="text" id="myInput" onkeyup="function()" placeholder="Search by source,income...">
- 
- </div>
- <div class="container-fluid table-responsive pt-3">
- 
- 
- 
- 
-     <table class="table table-hover table-light">
-         <thead>
-           <th>Source</th>
-       <th>Income</th>
-     <th>Date</th>
-     <th>Action</th>
- 
-         </thead>
- 
- 
- <tbody id="income">
- 
-         {% for e in income %}
-                     <tr colspan="6" data-toggle="collapse" data-target="#{{e.id}}" class="accordion-toggle">
-                         <td>{{e.source}}</td>
-                         <td>{{e.income}}</td>
-                         <td>{{e.date}}</td>
-                         <td><a href="#" onclick="_edit('{% url 'inc_edit' e.id %}')">e</a>|<a href="#" onclick="_delete('{% url 'inc_delete' e.id %}')">d</a> </td>
-                     </tr>
-                     <tr class="p">
-                         <td colspan="6" class="hiddenRow">
-                             <div class="accordian-body collapse p-3" id="{{e.id}}">
-                                 <p>Date : <span>{{e.date}}</span> </p>
-                                 <p>Day : <span>{{e.date|date:'l'}}</span> </p>
-                                 <p>Source : <span>{{e.source}}</span> </p>
-                                 <p>Income : <span>{{e.income}}</span> </p>
- 
-                             </div>
-                         </td>
-                     </tr>
-      {% endfor %}
- 
- </tbody>
- 
- 
- 
- 
- </table>
- 
- </div>
- 
- <script>
- 
-      function _delete(url){
-      bootbox.confirm("Confirmation to delete?", function(result){
-         if(result){
-             window.location.href=url
-             }
-      });
-     }
-     function _edit(url){
-      bootbox.confirm("Confirmation to edit?", function(result){
-         if(result){
-             window.location.href=url
-             }
-      });
-     }
- 
-   document.getElementById("to_date").valueAsDate = new Date();
-     $('.accordion-toggle').click(function(){
-         $('.hiddenRow').hide();
-         $(this).next('tr').find('.hiddenRow').show();
-         });
- 
- </script>
- <script>
- $(document).ready(function(){
-   $("#myInput").on("keyup", function() {
-     var value = $(this).val().toLowerCase();
-     $("#income tr").filter(function() {
-       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+             
+        </form>
+        
+
+    </hr>
+
+<div class="container-fluid table-responsive pt-3">
+
+
+
+
+    <table class="table table-hover table-bordered table-light">
+        <thead>
+          <th>Source</th>
+      <th>Income</th>
+    <th>Date</th>
+    <th>Action</th>
+
+        </thead>
+
+
+<tbody id="income">
+
+        {% for e in income %}
+                    <tr colspan="6" data-toggle="collapse" data-target="#{{e.id}}" class="accordion-toggle">
+                        <td>{{e.source}}</td>
+                        <td>{{e.income}}</td>
+                        <td>{{e.date}}</td>
+                        <td><a href="#" onclick="_edit('{% url 'inc_edit' e.id %}')">e</a>|<a href="#" onclick="_delete('{% url 'inc_delete' e.id %}')">d</a> </td>
+                    </tr>
+                    <tr class="p">
+                        <td colspan="6" class="hiddenRow">
+                            <div class="accordian-body collapse p-3" id="{{e.id}}">
+                                <p>Date : <span>{{e.date}}</span> </p>
+                                <p>Day : <span>{{e.date|date:'l'}}</span> </p>
+                                <p>Source : <span>{{e.source}}</span> </p>
+                                <p>Income : <span>{{e.income}}</span> </p>
+
+                            </div>
+                        </td>
+                    </tr>
+     {% endfor %}
+
+</tbody>
+
+
+
+
+</table>
+
+</div>
+
+<script>
+
+     function _delete(url){
+     bootbox.confirm("Confirmation to delete?", function(result){
+        if(result){
+            window.location.href=url
+            }
      });
-   });
- });
- </script>
- {% endblock %}
+    }
+    function _edit(url){
+     bootbox.confirm("Confirmation to edit?", function(result){
+        if(result){
+            window.location.href=url
+            }
+     });
+    }
+
+  document.getElementById("to_date").valueAsDate = new Date();
+    $('.accordion-toggle').click(function(){
+        $('.hiddenRow').hide();
+        $(this).next('tr').find('.hiddenRow').show();
+        });
+
+</script>
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#income tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+{% endblock %}

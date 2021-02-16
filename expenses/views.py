@@ -3,7 +3,8 @@ from django.db.models import Sum
 from .models import Expenses, Category
 from django.contrib.auth.decorators import login_required
 from .forms import ExpensesForm
-import datetime
+from datetime import datetime
+import json
 
 
 
@@ -37,11 +38,30 @@ def expenses(request):  # Expenditure_detail page
 
 @login_required(login_url='/auth/login/')
 def expenses_home(request):
-    x = datetime.datetime.now()
-    x = x.strftime("%W") # to get current week
+    today=datetime.now()
+    current_month=today.month
+    current_year=today.year
+    expenses = Expenses.objects.filter(user_id=request.user.id, date__year=current_year,date__month=current_month)
+    data = {}
 
-    expense = Expenses.objects.select_related().filter(user_id=request.user.id, date__week=x)
-    return render(request, 'expenses/expenses_home.html', {'expense': expense})
+    def category_sum(category):
+        cost = expenses.filter(category__title=category).aggregate(Sum('costs'))          
+        return cost['costs__sum']
+
+    categories=[category.title for category in Category.objects.filter(user_id=request.user.id)]
+
+    for expense in expenses:
+        for category in categories:
+            data[category]=category_sum(category)
+
+
+    categories=[category for category in data.keys()]
+    amount=[amount for amount in data.values()] 
+
+    print(categories,amount)    
+
+
+    return render(request, 'expenses/expenses_home.html', {'expense': expenses,'month':today.strftime('%B'),'categories':json.dumps(categories),'amount': json.dumps(amount)})
 
 
 @login_required(login_url='/auth_user')

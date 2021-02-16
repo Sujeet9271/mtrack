@@ -5,24 +5,9 @@ ExpenseTracker| Income
 
 {% block 'css' %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    
-    <style>
-
-        .hiddenRow {
-            padding: 0 4px !important;
-            background-color: #eeeeee;
-            font-size: 20px;
-        }
-        .accordian-body span{
-            color:#a2a2a2 !important;
-        }
-
-</style>
 {% endblock %}
 
-
 {% block 'content' %}
-
 <div class="container pt-3">
     <div class="row">
         {% include 'partials/inc_sidebar.html' %}
@@ -34,40 +19,44 @@ ExpenseTracker| Income
 
                                <fieldset>
                                     <legend>This Week's Income:</legend>
-                                    {% if income %}
-                                    <table class="table table-hover">
-                                        <thead>
-                                                    <th>Source</th>
-                                                    <th>Income</th>
-                                                    <th>Date</th>
-                                        </thead>
+                                   {% if income %}
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                                <th>Source</th>
+                                                                <th>Income</th>
+                                                                <th>Date</th>
+                                                    </thead>
 
-                                        <tbody>
-                                                {% for e in income %}
-                                                    <tr colspan="6" data-toggle="collapse" data-target="#{{e.id}}" class="accordion-toggle">
-                                                        <td>{{e.source}}</td>
-                                                        <td>{{e.income}}</td>
-                                                        <td>{{e.date}}</td>
-                                                    </tr>
-                                                    <tr class="p">
-                                                        <td colspan="6" class="hiddenRow">
-                                                            <div class="accordian-body collapse p-3" id="{{e.id}}">
-                                                                <p>Date : <span>{{e.date}}</span>
-                                                                <p>Day : <span>{{e.date|date:'l'}}</span> </p>
-                                                                <p>Source : <span>{{e.source}}</span> </p>
-                                                                <p>Income : <span>{{e.income}}</span> </p>
+                                                    <tbody>
+                                                            {% for e in income %}
+                                                                <tr colspan="6" data-toggle="collapse" data-target="#{{e.id}}" class="accordion-toggle">
+                                                                    <td>{{e.source}}</td>
+                                                                    <td>{{e.income}}</td>
+                                                                    <td>{{e.date}}</td>
+                                                                </tr>
+                                                                <tr class="p">
+                                                                    <td colspan="6" class="hiddenRow">
+                                                                        <div class="accordian-body collapse p-3" id="{{e.id}}">
+                                                                            <p>Date : <span>{{e.date}}</span>
+                                                                            <p>Day : <span>{{e.date|date:'l'}}</span> </p>
+                                                                            <p>Source : <span>{{e.source}}</span> </p>
+                                                                            <p>Income : <span>{{e.income}}</span> </p>
 
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
-                                    {% else %}
-                                    No income this week
-                                    {% endif %}
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                   {% else %}
+                                   No income this week
+                                   {% endif %}
                                </fieldset>
 
+                     </div>
+
+                     <div class="container">
+                         <canvas id="incomeChart" width=50% height=50%></canvas>
                      </div>
 
                 </div>
@@ -75,16 +64,64 @@ ExpenseTracker| Income
         </div>
 
     </div>
+
 </div>
-
 <script>
-
-    $('.accordion-toggle').click(function(){
+        $('.accordion-toggle').click(function(){
         $('.hiddenRow').hide();
         $(this).next('tr').find('.hiddenRow').show();
         });
-
-</script>
+   </script>
+   <script>
+    const renderincomeChart=(amount,sources) => {
+            var ctx = document.getElementById('incomeChart').getContext('2d');
+            var incomeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels:sources,
+                    datasets: [{
+                        label: 'Income BY Source',
+                        data:amount ,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    title:{
+                        display:true,
+                        text:'Income By Source',
+                    },
+                },                
+            });
+    }
+    
+    
+    const getincomeChartData = () => {
+        var sources = {{sources|safe}};
+            var amount = {{amount|safe}};   
+            
+            
+                    renderincomeChart(amount,sources)
+                
+            };
+    
+    document.onload = getincomeChartData(); 
+    </script>
 
 
 {% endblock %}
