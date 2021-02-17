@@ -13,7 +13,12 @@ ExpenseTracker| Expenses
 {% block 'content' %}
 
 <div class="container pt-3">
-
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'expenses_home' %}">Expenses</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Expenses Home</li>
+        </ol>
+      </nav>
     <div class="row">
 
         {% include 'partials/sidebar.html' %}

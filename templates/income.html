@@ -37,11 +37,20 @@
 
 {% endblock %}
 {% block 'content' %}
-<hr>
+<div class="container pt-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'income_home' %}">Income</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Add Income </li>
+        </ol>
+      </nav>
+</div>
+
     <form method="POST">
 
     {% csrf_token %}
-    <div class="container-fluid">
+    <div class="container">
+
         <div class="row">
             
                 <div class="col-lg-2 col-md-4 pt-3">
@@ -68,9 +77,8 @@
         </form>
         
 
-    </hr>
 
-<div class="container-fluid table-responsive pt-3">
+<div class="container table-responsive pt-3">
 
 
 

@@ -6,6 +6,12 @@ ExpenseTracker| Expenses
 
 {% block 'content' %}
 <div class="container pt-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'income_home' %}">Income</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Edit Income </li>
+        </ol>
+      </nav>
     <div class="row">
         {% include 'partials/sidebar.html' %}
         <div class="col-md-8">

@@ -6,6 +6,13 @@ ExpenseTracker| Expenses
 
 {% block 'content' %}
 <div class="container pt-3">
+      
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'expenses_home' %}">Expenses</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Categories</li>
+        </ol>
+      </nav>
 
     <div class="row">
         {% include 'partials/sidebar.html' %}
@@ -51,7 +58,7 @@ ExpenseTracker| Expenses
 </div>
 <script>
     function _delete(url){
-     bootbox.confirm("Deleting the category will result in deleting all the values of this category. Confirmation to delete.", function(result){
+     bootbox.confirm("Deleting the category will result in deleting all the values of this category.\nConfirmation to delete.", function(result){
         if(result){
             window.location.href=url
             }
@@ -59,10 +66,11 @@ ExpenseTracker| Expenses
     }
 
     {% if msg %}                
-        alert('{{msg}}')
+        bootbox.dialog({message:'{{msg}}',closeButton:false});
     {% endif %}
     {% if errmsg %}
-        alert('{{errmsg}}')               
+        bootbox.alert('{{errmsg}}')               
     {% endif %}
+    
 </script>
 {% endblock %}
