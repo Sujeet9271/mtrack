@@ -3,4 +3,6 @@ from .models import Income
 
 # Register your models here.
 
-admin.site.register(Income)
+@admin.register(Income)
+class IncomeAdmin(admin.ModelAdmin):
+    list_display=['id','income','source','user_id','user']
