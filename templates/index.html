@@ -47,8 +47,8 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#85bb65; background: rgba(133, 187, 101, 0.75);">
-        <a class="navbar-brand" href="{% url 'dashboard' %}">ExpenseTracker</a>
+  <nav class="navbar sticky-top navbar-expand-lg navbar-light" style="background-color:#85bb65; background: rgba(133, 187, 101);">
+    <a class="navbar-brand" href="{% url 'dashboard' %}">ExpenseTracker</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -93,7 +93,7 @@
           </a>
 
           <a href="{% url 'expenses_home' %}" class="stretched-link">
-              <div class="card" style="background: rgba(133, 187, 101, 0.25);">
+              <div class="card" style="background: rgba(133, 187, 101, 0.25); margin-bottom: 20px;">
 
                                     <img src="{% static 'image/Expense.jpeg' %}" class="img-fluid" style="width: 100% \9;height: 75% \9;">
 
