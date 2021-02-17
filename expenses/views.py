@@ -19,7 +19,6 @@ def expenses(request):  # Expenditure_detail page
         search_expenses = Expenses.objects.select_related().filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
         total = Expenses.objects.select_related().filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('costs'))
 
-
         context = {
             'expenses': search_expenses,
             'total': total['costs__sum'],
@@ -56,10 +55,7 @@ def expenses_home(request):
 
 
     categories=[category for category in data.keys()]
-    amount=[amount for amount in data.values()] 
-
-    print(categories,amount)    
-
+    amount=[amount for amount in data.values()]    
 
     return render(request, 'expenses/expenses_home.html', {'expense': expenses,'month':today.strftime('%B'),'categories':json.dumps(categories),'amount': json.dumps(amount)})
 
@@ -101,7 +97,9 @@ def create(request):  # Adding Expense
         }
         return render(request, 'expenses/create.html', context)
     else:
-        form = ExpensesForm(request.user.id, request.POST)
+        user=request.user.id
+        expense=request.POST
+        form = ExpensesForm(user,expense)
         if form.is_valid():
             data = form.save(commit=False)
             data.user = request.user
@@ -122,14 +120,15 @@ def create(request):  # Adding Expense
 @login_required(login_url='/auth/login/')
 def edit(request, id):
     data = Expenses.objects.get(pk=id)
-    form = ExpensesForm(request.user.id, request.POST or None, instance=data)
-    if form.is_valid():
-        form.save()
-        context = {
-            'form': form,
-            'msg': 'Edited Successfully!!'
-        }
-        return render(request, 'expenses/edit.html', context)
+    form = ExpensesForm(request.user.id, instance=data)
+    if request.method=="POST":
+        form = ExpensesForm(request.user.id, request.POST or None, instance=data)
+        if form.is_valid():
+            form.save()
+            context = {
+                'msg': 'Edited Successfully!!'
+            }
+            return redirect('expenses_home')
     return render(request, 'expenses/edit.html',{'form':form})
 
 
@@ -150,8 +149,4 @@ def delete_category(request, id):
     return redirect('exp_category')
 
 
-@login_required(login_url='/auth/login/')
-def total_expense(request, id):
-    total = Expenses.objects.filter(user_id=request.user.id).aggregate(Sum('costs'))
-    context = {'total': total}
-    return render(request, 'expenses.html', context)
+

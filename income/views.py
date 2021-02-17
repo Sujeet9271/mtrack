@@ -121,8 +121,3 @@ def inc_delete(request, id):
         return redirect('incomes')
 
 
-@login_required(login_url='/auth/login/')
-def total_income(request, id):
-    total = Income.objects.filter(user_id=request.user.id).aggregate(Sum('income'))
-    context = {'total': total}
-    return render(request, 'income.html', context)

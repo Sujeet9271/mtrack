@@ -27,13 +27,15 @@ ExpenseTracker| Expenses
                         {{errmsg}}
                 </div>
                 {% endif %}
-
-                <form  method="post">
-                    {{form}}
-                    {% csrf_token %}
-                    <br>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </form>
+<div class="jumbotron" style="background: rgba(132, 187, 101, 0.1);">
+    <form  method="post">
+        {{form}}
+        {% csrf_token %}
+        <br>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+                
 
             </div>
 

@@ -141,6 +141,10 @@ ExpenseTracker| Expenses
 
         
         document.onload = getChartData();
+        
+        {% if msg %}
+                   alert('{{msg}}')
+        {% endif %}
          
         </script>
 
