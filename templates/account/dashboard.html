@@ -52,8 +52,8 @@ body {
  <div class="container pt-5">
    <div class="row">
      <div class="col col-md-6">
-      <div class="jumbotron" style="background: rgba(133, 187, 101, 0.1); ">
-        <div class="container">
+      <div class="card" style="background: rgba(133, 187, 101, 0.1); width: 500; height: 60vh; margin: 10px;">
+        <div class="container" style="margin-top:20px; margin-bottom: 20px;">
               <form class="form" method="POST">
   
                     {% csrf_token %}
@@ -67,7 +67,7 @@ body {
                 </form>  
         </div>
   
-        <div class="container pt-3">
+        <div class="container">
   
             <fieldset>
   
@@ -88,20 +88,16 @@ body {
   
   
   
-        </div>
-  
-  
-  
-  
-  
-  
-  </div>
+        </div> 
+      </div>
      </div>
-     <div class="col-md-6">
-      <div class="container">
-        <canvas id="details" width="50%" height="50%"></canvas>
-        </div>
-     </div>
+      <div class="col-md-6">
+        <div class="card" style="width: 500; height: 60vh; margin-top: 10px;">
+          
+            <canvas id="details"></canvas>
+          
+          </div>
+      </div>
     
 
 </div>
@@ -152,10 +148,12 @@ body {
                       display:true,
                       text:'Money Detail',
                       position:'bottom',
-                      
+                      align:'center'                     
                      
 
                   },
+                  responsive:true,
+                  maintainAspectRatio:false
                   
               },                
           });

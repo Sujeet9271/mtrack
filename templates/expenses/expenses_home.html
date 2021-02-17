@@ -22,7 +22,7 @@ ExpenseTracker| Expenses
 
                 <div class="container pt-3">
 
-                      <div class="jumbotron">
+                      <div class="jumbotron" style="background: rgba(133, 187, 101, 0.1);">
 
                                <fieldset>
                                     <legend>Expenses in the month of {{month}}</legend>
@@ -61,8 +61,8 @@ ExpenseTracker| Expenses
                                </fieldset>
 
                      </div>
-                <div class="container">
-                    <canvas id="myChart" width="50%" height="50%"></canvas>
+                <div class="card" style="width: 500; height: 50vh;">
+                    <canvas id="myChart"></canvas>
                 </div>
                 </div>
 
@@ -116,11 +116,13 @@ ExpenseTracker| Expenses
                   legend:{
                       display:true,
                       text:'Money Detail',
-                      position:'right',
+                      position:'bottom',
                       align:'center'
                      
 
                   },
+                  responsive:true,
+                  maintainAspectRatio:false
                   
               },                
                 });

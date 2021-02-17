@@ -15,7 +15,7 @@ ExpenseTracker| Income
 
                 <div class="container pt-3">
 
-                     <div class="jumbotron">
+                     <div class="jumbotron" style="background: rgba(133, 187, 101, 0.1);">
 
                                <fieldset>
                                     <legend>Income in the month of {{month}}</legend>
@@ -54,10 +54,10 @@ ExpenseTracker| Income
                                </fieldset>
 
                      </div>
-                    <div class="container">
-                        <div class="container">
+                    <div class="card" style="width: 500; height: 50vh;">
+                        
                             <canvas id="incomeChart" ></canvas>
-                        </div>
+                       
                     </div>
                      
 
@@ -111,10 +111,11 @@ ExpenseTracker| Income
                   legend:{
                       display:true,
                       text:'Money Detail',
-                      position:'right',
+                      position:'bottom',
                       align:'center'                    
                   },
-                  responsive:true
+                  responsive:true,
+                  maintainAspectRatio:false
                   
               },                
             });
