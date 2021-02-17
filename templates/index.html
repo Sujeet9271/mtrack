@@ -26,19 +26,10 @@
   grid-gap: 4rem;
 }
 
-
-/* Screen larger than 600px? 2 column */
-@media (min-width: 600px) {
+@media (min-width: 550px) {
   .cards { grid-template-columns: repeat(2, 1fr); }
 }
 
-
-
-
-/* Screen larger than 600px? 2 column */
-@media (min-width: 600px) {
-  .cards { grid-template-columns: repeat(2, 1fr); }
-}
 
 
     </style>
@@ -80,37 +71,30 @@
 
 
     <div class="container-fluid pt-5" >
+
       <div class="cards" >
+
           <a href="{% url 'income_home' %}" class="stretched-link">
             <div class="card" style="background: rgba(133, 187, 101, 0.25); ">
-              <img src="{% static 'image/income.jpeg' %}" class="img-fluid" style="width: 100% \9; height: 75% \9;">
+              <img src="{% static 'image/income.jpeg' %}" class="img-fluid" style="width: 100% \9; height: 75% \9; margin: 10px;">
               <div class="card-body">
                   <h4 class="card-title">Income</h4>
               </div>
-
           </div>
-
           </a>
 
           <a href="{% url 'expenses_home' %}" class="stretched-link">
               <div class="card" style="background: rgba(133, 187, 101, 0.25); margin-bottom: 20px;">
-
-                                    <img src="{% static 'image/Expense.jpeg' %}" class="img-fluid" style="width: 100% \9;height: 75% \9;">
-
-                                    <div class="card-body">
-                                        <h4 class="card-title">Expenses</h4>
-                                    </div>
-
+                <img src="{% static 'image/Expense.jpeg' %}" class="img-fluid" style="width: 100% \9;height: 75% \9; margin: 10px;">
+                <div class="card-body">
+                  <h4 class="card-title">Expenses</h4>
+                </div>
               </div>
           </a>
 
-
-
-
-
       </div>
 
-</div>
+    </div>
 
 
 

@@ -10,21 +10,9 @@ ExpenseTracker| Expenses
     <div class="row">
         {% include 'partials/sidebar.html' %}
         <div class="col-md-8">
-            <div class="card-body">
-                {% if msg %}
-                <div class="alert alert-success">
-                    {{msg}}
-                </div>
-            {% endif %}
-            {% if errmsg %}
-                <div class="alert alert-danger">
-                    {{errmsg}}
-                </div>
-            {% endif %}
-            </div>
-           
-            <div class="card" style="margin-top:10px;">
-                <div class="card-body">
+            
+            <div class="card card-body"style="background: rgba(133, 187, 101, 0.1); margin-bottom:20px;">
+                
                     <form method="post" action="{%  url 'exp_category' %}">
                         <label>Category Name</label>
                         <input type="text" name="title" class="form-control" placeholder="Category Title">
@@ -33,10 +21,11 @@ ExpenseTracker| Expenses
                         <button type="submit" class="btn btn-primary">Save</button>
     
                     </form>
-                </div>
+               
                 
             </div>
-<div class="card" style="background: rgba(133, 187, 101, 0.1); margin-top: 20px;">
+            
+<div class="jumbotron" style="background: rgba(133, 187, 101, 0.1);">
     <table class="table table-hover">
 
         <th>Category</th>
@@ -68,5 +57,12 @@ ExpenseTracker| Expenses
             }
      });
     }
+
+    {% if msg %}                
+        alert('{{msg}}')
+    {% endif %}
+    {% if errmsg %}
+        alert('{{errmsg}}')               
+    {% endif %}
 </script>
 {% endblock %}
