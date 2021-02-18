@@ -6,54 +6,64 @@ from django.contrib.auth.decorators import login_required
 from .forms import ExpensesForm
 from datetime import datetime
 import json
+from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
 
 
 
 
 @login_required(login_url='/auth/login/')
 def expenses(request):  # Expenditure_detail page
-    from_date=request.GET.get('from_date')
-    
+    from_date=request.GET.get('from_date')    
     to_date=request.GET.get('to_date')
-    
+
+    def pages(expenses):
+        page = request.GET.get('page', 1)
+        paginator = Paginator(expenses, 10)
+        try:
+            expense = paginator.page(page)
+        except PageNotAnInteger:
+            expense = paginator.page(1)
+        except EmptyPage:
+            expense = paginator.page(paginator.num_pages)
+        return expense    
 
     if from_date is None or to_date is None:
         expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('timestamp')
-        total = Expenses.objects.select_related('user').filter(user_id=request.user.id).aggregate(Sum('costs'))
+        expense=pages(expenses)      
+
         context = {
-        'expenses': expenses,'total':total['costs__sum']                     
-        }           
+            'expenses': expense                     
+            }           
     else:
         if from_date=='' and to_date=='':
             expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('timestamp')
-            total = Expenses.objects.select_related('user').filter(user_id=request.user.id).aggregate(Sum('costs'))
+            expense=pages(expenses)
             context = {
-            'expenses': expenses,'total':total['costs__sum']                     
+            'expenses': expense                    
             }
         elif from_date=='' or to_date=='':
             if to_date=='':
                 expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('date')
-                total=Expenses.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).aggregate(Sum('costs'))
+                expense=pages(expenses)
                 context = {
                     'expenses': expenses,
-                    'from_date':from_date,'total':total['costs__sum']                    
+                    'from_date':from_date                   
                 }
             elif from_date=='':                
                 expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date)
-                total=Expenses.objects.select_related('user').filter(user_id=request.user.id, date__lte=to_date).aggregate(Sum('costs'))
+                expense=pages(expenses)  
                 context = {
                     'expenses': expenses,
-                    ' total':total['costs__sum'] ,
+                    
                     'from_date':from_date,
                     'to_date':to_date                    
                 }
                     
         else:
             expenses =  Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
-            total = Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('costs'))
+            expense=pages(expenses)
             context={
-                'expenses':expenses,
-                'total':total['costs__sum'],
+                'expenses':expense,
                 'from_date':from_date,
                 'to_date':to_date
             }

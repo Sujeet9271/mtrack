@@ -5,6 +5,7 @@ from .forms import IncomeForm
 from django.db.models import Sum
 from datetime import datetime
 import json
+from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
 
 # @login_required(login_url='/auth/login/')
@@ -27,48 +28,57 @@ import json
 
 @login_required(login_url='/auth/login/')
 def incomes(request):  # Expenditure_detail page
-    from_date=request.GET.get('from_date')
-    
+    from_date=request.GET.get('from_date')    
     to_date=request.GET.get('to_date')
-    
+
+    def pages(incomes):
+        page = request.GET.get('page', 1)
+        paginator = Paginator(incomes, 10)
+        try:
+            income = paginator.page(page)
+        except PageNotAnInteger:
+            income = paginator.page(1)
+        except EmptyPage:
+            income = paginator.page(paginator.num_pages)
+        return income    
 
     if from_date is None or to_date is None:
-        income = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('timestamp')
-        total = Income.objects.select_related('user').filter(user_id=request.user.id).aggregate(Sum('income'))
+        incomes = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('timestamp')
+        income=pages(incomes)      
+
         context = {
-        'income': income,' total':total['income__sum']                     
-        }           
+            'incomes': income                     
+            }           
     else:
         if from_date=='' and to_date=='':
-            income = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('timestamp')
-            total = Income.objects.select_related('user').filter(user_id=request.user.id).aggregate(Sum('income'))
+            incomes = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('timestamp')
+            income=pages(incomes)
             context = {
-            'income': income,'total':total['income__sum']                     
+            'incomes': income                    
             }
         elif from_date=='' or to_date=='':
             if to_date=='':
-                income = Income.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('date')
-                total=Income.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).aggregate(Sum('income'))
+                incomes = Income.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('date')
+                income=pages(incomes)
                 context = {
-                    'income': income,
-                    'from_date':from_date,'total':total['income__sum']                    
+                    'incomes': incomes,
+                    'from_date':from_date                   
                 }
             elif from_date=='':                
-                income = Income.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date)
-                total=Income.objects.select_related('user').filter(user_id=request.user.id, date__lte=to_date).aggregate(Sum('income'))
+                incomes = Income.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date)
+                income=pages(incomes)  
                 context = {
-                    'income': income,
-                    ' total':total['income__sum'] ,
+                    'incomes': incomes,
+                    
                     'from_date':from_date,
                     'to_date':to_date                    
                 }
                     
         else:
-            income =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
-            total = Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('income'))
+            incomes =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
+            income=pages(incomes)
             context={
-                'income':income,
-                'total':total['income__sum'],
+                'incomes':income,
                 'from_date':from_date,
                 'to_date':to_date
             }
