@@ -13,14 +13,14 @@ from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 #     if request.method == "POST":
 #         from_date = request.POST.get('from_date')
 #         to_date = request.POST.get('to_date')
-#         search_incomes = Income.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
+#         search_incomes = Income.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
 
 #         context = {
 #             'income': search_incomes
 #         }
 #         return render(request, 'income.html', context)
 #     else:
-#         income = Income.objects.filter(user_id=request.user.id).order_by('date')
+#         income = Income.objects.filter(user_id=request.user.id).order_by('-date')
 #         context = {
 #             'income': income,
 #         }
@@ -43,7 +43,7 @@ def incomes(request):  # Expenditure_detail page
         return income    
 
     if from_date is None or to_date is None:
-        incomes = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('timestamp')
+        incomes = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
         income=pages(incomes)      
 
         context = {
@@ -51,14 +51,14 @@ def incomes(request):  # Expenditure_detail page
             }           
     else:
         if from_date=='' and to_date=='':
-            incomes = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('timestamp')
+            incomes = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
             income=pages(incomes)
             context = {
             'incomes': income                    
             }
         elif from_date=='' or to_date=='':
             if to_date=='':
-                incomes = Income.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('date')
+                incomes = Income.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('-date')
                 income=pages(incomes)
                 context = {
                     'incomes': incomes,
@@ -75,7 +75,7 @@ def incomes(request):  # Expenditure_detail page
                 }
                     
         else:
-            incomes =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
+            incomes =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
             income=pages(incomes)
             context={
                 'incomes':income,
@@ -91,7 +91,7 @@ def incomes_home(request):
     today=datetime.now()
     current_year=today.year
     current_month=today.month
-    incomes = Income.objects.filter(user_id=request.user.id, date__year=current_year,date__month=current_month)
+    incomes = Income.objects.filter(user_id=request.user.id, date__year=current_year,date__month=current_month).order_by('-date')
     incomedata = {}
 
     def source_sum(source): 

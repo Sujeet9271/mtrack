@@ -76,11 +76,14 @@ Expense Summary
                 <div class="card" style="margin-bottom: 20px;">
 
                     <div class="row">
-                        <div class="col-sm-4"><input type="text" name="from_date" id="from_date" placeholder="From Date" onfocus="(this.type='date')" onblur="(this.type='text')" onChange="datefilter.submit();" value="{{from_date}}" style="margin-top:20px;margin-left: 2vw;" ><br></div>
-                        <div class="col-sm-4"><input type="text" name="to_date" id="to_date" placeholder="To Date" onfocus="(this.type='date')" onblur="(this.type='text')" onChange="datefilter.submit();" value="{{to_date}}" style="margin-top:20px;margin-left: 2vw;" ><br></div>
-                        <div class="col-sm-4"><input type="text" id="myInput" placeholder=" Search Category,title,..." onkeyup="searchTable()" style="margin-top:20px; margin-left: 2vw;" ></div>
+                        <div class="col-sm-3"><input type="text" name="from_date" id="from_date" placeholder="From Date" onfocus="(this.type='date')" onblur="(this.type='text')" onChange="datefilter.submit();" value="{{from_date}}" style="margin-top:20px;margin-left: 2vw;" ><br></div>
+                        <div class="col-sm-3"><input type="text" name="to_date" id="to_date" placeholder="To Date" onfocus="(this.type='date')" onblur="(this.type='text')" onChange="datefilter.submit();" value="{{to_date}}" style="margin-top:20px;margin-left: 2vw;" ><br></div>
+                        <div class="col-sm-3"><input type="text" id="myInput" placeholder=" Search Category,title,..." onkeyup="searchTable()" style="margin-top:20px; margin-left: 2vw;" ></div>
                         <div class="col-sm-1"><input type="button"class="btn" value="Clear" id="clear" onclick="cleardate()" style=" margin-top: 25px; margin-bottom: 20px; margin-left: 2vw;"></div>
-                    </div>
+                        <div class="col-sm-2"><div class="dropdown">
+
+                        </div></div>
+                      </div>
                     
                     
                 </div>
@@ -98,6 +101,28 @@ Expense Summary
 
     
     <div class="table-responsive">
+      
+      <div class="btn-group dropright">
+        <a href="{% url 'expenses' %}">
+        <button type="button" class="btn btn-secondary">
+          All
+        </button></a>
+        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span class="sr-only">Toggle Dropright</span>
+        </button>
+        
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="?no=5">5</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="?no=10">10</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="?no=15">15</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="?no=20">20</a>
+          </div>        
+      </div>
+        
+      
     <table class="table table-hover table-bordered table-light" name="expensetable">
         <thead>
         <th>Category</th>
@@ -137,54 +162,37 @@ Expense Summary
             <th colspan="3">Total(in Rs.)</th><td colspan="2" id="total"></td>
         </tfoot>
     </table>
-    {% if expenses.has_other_pages %}
+    <!-- {% if expenses.has_other_pages %} -->
     <nav aria-label="Page navigation example">
       <ul class="pagination">
+
         {% if expenses.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page={{ expenses.previous_page_number }}">Previous</a></li>
-        {% else %}
-      <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-    {% endif %}
+            <li class="page-item"><a class="page-link" href="?page={{ expenses.previous_page_number }}">Previous</a></li>
+          {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+        {% endif %}
 
         {% for i in expenses.paginator.page_range %}
+
             {% if expenses.number == i %}
             <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-            <!-- <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li> -->
-            {% else %}
-        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-        {% endif %}
+             {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            
         {% endfor %}
+
         {% if expenses.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ expenses.next_page_number }}">Next</a></li>
-        {% else %}
-        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ expenses.next_page_number }}">Next</a></li>
+          {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
         {% endif %}
+
       </ul>
     </nav>
-    {% endif %}
+    <!-- {% endif %} -->
 
-
-    <!-- {% if expenses.has_other_pages %}
-  <ul class="pagination">
-    {% if expenses.has_previous %}
-      <li><a href="?page={{ expenses.previous_page_number }}">&laquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&laquo;</span></li>
-    {% endif %}
-    {% for i in expenses.paginator.page_range %}
-      {% if expenses.number == i %}
-        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-      {% else %}
-        <li><a href="?page={{ i }}">{{ i }}</a></li>
-      {% endif %}
-    {% endfor %}
-    {% if expenses.has_next %}
-      <li><a href="?page={{ expenses.next_page_number }}">&raquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&raquo;</span></li>
-    {% endif %}
-  </ul>
-{% endif %} -->
+    
   </div>
     
     

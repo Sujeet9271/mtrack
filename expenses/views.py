@@ -28,7 +28,7 @@ def expenses(request):  # Expenditure_detail page
         return expense    
 
     if from_date is None or to_date is None:
-        expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('timestamp')
+        expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('-date') 
         expense=pages(expenses)      
 
         context = {
@@ -36,21 +36,21 @@ def expenses(request):  # Expenditure_detail page
             }           
     else:
         if from_date=='' and to_date=='':
-            expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('timestamp')
+            expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
             expense=pages(expenses)
             context = {
             'expenses': expense                    
             }
         elif from_date=='' or to_date=='':
             if to_date=='':
-                expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('date')
+                expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('-date')
                 expense=pages(expenses)
                 context = {
                     'expenses': expenses,
                     'from_date':from_date                   
                 }
             elif from_date=='':                
-                expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date)
+                expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date).order_by('-date')
                 expense=pages(expenses)  
                 context = {
                     'expenses': expenses,
@@ -60,7 +60,7 @@ def expenses(request):  # Expenditure_detail page
                 }
                     
         else:
-            expenses =  Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
+            expenses =  Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
             expense=pages(expenses)
             context={
                 'expenses':expense,
@@ -76,7 +76,7 @@ def expenses_home(request):
     today=datetime.now()
     current_month=today.month
     current_year=today.year
-    expenses = Expenses.objects.filter(user_id=request.user.id, date__year=current_year,date__month=current_month).order_by('timestamp')
+    expenses = Expenses.objects.filter(user_id=request.user.id, date__year=current_year,date__month=current_month).order_by('-date')
     data = {}
 
     def category_sum(category):
