@@ -157,11 +157,6 @@ Income
                 }
          });
         }
-        // for date
-        // var x = new Date();        
-        // x.setMonth(x.getMonth()-1);
-        // document.getElementById("to_date").valueAsDate = new Date();
-        // document.getElementById("from_date").valueAsDate = x;
 
         $('.accordion-toggle').click(function(){
         $('.hiddenRow').hide();
@@ -183,16 +178,26 @@ Income
   //       document.getElementById('total').innerHTML = TotalValue;
 
   //       });
-    for search
-        $(document).ready(function search(){
-        $("#myInput").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $("#income tr").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
+    // for search
+//         $(document).ready(function search(){
+//         $("#myInput").on("keyup", function() {
+//             var value = $(this).val().toLowerCase();
+//             $("#income tr").filter(function() {
+//             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+//             });
+//         });
 //         $(function() {
 
+// var TotalValue = 0;
+// $("tr #amount").each(function(index,value){
+//   currentRow = parseFloat($(this).text());
+//   TotalValue += currentRow
+// });
+
+// document.getElementById('total').innerHTML = TotalValue;
+
+// });
+//         });
 
 
   function searchTable() {
@@ -216,7 +221,7 @@ Income
     }
   }
   var cls = document.getElementById("incomebody").getElementsByTagName("td");
-  var sum = parseFloat('0.0');
+  var sum = 0;
   for (var i = 0; i < cls.length; i++) {
     // Here you check if it's a countable class and the parent tr's style is a visible tr
     if (cls[i].className == "amount" && cls[i].closest("tr").style.display != "none") {
