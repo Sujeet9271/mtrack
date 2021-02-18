@@ -53,16 +53,13 @@
      <div class="col col-md-6">
       <div class="card" style="background: rgba(133, 187, 101, 0.1); width: 500; height: 60vh; margin: 10px;">
         <div class="container" style="margin-top:20px; margin-bottom: 20px;">
-              <form class="form" method="POST">
+              <form class="form" name="datefilter" method="POST">
   
                     {% csrf_token %}
                     <label>From Month:</label>
-                    <input class="form-control input" type="text" name="from_month" placeholder="Select Month" id="from_month" onfocus="(this.type='month')" onblur="(this.type='text')" required>
+                    <input class="form-control input" type="text" name="from_month" placeholder="Select Month" id="from_month" onfocus="(this.type='month')" onblur="(this.type='text')" value="{{month}}" onChange="datefilter.submit();" required>
   
-                            <div class="container pt-3">
-                                <button type="submit" class="btn btn-primary" value="Show Data">SHOW DATA</button>
-  
-                            </div>
+                            
                 </form>  
         </div>
   
@@ -166,6 +163,17 @@
           };
   
   document.onload = getdetailChartData(); 
+  </script>
+  <script>
+    function myFunction() {
+  var x = document.getElementById("from_month");
+
+  if (x.hasAttribute("placeholder")) {
+    x.setAttribute("placeholder", "{{month}}");
+  }
+}
+console.log('{{month}}')
+console.log('testing')
   </script>
 
 

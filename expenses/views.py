@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.db.models import Sum
+from django.contrib import messages
 from .models import Expenses, Category
 from django.contrib.auth.decorators import login_required
 from .forms import ExpensesForm
@@ -11,28 +12,53 @@ import json
 
 @login_required(login_url='/auth/login/')
 def expenses(request):  # Expenditure_detail page
-    if request.method == "POST":
-        from_date = request.POST.get('from_date')
-        to_date = request.POST.get('to_date')
+    from_date=request.GET.get('from_date')
+    
+    to_date=request.GET.get('to_date')
+    
 
-        # search_expenses=Expenses.objects.raw('select id,title,costs,description,date from expenses_expenses where date between "'+from_date+'" and "'+to_date+'" order by"'+from_date+ '"')
-        search_expenses = Expenses.objects.select_related().filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
-        total = Expenses.objects.select_related().filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('costs'))
-
+    if from_date is None or to_date is None:
+        expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('timestamp')
+        total = Expenses.objects.select_related('user').filter(user_id=request.user.id).aggregate(Sum('costs'))
         context = {
-            'expenses': search_expenses,
-            'total': total['costs__sum'],
-        }
-        return render(request, 'expenses.html', context)
+        'expenses': expenses,'total':total['costs__sum']                     
+        }           
     else:
-        expenses = Expenses.objects.select_related().filter(user_id=request.user.id).order_by('date')
-        total = Expenses.objects.select_related().filter(user_id=request.user.id).aggregate(Sum('costs'))
-        # Select * from Expenses
-        context = {
-            'expenses': expenses,
-            'total': total['costs__sum'],
-        }
-        return render(request, 'expenses.html', context)
+        if from_date=='' and to_date=='':
+            expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('timestamp')
+            total = Expenses.objects.select_related('user').filter(user_id=request.user.id).aggregate(Sum('costs'))
+            context = {
+            'expenses': expenses,'total':total['costs__sum']                     
+            }
+        elif from_date=='' or to_date=='':
+            if to_date=='':
+                expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('date')
+                total=Expenses.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).aggregate(Sum('costs'))
+                context = {
+                    'expenses': expenses,
+                    'from_date':from_date,'total':total['costs__sum']                    
+                }
+            elif from_date=='':                
+                expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date)
+                total=Expenses.objects.select_related('user').filter(user_id=request.user.id, date__lte=to_date).aggregate(Sum('costs'))
+                context = {
+                    'expenses': expenses,
+                    ' total':total['costs__sum'] ,
+                    'from_date':from_date,
+                    'to_date':to_date                    
+                }
+                    
+        else:
+            expenses =  Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
+            total = Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('costs'))
+            context={
+                'expenses':expenses,
+                'total':total['costs__sum'],
+                'from_date':from_date,
+                'to_date':to_date
+            }
+    
+    return render(request, 'expenses.html', context)
 
 
 @login_required(login_url='/auth/login/')
@@ -40,7 +66,7 @@ def expenses_home(request):
     today=datetime.now()
     current_month=today.month
     current_year=today.year
-    expenses = Expenses.objects.filter(user_id=request.user.id, date__year=current_year,date__month=current_month)
+    expenses = Expenses.objects.filter(user_id=request.user.id, date__year=current_year,date__month=current_month).order_by('timestamp')
     data = {}
 
     def category_sum(category):
@@ -104,11 +130,8 @@ def create(request):  # Adding Expense
             data = form.save(commit=False)
             data.user = request.user
             data.save()
-            context = {
-                'msg': 'Added Successfully',
-                'form': ExpensesForm(request.user.id),
-            }
-            return render(request, 'expenses/create.html', context)
+            messages.success(request,'Added Successfully!!')
+            return redirect('expenses_home')
         else:
             context = {
                 'errmsg': 'Could not Add',
@@ -125,9 +148,7 @@ def edit(request, id):
         form = ExpensesForm(request.user.id, request.POST or None, instance=data)
         if form.is_valid():
             form.save()
-            context = {
-                'msg': 'Edited Successfully!!'
-            }
+            messages.success(request,'Edited Sucessfully!!')            
             return redirect('expenses_home')
     return render(request, 'expenses/edit.html',{'form':form})
 

@@ -8,7 +8,7 @@ class DateInput(forms.DateInput):
 
 class ExpensesForm(ModelForm):
     title = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Title'}))
-    costs = forms.FloatField(widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Costs'}))
+    costs = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Costs'}))
     description = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Description'}))
     date = forms.DateField(widget=forms.widgets.DateInput(attrs={'class':'form-control', "type": "date"}))
 
@@ -20,3 +20,9 @@ class ExpensesForm(ModelForm):
     class Meta:
         model = Expenses
         fields = ['title', 'costs', 'description', 'date', 'category']
+
+class FilterForm(forms.Form):
+    from_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'id':'from_month','class':'form-control', "type": "text",'placeholder':'From Date',"onfocus":"(this.type='date')","onblur":"(this.type='text')","onChange":"datefilter.submit();",'value':''}))
+    to_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'id':'to_month','class':'form-control', "type": "text", 'placeholder': 'To Date',"onfocus": "(this.type='date')","onblur":"(this.type='text')","onChange":"datefilter.submit();",'value':''}))
+
+

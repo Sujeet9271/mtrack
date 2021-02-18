@@ -12,7 +12,7 @@ class Category(models.Model):
 
 class Expenses(models.Model):
     title = models.CharField(max_length=30,)
-    costs = models.FloatField(verbose_name='total cost',default=0)
+    costs = models.IntegerField(verbose_name='total cost',default=0)
     description = models.TextField(null=True, blank=True, )
     date = models.DateField(auto_now_add=False, auto_now=False, blank=True, null=True)
     timestamp = models.DateField(auto_now_add=True, auto_now=False, blank=True)
@@ -22,3 +22,4 @@ class Expenses(models.Model):
 
     def __str__(self):
         return self.title
+

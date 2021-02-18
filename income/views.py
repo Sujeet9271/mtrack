@@ -7,31 +7,73 @@ from datetime import datetime
 import json
 
 
+# @login_required(login_url='/auth/login/')
+# def incomes(request):
+#     if request.method == "POST":
+#         from_date = request.POST.get('from_date')
+#         to_date = request.POST.get('to_date')
+#         search_incomes = Income.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
+
+#         context = {
+#             'income': search_incomes
+#         }
+#         return render(request, 'income.html', context)
+#     else:
+#         income = Income.objects.filter(user_id=request.user.id).order_by('date')
+#         context = {
+#             'income': income,
+#         }
+#         return render(request, 'income.html', context)
+
 @login_required(login_url='/auth/login/')
-def incomes(request):
-    if request.method == "POST":
+def incomes(request):  # Expenditure_detail page
+    from_date=request.GET.get('from_date')
+    
+    to_date=request.GET.get('to_date')
+    
 
-        from_date = request.POST.get('from_date')
-        to_date = request.POST.get('to_date')
-        search_incomes = Income.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
-
-
-        # month=str(request.POST.get('month'))    #to extract month, month[5:]
-        # search_incomes_bymonth = Income.objects.filter(user_id=request.user.id, date__month=month[5:]).order_by('date')
-
+    if from_date is None or to_date is None:
+        income = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('timestamp')
+        total = Income.objects.select_related('user').filter(user_id=request.user.id).aggregate(Sum('income'))
         context = {
-            'income': search_incomes,
-
-            # 'income_month': search_incomes_bymonth,
-        }
-        return render(request, 'income.html', context)
+        'income': income,' total':total['income__sum']                     
+        }           
     else:
-        income = Income.objects.filter(user_id=request.user.id).order_by('date') # Select * from income_income
-
-        context = {
-            'income': income,
-        }
-        return render(request, 'income.html', context)
+        if from_date=='' and to_date=='':
+            income = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('timestamp')
+            total = Income.objects.select_related('user').filter(user_id=request.user.id).aggregate(Sum('income'))
+            context = {
+            'income': income,'total':total['income__sum']                     
+            }
+        elif from_date=='' or to_date=='':
+            if to_date=='':
+                income = Income.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('date')
+                total=Income.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).aggregate(Sum('income'))
+                context = {
+                    'income': income,
+                    'from_date':from_date,'total':total['income__sum']                    
+                }
+            elif from_date=='':                
+                income = Income.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date)
+                total=Income.objects.select_related('user').filter(user_id=request.user.id, date__lte=to_date).aggregate(Sum('income'))
+                context = {
+                    'income': income,
+                    ' total':total['income__sum'] ,
+                    'from_date':from_date,
+                    'to_date':to_date                    
+                }
+                    
+        else:
+            income =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
+            total = Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).aggregate(Sum('income'))
+            context={
+                'income':income,
+                'total':total['income__sum'],
+                'from_date':from_date,
+                'to_date':to_date
+            }
+    
+    return render(request, 'income.html', context)
 
 
 @login_required(login_url='/auth/login/')

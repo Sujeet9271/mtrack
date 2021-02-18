@@ -5,7 +5,7 @@ from django import forms
 
 class IncomeForm(ModelForm):
     source = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Source'}))
-    income = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Income'}))
+    income = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Income'}))
     date = forms.DateField(widget=forms.widgets.DateInput(attrs={'class':'form-control', "type": "date"}))
 
     def __init__(self, user, *args, **kwargs):

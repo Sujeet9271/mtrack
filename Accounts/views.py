@@ -7,7 +7,7 @@ from django.db.models import Sum
 from expenses.models import Expenses
 from income.models import Income
 from .forms import ProfileForm,UserForm
-import json
+import json,datetime
 
 
 
@@ -70,11 +70,11 @@ def _logout(request):
 @login_required(login_url='/auth/login/')
 def dashboard(request):
     if request.method == "POST":
-
         from_month = request.POST.get('from_month')
         year = int(from_month[:4])
-        print('year',year)
         month=int(from_month[5:])
+        month_name=datetime.date(year,month,1).strftime('%B %Y')
+
         # from_date = request.POST.get('from_date')
         # to_date = request.POST.get('to_date')
 
@@ -106,7 +106,8 @@ def dashboard(request):
             'income': income_total['income__sum'],
             'savings': savings,
             'details_label': json.dumps(details_label),
-            'details_data': json.dumps(details_data)
+            'details_data': json.dumps(details_data),
+            'month': month_name
         }
         return render(request, 'account/dashboard.html', context)
 

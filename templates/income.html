@@ -1,161 +1,274 @@
 {% extends 'master/base.html' %}
 {% block 'title' %}
- Incomes
+Income
 {% endblock %}
+
+
 {% block 'css' %}
 
 
-<style>
-    #myInput {
-      font-size: 16px;
-      padding: 12px 20px 12px 40px;
-      border: 1px solid #ddd;
-      margin-bottom: 12px;
-    }
-    #from_date {
-      font-size: 16px;
-      padding: 12px 20px 12px 40px;
-      border: 1px solid #ddd;
-      margin-bottom: 12px;
-    }
-    #to_date {
-      font-size: 16px;
-      padding: 12px 20px 12px 40px;
-      border: 1px solid #ddd;
-      margin-bottom: 12px;
-    }
-    .hiddenRow {
-        padding: 0 4px !important;
-        background-color: #eeeeee;
-        font-size: 20px;
-    }
-    .accordian-body span{
-        color:#a2a2a2 !important;
-    }
 
-</style>
+    <style>
+            #myInput {
+              font-size: 16px;
+              padding: 12px 20px 12px 40px;
+              border: 1px solid #ddd;
+              margin-bottom: 12px;
+            }
+            #from_date {
+              font-size: 16px;
+              padding: 12px 20px 12px 40px;
+              border: 1px solid #ddd;
+              margin-bottom: 12px;
+            }
+            #to_date {
+              font-size: 16px;
+              padding: 12px 20px 12px 40px;
+              border: 1px solid #ddd;
+              margin-bottom: 12px;
+            }
+            .hiddenRow {
+                padding: 0 4px !important;
+                background-color: #eeeeee;
+                font-size: 20px;
+            }
+            .accordian-body span{
+                color:#a2a2a2 !important;
+            }
+
+    </style>
 
 {% endblock %}
+
+
+
 {% block 'content' %}
 <div class="container pt-3">
     <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{% url 'income_home' %}">Income</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Income Summary </li>
-        </ol>
-      </nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'income_home' %}">Income</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Income Summary</li>
+    </ol>
+  </nav>
 </div>
 
-    <form method="POST">
+         
 
-    {% csrf_token %}
-    <div class="container">
-
-        <div class="row">
-            
-                <div class="col-lg-2 col-md-4 pt-3">
-                    <input  type="text" class="form-control" name="from_date" id="from_date" placeholder="From Date" onfocus="(this.type='date')" onblur="(this.type='text')" required><br>
-                </div>
     
-                <div class="col-lg-2 col-md-4 pt-3">
-                    <input  type="text" class="form-control" name="to_date" id="to_date" placeholder="To Date" onfocus="(this.type='date')" onblur="(this.type='text')" required><br>
-                </div>
+
+
+
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-sm-1"><input type="button" id='filterbutton' class="btn" onclick="filter()" style="margin-top: 20px; margin-bottom: 20px;" value="Filter"></div>
+        
+        <div class="col-sm-11">
+            <div class="filter" id='filter'>
+
+            <form method="GET" name='datefilter'>
                 
-                <div class="col-lg-2 col-md-4 pt-4">
-                     <button class="btn btn-primary btn-hover" type="submit" value="Show">Show</button>
-                </div>
-                <div class="col-lg-2 col-md-4 pt-3">
-                    <input type="text" id="myInput" onkeyup="function()" placeholder="Search Category,title,...">
+                <div class="card" style="margin-bottom: 20px;">
+
+                    <div class="row">
+                        <div class="col-sm-4"><input type="text" name="from_date" id="from_date" placeholder="From Date" onfocus="(this.type='date')" onblur="(this.type='text')" onChange="datefilter.submit();" value="{{from_date}}" style="margin-top:20px;margin-left: 2vw;" ><br></div>
+                        <div class="col-sm-4"><input type="text" name="to_date" id="to_date" placeholder="To Date" onfocus="(this.type='date')" onblur="(this.type='text')" onChange="datefilter.submit();" value="{{to_date}}" style="margin-top:20px;margin-left: 2vw;" ><br></div>
+                        <div class="col-sm-4"><input type="text" id="myInput" placeholder=" Search Category,title,..." onkeyup="searchTable()" style="margin-top:20px; margin-left: 2vw;" ></div>
+                        <div class="col-sm-1"><input type="button"class="btn" value="Clear" id="clear" onclick="cleardate()" style=" margin-top: 25px; margin-bottom: 20px; margin-left: 2vw;"></div>
+                    </div>
+                    
                     
                 </div>
                 
+ 
+            </form>
+            
+    
+            </div>
         </div>
     </div>
+
     
     
-             
-        </form>
-        
 
-
-<div class="container table-responsive pt-3">
-
-
-
-
-    <table class="table table-hover table-bordered table-light">
+    
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered table-light" name='incometable'>
         <thead>
-          <th>Source</th>
-      <th>Income</th>
-    <th>Date</th>
-    <th>Action</th>
-
+                  <th>Source</th>
+                  <th>Income</th>
+                  <th>Date</th>
+                  <th>Action</th>
         </thead>
+        <tbody id="incomebody">
+
+            {% for e in income %}
+                        <tr colspan="6" data-toggle="collapse" data-target="#{{e.id}}" class="accordion-toggle">
+                            <td>{{e.source}}</td>
+                            <td class='amount'>{{e.income}}</td>
+                            <td>{{e.date}}</td>
+                            <td><a href="#" onclick="_edit('{% url 'inc_edit' e.id %}')">e</a>|<a href="#" onclick="_delete('{% url 'inc_delete' e.id %}')">d</a> </td>
+                        </tr>
+                        <tr class="p">
+                            <td colspan="6" class="hiddenRow">
+                                <div class="accordian-body collapse p-3" id="{{e.id}}">
+                                    <p>Date : <span>{{e.date}}</span> </p>
+                                    <p>Day : <span>{{e.date|date:'l'}}</span> </p>
+                                    <p>Source : <span>{{e.source}}</span> </p>
+                                    <p>Income : <span>{{e.income}}</span> </p>
+
+                                </div>
+                            </td>
+                        </tr>
+              {% endfor %}
+
+        </tbody>
+        <tfoot>
+          <th>Total( in Rs.)</th><td id='total'></td>
+        </tfoot>
 
 
-<tbody id="income">
-
-        {% for e in income %}
-                    <tr colspan="6" data-toggle="collapse" data-target="#{{e.id}}" class="accordion-toggle">
-                        <td>{{e.source}}</td>
-                        <td>{{e.income}}</td>
-                        <td>{{e.date}}</td>
-                        <td><a href="#" onclick="_edit('{% url 'inc_edit' e.id %}')">e</a>|<a href="#" onclick="_delete('{% url 'inc_delete' e.id %}')">d</a> </td>
-                    </tr>
-                    <tr class="p">
-                        <td colspan="6" class="hiddenRow">
-                            <div class="accordian-body collapse p-3" id="{{e.id}}">
-                                <p>Date : <span>{{e.date}}</span> </p>
-                                <p>Day : <span>{{e.date|date:'l'}}</span> </p>
-                                <p>Source : <span>{{e.source}}</span> </p>
-                                <p>Income : <span>{{e.income}}</span> </p>
-
-                            </div>
-                        </td>
-                    </tr>
-     {% endfor %}
-
-</tbody>
 
 
-
-
-</table>
+    </table>
+  </div>
+    
+    
 
 </div>
 
-<script>
 
-     function _delete(url){
-     bootbox.confirm("Confirmation to delete?", function(result){
-        if(result){
-            window.location.href=url
-            }
-     });
-    }
-    function _edit(url){
-     bootbox.confirm("Confirmation to edit?", function(result){
-        if(result){
-            window.location.href=url
-            }
-     });
-    }
+    <script>
+         function _delete(url){
+         bootbox.confirm("Confirmation to delete?", function(result){
+            if(result){
+                window.location.href=url
+                }
+         });
+        }
+        function _edit(url){
+         bootbox.confirm("Confirmation to edit?", function(result){
+            if(result){
+                window.location.href=url
+                }
+         });
+        }
+        // for date
+        // var x = new Date();        
+        // x.setMonth(x.getMonth()-1);
+        // document.getElementById("to_date").valueAsDate = new Date();
+        // document.getElementById("from_date").valueAsDate = x;
 
-  document.getElementById("to_date").valueAsDate = new Date();
-    $('.accordion-toggle').click(function(){
+        $('.accordion-toggle').click(function(){
         $('.hiddenRow').hide();
         $(this).next('tr').find('.hiddenRow').show();
         });
 
-</script>
+    </script>
+
 <script>
-$(document).ready(function(){
-  $("#myInput").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $("#income tr").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-  });
-});
+  //for sum
+  // $(function() {
+
+  //       var TotalValue = 0;
+  //       $("tr #income").each(function(index,value){
+  //         currentRow = parseFloat($(this).text());
+  //         TotalValue += currentRow
+  //       });
+
+  //       document.getElementById('total').innerHTML = TotalValue;
+
+  //       });
+    // for search
+//         $(document).ready(function search(){
+//         $("#myInput").on("keyup", function() {
+//             var value = $(this).val().toLowerCase();
+//             $("#income tr").filter(function() {
+//             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+//             });
+//         });
+//         $(function() {
+
+// var TotalValue = 0;
+// $("tr #amount").each(function(index,value){
+//   currentRow = parseFloat($(this).text());
+//   TotalValue += currentRow
+// });
+
+// document.getElementById('total').innerHTML = TotalValue;
+
+// });
+//         });
+
+
+  function searchTable() {
+  var input, filter, found, table, tr, td, i, j;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("incomebody");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td");
+    for (j = 0; j < td.length; j++) {
+      if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+        found = true;
+      }
+    }
+    if (found) {
+      tr[i].style.display = "";
+      found = false;
+    } else {
+      tr[i].style.display = "none";
+    }
+  }
+  var cls = document.getElementById("incomebody").getElementsByTagName("td");
+  var sum = parseFloat('0.0');
+  for (var i = 0; i < cls.length; i++) {
+    // Here you check if it's a countable class and the parent tr's style is a visible tr
+    if (cls[i].className == "amount" && cls[i].closest("tr").style.display != "none") {
+      sum += isNaN(cls[i].innerHTML) ? 0 : parseFloat(cls[i].innerHTML);
+    }
+  }
+  document.getElementById('total').innerHTML = sum;
+
+}
+var cls = document.getElementById("incomebody").getElementsByTagName("td");
+var sum = 0;
+for (var i = 0; i < cls.length; i++) {
+  if (cls[i].className == "amount") {
+    sum += isNaN(cls[i].innerHTML) ? 0 : parseInt(cls[i].innerHTML);
+  }
+}
+document.getElementById('total').innerHTML += sum;
+
+    //for filter button
+  
+
+ 
+    function filter() {
+        var x = document.getElementById("filter");
+        // document.getElementById("filterbutton").value="Clear";
+        
+        if (x.style.display === "none") {
+            x.style.display = "block";           
+            
+            
+        } else {
+            x.style.display = "none"; 
+             
+                   
+                       
+        }
+        }
+        function cleardate(){
+            document.getElementById("from_date").value="";
+            document.getElementById("to_date").value=""; 
+            datefilter.submit();
+        }
+
+       
 </script>
+
+
 {% endblock %}
