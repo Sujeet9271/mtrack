@@ -80,7 +80,7 @@
                     <div class="row">
                         <div class="col-sm-4"><input type="text" name="from_date" id="from_date" placeholder="From Date" onfocus="(this.type='date')" onblur="(this.type='text')" onChange="datefilter.submit();" value="{{from_date}}" style="margin-top:20px;margin-left: 2vw;" ><br></div>
                         <div class="col-sm-4"><input type="text" name="to_date" id="to_date" placeholder="To Date" onfocus="(this.type='date')" onblur="(this.type='text')" onChange="datefilter.submit();" value="{{to_date}}" style="margin-top:20px;margin-left: 2vw;" ><br></div>
-                        <div class="col-sm-4"><input type="text" id="myInput" onkeyup="search()" placeholder=" Search Category,title,..." style="margin-top:20px; margin-left: 2vw;" ></div>
+                        <div class="col-sm-4"><input type="text" id="myInput" placeholder=" Search Category,title,..." style="margin-top:20px; margin-left: 2vw;" ></div>
                         <div class="col-sm-1"><input type="button"class="btn" value="Clear" id="clear" onclick="cleardate()" style=" margin-top: 25px; margin-bottom: 20px; margin-left: 2vw;"></div>
                     </div>
                     
@@ -176,14 +176,14 @@
 
 <script>
     // for search
-        // $(document).ready(function search(){
-        // $("#myInput").on("keyup", function() {
-        //     var value = $(this).val().toLowerCase();
-        //     $("#expenses tr").filter(function() {
-        //     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        //     });
-        // });
-        // });
+        $(document).ready(function search(){
+        $("#myInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#expenses tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        });
 
     //for calculate sum
     function searchTable() {

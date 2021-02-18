@@ -183,26 +183,16 @@ Income
   //       document.getElementById('total').innerHTML = TotalValue;
 
   //       });
-    // for search
-//         $(document).ready(function search(){
-//         $("#myInput").on("keyup", function() {
-//             var value = $(this).val().toLowerCase();
-//             $("#income tr").filter(function() {
-//             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-//             });
-//         });
+    for search
+        $(document).ready(function search(){
+        $("#myInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#income tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
 //         $(function() {
 
-// var TotalValue = 0;
-// $("tr #amount").each(function(index,value){
-//   currentRow = parseFloat($(this).text());
-//   TotalValue += currentRow
-// });
-
-// document.getElementById('total').innerHTML = TotalValue;
-
-// });
-//         });
 
 
   function searchTable() {
