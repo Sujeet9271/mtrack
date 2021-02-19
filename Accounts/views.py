@@ -4,8 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.db.models import Sum
-from expenses.models import Expenses
+from expenses.views import expenseChart
+from expenses.models import Expenses,Category
 from income.models import Income
+from income.views import incomeChart
 from .forms import ProfileForm,UserForm
 import json,datetime
 
@@ -74,14 +76,17 @@ def dashboard(request):
         year = int(from_month[:4])
         month=int(from_month[5:])
         month_name=datetime.date(year,month,1).strftime('%B %Y')
-
-        # from_date = request.POST.get('from_date')
-        # to_date = request.POST.get('to_date')
-
-
-
         income_total = Income.objects.filter(user_id=request.user.id,date__year=year, date__month=month).aggregate(Sum('income'))
         expenses_total = Expenses.objects.filter(user_id=request.user.id,date__year=year, date__month=month).aggregate(Sum('costs'))
+
+        expenses = Expenses.objects.filter(user_id=request.user.id,date__year=year, date__month=month)
+        categories = Category.objects.filter(user_id=request.user.id)
+
+
+        incomes=Income.objects.filter(user_id=request.user.id,date__year=year, date__month=month)
+
+        incomedata=incomeChart(incomes)
+        expensedata=expenseChart(expenses,categories)
 
         if income_total['income__sum'] is None:
             income_total['income__sum'] = 0
@@ -107,41 +112,62 @@ def dashboard(request):
             'savings': savings,
             'details_label': json.dumps(details_label),
             'details_data': json.dumps(details_data),
-            'month': month_name
+            'income_source':json.dumps(incomedata['sources']),
+            'income_amount':json.dumps(incomedata['amount']),
+            'expense_category':json.dumps(expensedata['category']),
+            'expense_amount':json.dumps(expensedata['amount'])
         }
         return render(request, 'account/dashboard.html', context)
 
     else:
         income = Income.objects.filter(user_id=request.user.id).aggregate(Sum('income'))
-        expenses = Expenses.objects.filter(user_id=request.user.id).aggregate(Sum('costs'))
+        expense = Expenses.objects.filter(user_id=request.user.id).aggregate(Sum('costs'))
+
+        expenses = Expenses.objects.filter(user_id=request.user.id)
+        categories = Category.objects.filter(user_id=request.user.id)
+
+
+        incomes=Income.objects.filter(user_id=request.user.id)
+
+        incomedata=incomeChart(incomes)
+        expensedata=expenseChart(expenses,categories)
 
         if income['income__sum'] is None:
             income['income__sum'] = 0
 
-        if expenses['costs__sum'] is None:
-            expenses['costs__sum'] = 0
+        if expense['costs__sum'] is None:
+            expense['costs__sum'] = 0
 
-        if (income['income__sum'] < expenses['costs__sum']):
+        if (income['income__sum'] < expense['costs__sum']):
             savings = 0
         else:
-            savings = income['income__sum'] - expenses['costs__sum']
+            savings = income['income__sum'] - expense['costs__sum']
         
         
         detail_dict={}
-        detail_dict['Expense']= expenses['costs__sum']
+        detail_dict['Expense']= expense['costs__sum']
         detail_dict['Income']= income['income__sum']
         detail_dict['Savings']= savings
         details_label=[key for key in detail_dict.keys()]
         details_data=[value for value in detail_dict.values()]
+        print(expensedata['category'],expensedata['amount'],incomedata['sources'],incomedata['amount'])
 
         context = {
-            'expenses': expenses['costs__sum'],
+            'expenses': expense['costs__sum'],
             'income': income['income__sum'],
             'savings': savings,
             'details_label': json.dumps(details_label),
-            'details_data': json.dumps(details_data)
+            'details_data': json.dumps(details_data),
+            'income_source':json.dumps(incomedata['sources']),
+            'income_amount':json.dumps(incomedata['amount']),
+            'expense_category':json.dumps(expensedata['category']),
+            'expense_amount':json.dumps(expensedata['amount'])
         }
         return render(request, 'account/dashboard.html', context)
+
+
+
+
 
 @login_required(login_url='/auth/login/')
 def profile(request):

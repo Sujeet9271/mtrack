@@ -18,7 +18,7 @@ def expenses(request):  # Expenditure_detail page
 
     def pages(expenses):
         page = request.GET.get('page', 1)
-        paginator = Paginator(expenses, 10)
+        paginator = Paginator(expenses, 2)
         try:
             expense = paginator.page(page)
         except PageNotAnInteger:
@@ -76,14 +76,26 @@ def expenses_home(request):
     today=datetime.now()
     current_month=today.month
     current_year=today.year
-    expenses = Expenses.objects.filter(user_id=request.user.id, date__year=current_year,date__month=current_month).order_by('-date')
-    data = {}
+    expenses = Expenses.objects.filter(user_id=request.user.id, date__year=current_year,date__month=current_month).order_by('-date') 
+    categories= Category.objects.filter(user_id=request.user.id)
+    data=expenseChart(expenses,categories)  
 
+    context={
+        'expense': expenses,
+        'month':today.strftime('%B'),
+        'categories':json.dumps(data['category']),
+        'amount': json.dumps(data['amount'])
+        } 
+
+    return render(request, 'expenses/expenses_home.html', context)
+
+def expenseChart(expenses,categories):
+    data = {}
     def category_sum(category):
         cost = expenses.filter(category__title=category).aggregate(Sum('costs'))          
         return cost['costs__sum']
 
-    categories=[category.title for category in Category.objects.filter(user_id=request.user.id)]
+    categories=[category.title for category in categories]
 
     for expense in expenses:
         for category in categories:
@@ -91,10 +103,8 @@ def expenses_home(request):
 
 
     categories=[category for category in data.keys()]
-    amount=[amount for amount in data.values()]    
-
-    return render(request, 'expenses/expenses_home.html', {'expense': expenses,'month':today.strftime('%B'),'categories':json.dumps(categories),'amount': json.dumps(amount)})
-
+    amount=[amount for amount in data.values()]  
+    return {'category':categories,'amount':amount} 
 
 @login_required(login_url='/auth_user')
 def exp_category(request):  # Category Page

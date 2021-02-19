@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw==" crossorigin="anonymous"></script>
+    <script src="{% static 'js/charts.js/' %}"></script>
 
     <title>ExpenseTracker</title>
     
@@ -49,9 +50,13 @@
       <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
     </ol>
   </nav>
-   <div class="row">
-     <div class="col col-md-6">
-      <div class="card" style="background: rgba(133, 187, 101, 0.1); width: 500; height: 60vh; margin: 10px;">
+  <!-- eDEtail row -->
+  <div class="row">
+     <!-- Detail Form -->
+     <div class="col-md-6">
+
+      <div class="card" style="background: rgba(133, 187, 101, 0.1);width: 500; height: 60vh; margin-top: 10px; margin-bottom: 20px;">
+
         <div class="container" style="margin-top:20px; margin-bottom: 20px;">
               <form class="form" name="datefilter" method="POST">
   
@@ -85,19 +90,43 @@
   
   
         </div> 
+
       </div>
+
      </div>
+      <!-- Detail Chart -->
       <div class="col-md-6">
         <div class="card" style="width: 500; height: 60vh; margin-top: 10px; margin-bottom: 20px;">
           
             <canvas id="details"></canvas>
           
-          </div>
+        </div>
       </div>
-    
 
-</div>
-   </div>
+  </div>   
+
+  </div>
+  <div class="container pt-5">
+    <!-- expense/income chart row -->
+    <div class="row">
+       <!-- expense chart -->
+       <div class="col-md-6">
+  
+        <div class="card" style="width: 500; height: 60vh; margin-top: 10px; margin-bottom: 20px;">
+          <canvas id="expenseChart"></canvas>
+        </div>
+  
+       </div>
+        <!-- income chart -->
+        <div class="col-md-6">
+          <div class="card" style="width: 500; height: 60vh; margin-top: 10px; margin-bottom: 20px;">            
+              <canvas id="incomeChart"></canvas>            
+          </div>
+        </div>
+  
+    </div>   
+  
+    </div>
     
 
 
@@ -107,63 +136,39 @@
     <script src="{% static 'js/bootbox.min.js' %}"></script>
 
 <script>
-  const renderdetailChart=(amount,sources) => {
-          var ctx = document.getElementById('details').getContext('2d');
-          var detailChart = new Chart(ctx, {
-              type: 'doughnut',
-              data: {
-                  labels:sources,
-                  datasets: [{
-                      label: 'Money Detail',
-                      data:amount ,
-                      backgroundColor: [
-                          'rgba(255, 99, 132, 0.5)',
-                          'rgba(54, 162, 235, 0.5)',
-                          'rgba(255, 206, 86, 0.5)',
-                          'rgba(75, 192, 192, 0.5)',
-                          'rgba(153, 102, 255, 0.5)',
-                          'rgba(255, 159, 64, 0.5)'
-                      ],
-                      borderColor: [
-                          'rgba(255, 99, 132, 1)',
-                          'rgba(54, 162, 235, 1)',
-                          'rgba(255, 206, 86, 1)',
-                          'rgba(75, 192, 192, 1)',
-                          'rgba(153, 102, 255, 1)',
-                          'rgba(255, 159, 64, 1)'
-                      ],
-                      borderWidth: 2
-                  }]
-              },
-              options: {
-                  title:{
-                    display:true,
-                    text:'Money Details'
-                  },
-                  legend:{
-                      display:true,
-                      text:'Money Detail',
-                      position:'bottom',
-                      align:'center'                     
-                     
+      
+      
+      
+      
+      const getdetailChartData = () => {
+          var sources = {{details_label|safe}};
+              var amount = {{details_data|safe}};
+                  renderdetailChart(amount,sources)              
+              };
 
-                  },
-                  responsive:true,
-                  maintainAspectRatio:false
-                  
-              },                
-          });
-  }
-  
-  
-  const getdetailChartData = () => {
-      var sources = {{details_label|safe}};
-          var amount = {{details_data|safe}}; 
-              renderdetailChart(amount,sources)              
-          };
-  
-  document.onload = getdetailChartData(); 
+      const getexpenseChartData = () => {
+          var category = {{expense_category|safe}};
+              var amount = {{expense_amount|safe}};
+                  renderexpenseChart(amount,category)              
+              };
+
+      const getincomeChartData = () => {
+          var source = {{income_source|safe}};
+              var amount = {{income_amount|safe}};
+                  renderincomeChart(amount,source)              
+              };
+      
+      function mycharts(){
+        getdetailChartData();
+        getexpenseChartData();
+        getincomeChartData();
+      }
+
+      document.onload = mycharts();
+
+      
   </script>
+
   <script>
     function myFunction() {
   var x = document.getElementById("from_month");

@@ -91,7 +91,20 @@ def incomes_home(request):
     today=datetime.now()
     current_year=today.year
     current_month=today.month
-    incomes = Income.objects.filter(user_id=request.user.id, date__year=current_year,date__month=current_month).order_by('-date')
+    incomes = Income.objects.filter(user_id=request.user.id, date__year=current_year,date__month=current_month).order_by('-date')   
+
+    data=incomeChart(incomes)
+
+    context={
+        'income':incomes,
+        'month': today.strftime('%B'),
+        'sources':data['sources'],
+        'amount':data['amount']
+    }
+
+    return render(request, 'incomes/income_home.html',context)
+
+def incomeChart(incomes):
     incomedata = {}
 
     def source_sum(source): 
@@ -111,15 +124,7 @@ def incomes_home(request):
 
     sources=[source for source in incomedata.keys()]
     amount=[amount for amount in incomedata.values()] 
-
-    context={
-        'income':incomes,
-        'month': today.strftime('%B'),
-        'sources':sources,
-        'amount':amount
-    }
-
-    return render(request, 'incomes/income_home.html',context)
+    return {'sources':sources,'amount':amount}
 
 
 @login_required(login_url='/auth/login/')
