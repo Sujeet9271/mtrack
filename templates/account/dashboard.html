@@ -136,11 +136,7 @@
     <script src="{% static 'js/bootbox.min.js' %}"></script>
 
 <script>
-      
-      
-      
-      
-      const getdetailChartData = () => {
+       const getdetailChartData = () => {
           var sources = {{details_label|safe}};
               var amount = {{details_data|safe}};
                   renderdetailChart(amount,sources)              
@@ -165,21 +161,17 @@
       }
 
       document.onload = mycharts();
+</script>
 
-      
-  </script>
-
-  <script>
+<script>
     function myFunction() {
-  var x = document.getElementById("from_month");
+        var x = document.getElementById("from_month");
+        if (x.hasAttribute("placeholder")) {
+          x.setAttribute("placeholder", "{{month}}");
+        }
+    }
+</script>
 
-  if (x.hasAttribute("placeholder")) {
-    x.setAttribute("placeholder", "{{month}}");
-  }
-}
-console.log('{{month}}')
-console.log('testing')
-  </script>
 
 
 </body>
