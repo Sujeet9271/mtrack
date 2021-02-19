@@ -136,10 +136,63 @@
     <script src="{% static 'js/bootbox.min.js' %}"></script>
 
 <script>
+
+// const renderdetailChart=(amount,sources) => {
+//               var ctx = document.getElementById('details').getContext('2d');
+//               var detailChart = new Chart(ctx, {
+//                   type: 'bar',
+//                   data: {
+//                       labels:sources,
+//                       datasets: [{
+//                           label: 'Money Detail',
+//                           data:amount ,
+//                           backgroundColor: ['red'],
+//                           borderColor: ['red'],
+//                           borderWidth: 2
+//                       },{
+//                           label: 'Money Detail',
+//                           data:amount ,
+//                           backgroundColor: ['green'],
+//                           borderColor: ['green'],
+//                           borderWidth: 2
+//                       },{
+//                           label: 'Money Detail',
+//                           data:amount ,
+//                           backgroundColor: ['yellow'],
+//                           borderColor: ['yellow'],
+//                           borderWidth: 2
+//                       }]
+//                   },
+//                   options: {
+//                       title:{
+//                         display:true,
+//                         text:'Money Details'
+//                       },
+//                       legend:{
+//                           display:true,
+//                           text:'Money Detail',
+//                           position:'bottom',
+//                           align:'center'                     
+                        
+
+//                       },
+//                       responsive:true,
+//                       maintainAspectRatio:false,
+//                       scales: {
+//                             yAxes: [{
+//                                 ticks: {
+//                                     beginAtZero: true
+//                                 }
+//                             }]
+//                         }
+//                     },                
+//               });
+//       }
+
   const renderdetailChart=(amount,sources) => {
               var ctx = document.getElementById('details').getContext('2d');
               var detailChart = new Chart(ctx, {
-                  type: 'doughnut',
+                  type: 'bar',
                   data: {
                       labels:sources,
                       datasets: [{
@@ -178,9 +231,22 @@
 
                       },
                       responsive:true,
-                      maintainAspectRatio:false
+                      maintainAspectRatio:false,
+                      scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
                       
-                  },                
+                  
+                  
+                  
+                  
+                  
+                  
+                    },                
               });
       }
 
