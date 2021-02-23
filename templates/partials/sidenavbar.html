@@ -1,0 +1,14 @@
+<div class="sidebar col-md-4" style="margin-bottom: 20px;">
+    <ul class="list-group"><li class="list-group-item">myExpenses</li>
+        <div class="hidden">
+            <li class="list-group-item"><a href="{% url 'exp_category' %}">Categories</a></li>
+            <li class="list-group-item"><a href="{% url 'exp_create' %}">Add Expenses</a></li>
+            <li class="list-group-item"><a href="/expenses/">Expenditure Details</a></li>
+        </div>
+        
+    </ul>
+    <ul class="list-group mt-5"><li class="list-group-item">myIncomes</li>
+        <li class="list-group-item"><a href="{% url 'inc_create' %}">Add Income</a></li>
+        <li class="list-group-item"><a href="/income/">Income Details</a></li>
+    </ul>
+</div>

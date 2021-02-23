@@ -15,58 +15,105 @@ from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
 def expenses(request):  # Expenditure_detail page
     from_date=request.GET.get('from_date')    
     to_date=request.GET.get('to_date')
+    no = request.GET.get('no')   
 
-    def pages(expenses):
-        page = request.GET.get('page', 1)
-        paginator = Paginator(expenses, 2)
-        try:
-            expense = paginator.page(page)
-        except PageNotAnInteger:
-            expense = paginator.page(1)
-        except EmptyPage:
-            expense = paginator.page(paginator.num_pages)
-        return expense    
 
-    if from_date is None or to_date is None:
-        expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('-date') 
-        expense=pages(expenses)      
+    if request.GET.get('no'):     
+        def pages(expenses):
+            page = request.GET.get('page', 1)
+            no = request.GET.get('no')
+            paginator = Paginator(expenses, no)
+            try:
+                expense = paginator.page(page)
+            except PageNotAnInteger:
+                expense = paginator.page(1)
+            except EmptyPage:
+                expense = paginator.page(paginator.num_pages)
+            return expense    
 
-        context = {
-            'expenses': expense                     
-            }           
-    else:
-        if from_date=='' and to_date=='':
-            expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
-            expense=pages(expenses)
+        if from_date is None or to_date is None:
+            expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('-date') 
+            expense=pages(expenses)      
+
             context = {
-            'expenses': expense                    
-            }
-        elif from_date=='' or to_date=='':
-            if to_date=='':
-                expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('-date')
+                'expenses': expense                     
+                }           
+        else:
+            if from_date=='' and to_date=='':
+                expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
                 expense=pages(expenses)
                 context = {
-                    'expenses': expenses,
-                    'from_date':from_date                   
+                'expenses': expense                    
                 }
-            elif from_date=='':                
-                expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date).order_by('-date')
-                expense=pages(expenses)  
-                context = {
-                    'expenses': expenses,
-                    
+            elif from_date=='' or to_date=='':
+                if to_date=='':
+                    expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('-date')
+                    expense=pages(expenses)
+                    context = {
+                        'expenses': expenses,
+                        'from_date':from_date                   
+                    }
+                elif from_date=='':                
+                    expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date).order_by('-date')
+                    expense=pages(expenses)  
+                    context = {
+                        'expenses': expenses,
+                        
+                        'from_date':from_date,
+                        'to_date':to_date                    
+                    }
+                        
+            else:
+                expenses =  Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
+                expense=pages(expenses)
+                context={
+                    'expenses':expense,
                     'from_date':from_date,
-                    'to_date':to_date                    
+                    'to_date':to_date
                 }
-                    
+        
+    else:
+        if from_date is None or to_date is None:
+            expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')       
+
+            context = {
+                'expenses': expenses                     
+                }           
         else:
-            expenses =  Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
-            expense=pages(expenses)
-            context={
-                'expenses':expense,
-                'from_date':from_date,
-                'to_date':to_date
-            }
+            if from_date=='' and to_date=='':
+                expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
+                
+                context = {
+                'expenses': expenses                  
+                }
+            elif from_date=='' or to_date=='':
+                if to_date=='':
+                    expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('-date')
+                    
+                    context = {
+                        'expenses': expenses,
+                        'from_date':from_date                   
+                    }
+                elif from_date=='':                
+                    expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date).order_by('-date')
+                      
+                    context = {
+                        'expenses': expenses,
+                        
+                        'from_date':from_date,
+                        'to_date':to_date                    
+                    }
+                        
+            else:
+                expenses =  Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
+                
+                context={
+                    'expenses':expenses,
+                    'from_date':from_date,
+                    'to_date':to_date
+                }
+    
+    context['no']=no
     
     return render(request, 'expenses.html', context)
 
@@ -89,6 +136,7 @@ def expenses_home(request):
 
     return render(request, 'expenses/expenses_home.html', context)
 
+
 def expenseChart(expenses,categories):
     data = {}
     def category_sum(category):
@@ -106,7 +154,7 @@ def expenseChart(expenses,categories):
     amount=[amount for amount in data.values()]  
     return {'category':categories,'amount':amount} 
 
-@login_required(login_url='/auth_user')
+@login_required(login_url='/auth/login/')
 def exp_category(request):  # Category Page
     data = Category.objects.filter(user_id=request.user.id)
     if request.method == 'GET':
@@ -130,9 +178,6 @@ def exp_category(request):  # Category Page
                 'errmsg': 'Currently Unable to insert data'
             }
             return render(request, 'expenses/exp_category.html', context)
-
-
-
 
 @login_required(login_url='/auth/login/')
 def create(request):  # Adding Expense
@@ -159,7 +204,6 @@ def create(request):  # Adding Expense
             }
             return render(request, 'expenses/create.html', context)
 
-
 @login_required(login_url='/auth/login/')
 def edit(request, id):
     data = Expenses.objects.get(pk=id)
@@ -172,7 +216,6 @@ def edit(request, id):
             return redirect('expenses_home')
     return render(request, 'expenses/edit.html',{'form':form})
 
-
 @login_required(login_url='/auth/login/')
 def exp_delete(request, id):
     try:
@@ -181,7 +224,6 @@ def exp_delete(request, id):
         return redirect('expenses')
     except:
         return redirect('expenses')
-
 
 @login_required(login_url='/auth/login/')
 def delete_category(request, id):

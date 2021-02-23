@@ -30,59 +30,101 @@ from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 def incomes(request):  # Expenditure_detail page
     from_date=request.GET.get('from_date')    
     to_date=request.GET.get('to_date')
+    no=request.GET.get('no')
 
-    def pages(incomes):
-        page = request.GET.get('page', 1)
-        paginator = Paginator(incomes, 10)
-        try:
-            income = paginator.page(page)
-        except PageNotAnInteger:
-            income = paginator.page(1)
-        except EmptyPage:
-            income = paginator.page(paginator.num_pages)
-        return income    
+    if request.GET.get('no'):        
+        def pages(incomes):
+            no=request.GET.get('no')
+            page = request.GET.get('page', 1)
+            paginator = Paginator(incomes, no)
+            try:
+                income = paginator.page(page)
+                # count= paginator.count
+            except PageNotAnInteger:
+                income = paginator.page(1)
+            except EmptyPage:
+                income = paginator.page(paginator.num_pages)
+            return income    
 
-    if from_date is None or to_date is None:
-        incomes = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
-        income=pages(incomes)      
-
-        context = {
-            'incomes': income                     
-            }           
-    else:
-        if from_date=='' and to_date=='':
+        if from_date is None or to_date is None:
             incomes = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
             income=pages(incomes)
+                
+
             context = {
-            'incomes': income                    
-            }
-        elif from_date=='' or to_date=='':
-            if to_date=='':
-                incomes = Income.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('-date')
+                'incomes': income                     
+                }           
+        else:
+            if from_date=='' and to_date=='':
+                incomes = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
                 income=pages(incomes)
                 context = {
-                    'incomes': incomes,
-                    'from_date':from_date                   
+                'incomes': income                    
                 }
-            elif from_date=='':                
-                incomes = Income.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date)
-                income=pages(incomes)  
-                context = {
-                    'incomes': incomes,
-                    
+            elif from_date=='' or to_date=='':
+                if to_date=='':
+                    incomes = Income.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('-date')
+                    income=pages(incomes)
+                    context = {
+                        'incomes': incomes,
+                        'from_date':from_date                   
+                    }
+                elif from_date=='':                
+                    incomes = Income.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date)
+                    income=pages(incomes)  
+                    context = {
+                        'incomes': incomes,
+                        
+                        'from_date':from_date,
+                        'to_date':to_date                    
+                    }
+                        
+            else:
+                incomes =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
+                income=pages(incomes)
+                context={
+                    'incomes':income,
                     'from_date':from_date,
-                    'to_date':to_date                    
+                    'to_date':to_date
                 }
-                    
+    else:
+        if from_date is None or to_date is None:
+            incomes = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
+            
+            context = {
+                'incomes': incomes                     
+                }           
         else:
-            incomes =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
-            income=pages(incomes)
-            context={
-                'incomes':income,
-                'from_date':from_date,
-                'to_date':to_date
-            }
-    
+            if from_date=='' and to_date=='':
+                incomes = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
+                
+                context = {
+                'incomes': incomes                    
+                }
+            elif from_date=='' or to_date=='':
+                if to_date=='':
+                    incomes = Income.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('-date')
+                    
+                    context = {
+                        'incomes': incomes,
+                        'from_date':from_date                   
+                    }
+                elif from_date=='':                
+                    incomes = Income.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date)                     
+                    context = {
+                        'incomes': incomes,
+                        'from_date':from_date,
+                        'to_date':to_date                    
+                    }
+                        
+            else:
+                incomes =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')               
+                context={
+                    'incomes':incomes,
+                    'from_date':from_date,
+                    'to_date':to_date
+                }
+    context['no']=no    
     return render(request, 'income.html', context)
 
 
