@@ -91,7 +91,7 @@ def dashboard(request):
                 if m in income_month.keys():
                     detail_by_month[month]['Expenses']=0
                     detail_by_month[month]['Incomes']=income_month[m]                    
-                    detail_by_month[month]['Savings']=(income_month[m]- expense_month[m]) if income_month[m]>expense_month[m] else 0
+                    detail_by_month[month]['Savings']=income_month[m]
                 elif m in expense_month.keys():
                     detail_by_month[month]['Expenses']=expense_month[m]
                     detail_by_month[month]['Incomes']=0
