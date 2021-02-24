@@ -15,7 +15,7 @@ from django.db.models.functions import TruncMonth
 
 #using get and post method in django framework
 @login_required(login_url='/auth/login/')
-def dashboard1(request):
+def dashboard(request):
     if request.method == "POST":
         from_month = request.POST.get('from_month')
         year = int(from_month[:4])
@@ -126,13 +126,13 @@ def dashboard1(request):
             "expenses":json.dumps(expensedata),
             "incomes":json.dumps(incomedata),                       
         }
-        
+
         return render(request, 'account/dashboard.html', context)
 
 
 #using dashboardapi view for data
 @login_required(login_url='/auth/login/')
-def dashboard(request):
+def dashboardapiview(request):
     return render(request,'account/dashboard_.html')
 
 @login_required(login_url='/auth/login/')

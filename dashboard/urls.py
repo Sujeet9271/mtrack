@@ -4,6 +4,6 @@ from . import views
 
 urlpatterns=[
     path('',views.dashboard,name="dashboard"),
-    path('old/',views.dashboard1,name="dashboardold"),
+    path('new/',views.dashboardapiview,name="dashboardapiview"),
     path('api/', views.dashboardapi, name='dashboardapi')
 ]
