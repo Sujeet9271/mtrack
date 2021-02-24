@@ -81,11 +81,11 @@
                                 </legend>
     
                                 <label>Income:</label>
-                                    <input class="form-control" id='income' type="number" name="income" value="{{income}}" readonly>
+                                    <input class="form-control" id='income' type="number" name="income" value="{{total_income}}" readonly>
                                 <label>Expenses:</label>
-                                    <input class="form-control" id='expense' type="number" name="expense" value="{{expenses}}" readonly>
+                                    <input class="form-control" id='expense' type="number" name="expense" value="{{total_expenses}}" readonly>
                                 <label>Savings:</label>
-                                    <input class="form-control" id='saving' type="number" name="savings" value="{{savings}}" readonly>
+                                    <input class="form-control" id='saving' type="number" name="savings" value="{{total_savings}}" readonly>
     
                                 <div class="container pt-3"><a href="{% url 'home' %}"><button class="btn btn-primary" value="Add Data">ADD DATA</button></a></div>
     
@@ -141,6 +141,60 @@
     <script src="{% static 'js/bootbox.min.js' %}"></script>
 
 <script>
+const rendermonthlydetailChart=(monthlist,expenselist,incomelist,savingslist) => {  
+    var ctx = document.getElementById('details').getContext('2d');
+        var detailChart = new Chart(ctx, {
+            type: 'bar',
+            //data_start
+            data: {
+                labels:monthlist,
+                datasets: [
+                            {
+                              label: 'Expenses',
+                              data:expenselist,
+                              backgroundColor: 'rgba(255, 99, 132, 0.75)',
+                              borderColor: 'rgba(255, 99, 132, 1)',
+                              borderWidth: 2
+                          },
+                          {
+                              label: 'Income',
+                              data:incomelist ,
+                              backgroundColor: 'rgba(54, 162, 235, 0.75)',
+                              borderColor: 'rgba(54, 162, 235, 1)',
+                              borderWidth: 2
+                          },
+                          {
+                              label: 'Savings',
+                              data:savingslist ,
+                              backgroundColor: 'rgba(255, 206, 86, 0.75)',
+                              borderColor: 'rgba(255, 206, 86, 1)',
+                              borderWidth: 2
+                          }
+                        ]
+            },
+                //data_end,option_start
+            options: {
+                title:{
+                  display:true,
+                  text:'Money Details in year '+'2021'
+                },
+                legend:{
+                    display:true,
+                    position:'bottom'
+                  },
+                responsive:true,
+                maintainAspectRatio:false,
+                scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: true
+                          }
+                      }]
+                  }
+              }//option_end                
+        }
+      );
+  }
 
 const renderdetailChart=(amount,sources) => {
               var ctx = document.getElementById('details').getContext('2d');
@@ -199,7 +253,7 @@ const renderdetailChart=(amount,sources) => {
               });
       }
 
-const renderexpenseChart=(amount,category) => {
+const renderexpenseChart=(category,expense) => {
         var ctx = document.getElementById('expenseChart').getContext('2d');
         var detailChart = new Chart(ctx, {
             type: 'doughnut',
@@ -207,7 +261,7 @@ const renderexpenseChart=(amount,category) => {
                 labels:category,
                 datasets: [{
                     label: 'Expense Detail',
-                    data:amount,
+                    data:expense,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.75)',
                         'rgba(54, 162, 235, 0.75)',
@@ -247,7 +301,7 @@ const renderexpenseChart=(amount,category) => {
         });
 }
 
-const renderincomeChart=(amount,source) => {
+const renderincomeChart=(source,income) => {
     var ctx = document.getElementById('incomeChart').getContext('2d');
     var detailChart = new Chart(ctx, {
         type: 'doughnut',
@@ -255,7 +309,7 @@ const renderincomeChart=(amount,source) => {
             labels:source,
             datasets: [{
                 label: 'Income Detail',
-                data:amount ,
+                data:income ,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.75)',
                     'rgba(54, 162, 235, 0.75)',
@@ -294,29 +348,41 @@ const renderincomeChart=(amount,source) => {
         },                
     });
 }
-       const getdetailChartData = () => {
-          var sources = {{details_label|safe}};
-              var amount = {{details_data|safe}};
-                  renderdetailChart(amount,sources)              
-              };
+    
 
-      const getexpenseChartData = () => {
-          var category = {{expense_category|safe}};
-              var amount = {{expense_amount|safe}};
-                  renderexpenseChart(amount,category)              
-              };
 
-      const getincomeChartData = () => {
-          var source = {{income_source|safe}};
-              var amount = {{income_amount|safe}};
-                  renderincomeChart(amount,source)              
-              };
+
+const getmonthlyChartData =() =>{
+    var monthlist={{month_list|safe}};
+        var expenselist={{expenses_list|safe}};
+        var incomelist={{incomes_list|safe}};
+        var savingslist={{savings_list|safe}};
+        rendermonthlydetailChart(monthlist,expenselist,incomelist,savingslist)
+
+}
+
+
+const getexpenseChartData = () => {
+            const data2={{expenses|safe}};           
+            var category = Object.keys(data2)
+            var expense = Object.values(data2)
+        renderexpenseChart(category,expense)              
+    };
+
+const getincomeChartData = () => {
+const data3={{incomes|safe}};               
+            var source = Object.keys(data3)
+            var income = Object.values(data3) 
+            renderincomeChart(source,income)             
+    };
       
-      function mycharts(){
-        getdetailChartData();
+function mycharts() {
+    
+    getmonthlyChartData();
         getexpenseChartData();
         getincomeChartData();
-      }
+}
+
 
       document.onload = mycharts();
 </script>
