@@ -60,6 +60,7 @@
 		</div>
 
 		<script type="text/javascript" src="{% static 'js/main_login.js' %}"></script>
+
 	{% if errmsg %}
 			<script>
 
@@ -67,6 +68,12 @@
 
 			</script>
 		 {% endif %}
+		 
+	{% for message in messages %}
+		<script>
+		alert("{{message}}")
+		</script>
+    {% endfor %}
 
 	</body>
 

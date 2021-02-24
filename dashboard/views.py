@@ -14,7 +14,7 @@ from django.db.models.functions import TruncMonth
 
 
 #using get and post method in django framework
-@login_required(login_url='/auth/login/')
+@login_required(login_url='auth_user')
 def dashboard(request):
     if request.method == "POST":
         from_month = request.POST.get('from_month')

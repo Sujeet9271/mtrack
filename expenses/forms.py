@@ -9,7 +9,7 @@ class DateInput(forms.DateInput):
 class ExpensesForm(ModelForm):
     title = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Title'}))
     costs = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Costs'}))
-    description = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Description'}))
+    description = forms.CharField(required=False,widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Description'}))
     date = forms.DateField(widget=forms.widgets.DateInput(attrs={'class':'form-control', "type": "date"}))
 
     def __init__(self, user, *args, **kwargs):

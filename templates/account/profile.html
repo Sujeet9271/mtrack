@@ -60,10 +60,15 @@
                       {% csrf_token %}
                       {{ user_form.as_p }}
                       {{ profile_form.as_p }}
+
                       <button class="btn btn-success" type="submit">Update</button>
+                      <button class="btn btn-success" onclick="profile_delete();">Delete Account</button>
+
+                      
 
                             </fieldset>
                       </form>
+                      
 
 
                 </div>
@@ -82,6 +87,19 @@
       alert("{{message}}")
     </script>
     {% endfor %}
+
+    <script>
+      function profile_delete(){
+        bootbox.confirm("Deleting your account will delete all your data. Want to continue?", function(result)
+        {
+            if(result){
+                window.location.href="{% url 'profile_delete' %}"
+                }
+         });
+        }
+          
+      
+    </script>
 
 
 

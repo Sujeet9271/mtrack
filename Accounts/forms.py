@@ -14,12 +14,13 @@ class UserForm(forms.ModelForm):
         fields=('username','first_name','last_name', 'email')
 
 class ProfileForm(forms.ModelForm):
-    address = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'address'}))
-    work = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'work'}))
+    address = forms.CharField(required=False,widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'address'}))
+    work = forms.CharField(required=False,widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'work'}))
 
     class Meta:
         model = Profile
         fields=('address','work')
+
 
 
 

@@ -3,13 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
-from django.db.models import Sum
-from expenses.views import expenseChart
-from expenses.models import Expenses,Category
-from income.models import Income
-from income.views import incomeChart
 from .forms import ProfileForm,UserForm
-import json,datetime
+
 
 
 
@@ -20,6 +15,12 @@ def login(request):
     else:
         u = request.POST.get('username')
         p = request.POST.get('password')
+        check=User.objects.filter(username=u).exists()
+        if check==False:
+            context = {
+                'errmsg': 'User doesnot exists'
+                }
+            return render(request, 'account/login.html', context)
         user = authenticate(username=u, password=p)
         if user is not None:
             auth.login(request, user)
@@ -29,6 +30,9 @@ def login(request):
                 'errmsg': 'Username or Password is Wrong'
             }
             return render(request, 'account/login.html', context)
+
+        
+
 
 
 
@@ -51,15 +55,11 @@ def register(request):
             else:
                 user = User.objects.create_user(username=username, password=password1, first_name=first_name, last_name=last_name, email=email)
                 user.save()
-                user.profile.save()
-                messages.info(request, "Registered successfully")
-
-            return redirect('auth_user')
+                user.profile.save()                
+            return render(request,'account/login',{'msg': 'Registered Successfully'})
         else:
             messages.error(request, "Confirmed Password doesn't match")
             return redirect('register')
-
-
     else:
         return render(request, 'account/register.html')
 
@@ -69,12 +69,12 @@ def _logout(request):
     return redirect('auth_user')
 
 
-@login_required(login_url='/auth/login/')
+@login_required(login_url='auth_user')
 def profile(request):
     if request.method == 'POST':
         user_form = UserForm(request.POST, instance=request.user)
         profile_form = ProfileForm(request.POST, instance=request.user.profile)
-        if user_form.is_valid() and profile_form.is_valid():
+        if user_form.is_valid() and profile_form.is_valid():            
             user_form.save()
             profile_form.save()
             messages.success(request, ('Your profile was successfully updated!'))
@@ -87,5 +87,12 @@ def profile(request):
 
     return render(request, 'account/profile.html', {'user_form': user_form,'profile_form': profile_form})
 
-
+@login_required(login_url='auth_user')
+def profile_delete(request):
+    print('working')
+    u = User.objects.get(id=request.user.id)
+    u.delete()
+    messages.success(request, "The user is deleted")
+    return redirect('auth_user')
+        
 
