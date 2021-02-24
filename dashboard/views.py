@@ -27,12 +27,19 @@ def dashboard(request):
 
         incomes_list=[Income.objects.select_related('user').filter(user_id=request.user.id,date__year=year, date__month=month).aggregate(Sum('income'))['income__sum']]
         expenses_list=[Expenses.objects.select_related('user').filter(user_id=request.user.id,date__year=year, date__month=month).aggregate(Sum('costs'))['costs__sum']]
+        if incomes_list[0] is None:
+            incomes_list[0] = 0
+
+        if expenses_list[0] is None:
+            expenses_list[0] = 0
+
+
         savings_list = [incomes_list[0]-expenses_list[0] if incomes_list[0]>expenses_list[0] else 0]
 
-        expenses = Expenses.objects.filter(user_id=request.user.id)
+        expenses = Expenses.objects.filter(user_id=request.user.id,date__year=year, date__month=month)
         categories = Category.objects.filter(user_id=request.user.id)
 
-        incomes=Income.objects.filter(user_id=request.user.id)
+        incomes=Income.objects.filter(user_id=request.user.id,date__year=year, date__month=month)
 
         incomedata=incomeChartapi(incomes)
         expensedata=expenseChartapi(expenses,categories)
