@@ -1,46 +1,17 @@
-<!DOCTYPE html>
+{% extends 'master/base.html' %}
+
 {% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <title>ExpenseTracker</title>
+
+{% block 'title' %}
+  Profile
+{% endblock %}
+{% block 'css' %}
     
-</head>
-<body>
+{% endblock %}
 
-<nav class="navbar navbar-expand-lg navbar-light" style="background-color:#85bb65;">
-        <a class="navbar-brand" href="{% url 'dashboard' %}">ExpenseTracker</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+{% block 'content' %}
 
-        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-
-          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'income_home' %}">Income <span class="sr-only">(current)</span></a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'expenses_home' %}">Expense</a>
-            </li>
-              <li class="nav-item">
-              <a class="nav-link" href="{% url 'home' %}">Home</a>
-            </li>
-
-          </ul>
-
-          <a href="{% url 'profile' %}"><button class="btn btn-outline-success my-2 my-sm-0" type="submit">Profile</button></a>
-
-          <a href="{% url 'logout' %}"><button class="btn btn-outline-success my-2 my-sm-0" type="submit">LogOut</button></a>
-
-        </div>
-    </nav>
- <div class="container pt-5">
+<div class="container pt-5">
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">ExpenseTracker</a></li>
@@ -51,9 +22,9 @@
 
                 <div class="container">
 
-                      <form method="POST">
+                  <form method="POST">
                           {% csrf_token %}
-                             <fieldset>
+                    <fieldset>
 
                      <legend>Profile:</legend>
 
@@ -62,25 +33,17 @@
                       {{ profile_form.as_p }}
 
                       <button class="btn btn-success" type="submit">Update</button>
-                      <button class="btn btn-success" onclick="profile_delete();">Delete Account</button>
-
                       
-
-                            </fieldset>
-                      </form>
+                    </fieldset>
+                  </form>
                       
-
-
+                  <button class="mt-3 btn btn-success" onclick="profile_delete();">Delete Account</button>
+                
                 </div>
 
     </div>
  </div>
 
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="{% static 'js/bootbox.min.js' %}"></script>
 
 {% for message in messages %}
     <script>
@@ -90,20 +53,31 @@
 
     <script>
       function profile_delete(){
-        bootbox.confirm("Deleting your account will delete all your data. Want to continue?", function(result)
-        {
-            if(result){
+        bootbox.confirm({
+            message: "<h3>Deleting the account will delete all your stored data.</h3><h4>Income = {{income}} records <br> Category = {{category}} records <br> Expenses = {{expense}} records </h4><br> <h6>Want to delete your account?</h6>",
+            buttons: {
+            confirm: {
+                label: 'Continue',
+                className: 'btn-primary'
+            },
+            cancel: {
+                label: "Don't Delete",
+                className: 'btn-danger'
+            }
+        },
+        callback: function (result) {
+            if (result)
                 window.location.href="{% url 'profile_delete' %}"
-                }
-         });
         }
-          
+        });
+        }
+        
       
     </script>
 
+{% endblock %}
 
+ 
 
-</body>
-</html>
 
 

@@ -156,10 +156,10 @@ def expenseChart(expenses,categories):
 
 @login_required(login_url='/auth/login/')
 def exp_category(request):  # Category Page
-    data = Category.objects.filter(user_id=request.user.id)
+    category = Category.objects.filter(user_id=request.user.id)
     if request.method == 'GET':
         context = {
-            'data': data
+            'data': category
         }
         return render(request, 'expenses/exp_category.html', context)
     else:
@@ -169,12 +169,12 @@ def exp_category(request):  # Category Page
             c.save()
             context = {
                 'msg': 'Added Successfully',
-                'data': data
+                'data': category
             }
             return render(request, 'expenses/exp_category.html', context)
         except:
             context = {
-                'data': data,
+                'data': category,
                 'errmsg': 'Currently Unable to insert data'
             }
             return render(request, 'expenses/exp_category.html', context)

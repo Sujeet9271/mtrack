@@ -13,7 +13,8 @@ ExpenseTracker| Expenses
           <li class="breadcrumb-item active" aria-current="page">Add Expenses</li>
         </ol>
       </nav>
-         <div class="row">
+
+        <div class="row">
 
                     {% include 'partials/sidebar.html' %}
 
@@ -32,22 +33,22 @@ ExpenseTracker| Expenses
                                 </div>
 
                     </div>
-         </div>
+        </div>
 
     </div>
-<script>
+    <script>
 
-          document.getElementById("id_date").valueAsDate = new Date();
+              document.getElementById("id_date").valueAsDate = new Date();
 
-          {% if msg %}
-                   alert("{{msg}}")
-        {% endif %}
-        
-          {% if errmsg %}
-                   alert("{{errmsg}}")
-          {% endif %}
+              {% if msg %}
+                      alert("{{msg}}")
+            {% endif %}
+            
+              {% if errmsg %}
+                      alert("{{errmsg}}")
+              {% endif %}
 
 
 
-</script>
+    </script>
 {% endblock %}

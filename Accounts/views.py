@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from .forms import ProfileForm,UserForm
+from expenses.models import Expenses,Category
+from income.models import Income
 
 
 
@@ -84,15 +86,19 @@ def profile(request):
     else:
         user_form = UserForm(instance=request.user)
         profile_form = ProfileForm(instance=request.user.profile)
+        income=Income.objects.filter(user_id=request.user.id).count()
+        expense=Expenses.objects.filter(user_id=request.user.id).count()
+        category=Category.objects.filter(user_id=request.user.id).count()
 
-    return render(request, 'account/profile.html', {'user_form': user_form,'profile_form': profile_form})
+    return render(request, 'account/profile.html', {'user_form': user_form,'profile_form': profile_form,'income':income,'expense':expense,'category':category})
 
 @login_required(login_url='auth_user')
 def profile_delete(request):
-    print('working')
+    income=Income.objects.filter(user_id=request.user.id).count()
+    expense=Expenses.objects.filter(user_id=request.user.id).count()
     u = User.objects.get(id=request.user.id)
     u.delete()
-    messages.success(request, "The user is deleted")
+    messages.success(request, "Account deleted successfully")
     return redirect('auth_user')
         
 

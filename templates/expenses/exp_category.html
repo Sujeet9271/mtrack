@@ -59,12 +59,25 @@ ExpenseTracker| Expenses
 </div>
 <script>
     function _delete(url){
-     bootbox.confirm("Deleting the category will result in deleting all the values of this category.\nConfirmation to delete.", function(result){
-        if(result){
-            window.location.href=url
+        bootbox.confirm({
+            message: "<h4>Deleting the Category will delete all your stored expenses of this category.</h4> <br> <h6>Want to delete your account?</h6>",
+            buttons: {
+            confirm: {
+                label: 'Continue',
+                className: 'btn-primary'
+            },
+            cancel: {
+                label: "Don't Delete",
+                className: 'btn-danger'
             }
-     });
-    }
+        },
+        callback: function (result) {
+            if (result)
+                window.location.href=url
+        }
+        });
+        }
+    
 
     {% if msg %}                
         bootbox.dialog({message:'{{msg}}',closeButton:false});

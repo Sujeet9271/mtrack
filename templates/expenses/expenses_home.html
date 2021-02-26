@@ -2,13 +2,12 @@
 {% block 'title' %}
 ExpenseTracker| Expenses
 {% endblock %}
+
 {% block 'css' %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 {% endblock %}
 
-{% block 'active_page' %}
- <a class="navbar-brand" href="{% url 'expenses_home' %}">Expenses</a>
-{% endblock %}
+
 
 {% block 'content' %}
 
@@ -26,8 +25,7 @@ ExpenseTracker| Expenses
 
         <div class="col-md-8">
 
-
-                      <div class="jumbotron" style="background: rgba(133, 187, 101, 0.1);">
+                    <div class="jumbotron" style="background: rgba(133, 187, 101, 0.1);">
 
                                <fieldset>
                                     <legend>Expenses in the month of {{month}}</legend>
@@ -65,15 +63,16 @@ ExpenseTracker| Expenses
                                    {% endif %}
                                </fieldset>
 
-                     </div>
-                        <div class="card" style="width: 500; height: 50vh; margin-bottom: 20px;">
-                            <canvas id="myChart"></canvas>
-                        </div>
-                </div>
+                    </div>
+
+                    <div class="card" style="width: 500; height: 50vh; margin-bottom: 20px;">
+                        <canvas id="myChart"></canvas>
+                    </div>
 
         </div>
 
     </div>
+</div>
 
 
 
@@ -149,7 +148,7 @@ ExpenseTracker| Expenses
             {% endfor %}
         {% endif %}
          
-        </script>
+    </script>
 
 
 {% endblock %}

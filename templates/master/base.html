@@ -24,39 +24,36 @@
 </head>
 <body>
 
+  
   <nav class="navbar sticky-top navbar-expand-lg navbar-light" style="background-color:#85bb65; background: rgba(133, 187, 101);">
     <a class="navbar-brand" href="{% url 'dashboard' %}">ExpenseTracker</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
 
-          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'home' %}">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'income_home' %}">Income <span class="sr-only">(current)</span></a>
-            </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'income_home' %}">Income <span class="sr-only">(current)</span></a>
+        </li>
 
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'expenses_home' %}">Expense</a>
-            </li>
-            <!-- <li>
-              <button onclick="myFunction()">Toggle dark mode</button>
-            </li> -->
-              
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'expenses_home' %}">Expense</a>
+        </li>
+          <li class="nav-item">
+          <a class="nav-link" href="{% url 'home' %}">Home</a>
+        </li>
 
-          </ul>
+      </ul>
 
-          <a href="{% url 'profile' %}"><button class="btn btn-outline-success my-2 my-sm-0" style="margin:5px;" type="submit">Profile</button></a>
+      <a href="{% url 'profile' %}"><button class="btn btn-success my-2 my-sm-0" style="margin:5px;"  type="submit">Profile</button></a>
 
-          <a href="{% url 'logout' %}"><button class="btn btn-outline-success my-2 my-sm-0" style="margin:5px;" type="submit">LogOut</button></a>
+      <a href="{% url 'logout' %}"><button class="btn btn-success my-2 my-sm-0" style="margin:5px;" type="submit">LogOut</button></a>
 
-        </div>
-    </nav>
+    </div>
+</nav>
 
     {% block 'content' %}
 

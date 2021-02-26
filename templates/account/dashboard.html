@@ -1,49 +1,17 @@
-<!DOCTYPE html>
+{% extends 'master/base.html' %}
+
 {% load static %}
-<html lang="en">
-<head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw==" crossorigin="anonymous"></script>
+{% block 'title' %}
+  Dashboard
+{% endblock %}
+{% block 'css' %}
     
+{% endblock %}
 
-    <title>ExpenseTracker</title>
-    
-</head>
-<body>
+{% block 'content' %}
 
-    <nav class="navbar sticky-top navbar-expand-lg navbar-light" style="background-color:#85bb65; background: rgba(133, 187, 101);">
-        <a class="navbar-brand" href="{% url 'dashboard' %}">ExpenseTracker</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
 
-        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-
-          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'income_home' %}">Income <span class="sr-only">(current)</span></a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'expenses_home' %}">Expense</a>
-            </li>
-              <li class="nav-item">
-              <a class="nav-link" href="{% url 'home' %}">Home</a>
-            </li>
-
-          </ul>
-
-          <a href="{% url 'profile' %}"><button class="btn btn-outline-success my-2 my-sm-0" style="margin:5px;"  type="submit">Profile</button></a>
-
-          <a href="{% url 'logout' %}"><button class="btn btn-outline-success my-2 my-sm-0" style="margin:5px;" type="submit">LogOut</button></a>
-
-        </div>
-    </nav>
     <div class="container pt-5">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -59,7 +27,7 @@
         <!-- Detail Form -->
         <div class="col-md-6">
 
-        <div class="card table-responsive" style="background: rgba(133, 187, 101, 0.1);width: 500; height: 60vh; margin-top: 10px; margin-bottom: 20px;">
+        <div class="card table-responsive" style="background: rgba(133, 187, 101, 0.1);width: 500; height: 60vh;  margin-bottom: 20px;">
 
             <div class="container" style="margin-top:20px; margin-bottom: 20px;">
                 <form class="form" name="datefilter" method="POST">
@@ -100,7 +68,7 @@
         </div>
         <!-- Detail Chart -->
         <div class="col-md-6">
-            <div class="card" style="width: 500; height: 60vh; margin-top: 10px; margin-bottom: 20px;">
+            <div class="card" style="width: 500; height: 60vh;  margin-bottom: 20px;">
             
                 <canvas id="details"></canvas>
             
@@ -117,14 +85,14 @@
         <!-- expense chart -->
         <div class="col-md-6">
     
-            <div class="card" style="width: 500; height: 60vh; margin-top: 10px; margin-bottom: 20px;">
+            <div class="card" style="width: 500; height: 60vh;  margin-bottom: 20px;">
             <canvas id="expenseChart"></canvas>
             </div>
     
         </div>
             <!-- income chart -->
             <div class="col-md-6">
-            <div class="card" style="width: 500; height: 60vh; margin-top: 10px; margin-bottom: 20px;">            
+            <div class="card" style="width: 500; height: 60vh;  margin-bottom: 20px;">            
                 <canvas id="incomeChart"></canvas>            
             </div>
             </div>
@@ -134,11 +102,6 @@
     </div>
     
 
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="{% static 'js/bootbox.min.js' %}"></script>
 
 <script>
 
@@ -329,7 +292,5 @@
 
       document.onload = mycharts();
 </script>
-</body>
-</html>
-
+{% endblock %}
 
