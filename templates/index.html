@@ -1,49 +1,48 @@
 {% extends 'master/base.html' %}
 {% load static %}
 {% block 'title' %}
-Home
+Home | M-track
 {% endblock %}
 
 
 {% block 'css' %}
-    <style>
+    
+<style>
+  .cards {
+    max-width: 100%;
+    margin: 0 auto;
+    display: grid;
+    grid-gap: 4rem;
+  }
 
-          .cards {
-            max-width: 100%;
-            margin: 0 auto;
-            display: grid;
-            grid-gap: 3rem;
-          }
-
-          @media (min-width: 550px) {
-            .cards { 
-              grid-template-columns: repeat(2, 1fr);
-              
-              }
-          }
-
-    </style>
+  @media (min-width: 395px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
 
 {% endblock %}
 
 
+
 {% block 'content' %}
 
-    
-      <div class="container mt-5">
+{% if user.is_authenticated %}
 
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">ExpenseTracker</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Home</li>
-          </ol>
-        </nav>
 
-        <div class="cards" >
+  <div class="container mt-5">
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">ExpenseTracker</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Home</li>
+      </ol>
+    </nav>
+
+    <div class="cards" >
 
           <a href="{% url 'income_home' %}" class="stretched-link">
             <div class="card" style="background: rgba(133, 187, 101, 0.25); ">
-              <img src="{% static 'image/income.jpeg' %}" class="img-fluid" style="width: 100% \9; height: 100% \9; ">
+              <img src="{% static 'image/income.jpeg' %}" class="img-fluid" style="width: 100% \9; height: 75% \9; margin: 10px;">
               <div class="card-body">
                   <h4 class="card-title">Income</h4>
               </div>
@@ -52,15 +51,30 @@ Home
 
           <a href="{% url 'expenses_home' %}" class="stretched-link">
               <div class="card" style="background: rgba(133, 187, 101, 0.25); margin-bottom: 20px;">
-                <img src="{% static 'image/Expense.jpeg' %}" class="img-fluid" style="width: 100% \9;height: 100% \9; ">
+                <img src="{% static 'image/Expense.jpeg' %}" class="img-fluid" style="width: 100% \9;height: 75% \9; margin: 10px;">
                 <div class="card-body">
                   <h4 class="card-title">Expenses</h4>
                 </div>
               </div>
           </a>
 
-        </div>
+    </div>
 
-      </div>
-      
+
+  </div>
+  
+
+  
+{% else %}
+<div class="container mt-5">
+  <h1>Welcome to Mtrack</h1>
+  <h3>This app is under development.</h3>
+  You are not logged in
+  <h4>Already a user?</h4>
+  <a href="{% url 'dashboard' %}">Click here to continue</a>
+  <h4>New User?</h4>
+  <a href="{% url 'register' %}">Click here to continue</a>
+</div>
+{% endif %}
+
 {% endblock %}
