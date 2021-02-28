@@ -26,7 +26,7 @@ SECRET_KEY = ')=r&ymx4dum38wax9fo!1jdcvql+_^t72#awhdwug+0qh8s-qy'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['mtrack2.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'expenses',
     'income',
     'Accounts'
+    
 ]
 
 MIDDLEWARE = [
