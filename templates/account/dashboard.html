@@ -27,7 +27,7 @@
         <!-- Detail Form -->
         <div class="col-md-6">
 
-        <div class="card table-responsive" style="background: rgba(133, 187, 101, 0.1);width: 500; height: 60vh;  margin-bottom: 20px;">
+        <div class="card table-responsive" style="background: rgba(133, 187, 101, 0.1);width: 500; height: 60vh;">
 
             <div class="container" style="margin-top:20px; margin-bottom: 20px;">
                 <form class="form" name="datefilter" method="POST">
@@ -55,13 +55,16 @@
                                 <label>Savings:</label>
                                     <input class="form-control" id='saving' type="number" name="savings" value="{{total_savings}}" readonly>
     
-                                <div class="container pt-3"><a href="{% url 'home' %}"><button class="btn btn-primary" value="Add Data">ADD DATA</button></a></div>
+                                <div class="container pt-3">
+                                    <a href="{% url 'inc_create' %}"><button class="btn btn-primary mt-1 mb-1" value="Add Income">ADD Income</button></a>
+                                    <a href="{% url 'exp_create' %}"><button class="btn btn-primary mt-1 mb-1" value="Add Expense">ADD Expense</button></a>
+                                </div>
     
                 </fieldset>
     
+            </div>
     
-    
-            </div> 
+            
 
         </div>
 

@@ -74,14 +74,19 @@ M-Track| Income
 
     </div>
 
-
+{% for message in messages %}
+    <script>
+    alert("{{message}}")
+    </script>
+{% endfor %}
 <script>
         $('.accordion-toggle').click(function(){
         $('.hiddenRow').hide();
         $(this).next('tr').find('.hiddenRow').show();
         });
-   </script>
-   <script>
+        
+</script>
+<script>
     const renderincomeChart=(amount,sources) => {
             var ctx = document.getElementById('incomeChart').getContext('2d');
             var incomeChart = new Chart(ctx, {
@@ -139,7 +144,7 @@ M-Track| Income
             };
     
     document.onload = getincomeChartData(); 
-    </script>
+</script>
 
 
 {% endblock %}

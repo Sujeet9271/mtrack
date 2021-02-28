@@ -61,13 +61,6 @@
 
 		<script type="text/javascript" src="{% static 'js/main_login.js' %}"></script>
 
-	{% if errmsg %}
-			<script>
-
-				alert("{{errmsg}}")
-
-			</script>
-		 {% endif %}
 		 
 	{% for message in messages %}
 		<script>

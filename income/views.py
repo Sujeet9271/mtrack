@@ -148,13 +148,11 @@ def incomes_home(request):
 
 def incomeChart(incomes):
     incomedata = {}
-
     def source_sum(source): 
         inc = incomes.filter(source=source).aggregate(Sum('income'))       
         return inc['income__sum']
     
     source_list=[]
-
     for income in incomes:
         source_list.append(income.source)       
 
@@ -182,12 +180,8 @@ def create(request):
             data = form.save(commit=False)
             data.user = request.user
             data.save()
-            context = {
-                'msg': 'Added Successfully',
-                'form': form,
-            }
-
-            return render(request, 'incomes/create.html', context)
+            messages.success(request,'Income Added Successfully')
+            return redirect('income_home')
         else:
             context = {
                 'errmsg': 'Could not Add',
@@ -207,7 +201,11 @@ def edit(request, id):
             'msg': 'Edited Successfully!!'
         }
         return render(request, 'incomes/edit.html', context)
-    return render(request, 'incomes/edit.html', {'form': form})
+        context = {
+            'form': form,
+            'msg': 'Failed to update'
+        }
+    return render(request, 'incomes/edit.html', context)
 
 @login_required(login_url='/auth/login/')
 def inc_delete(request, id):

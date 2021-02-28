@@ -17,21 +17,16 @@ def login(request):
     else:
         u = request.POST.get('username')
         p = request.POST.get('password')
-        check=User.objects.filter(username=u).exists()
-        if check==False:
-            context = {
-                'errmsg': 'User doesnot exists'
-                }
-            return render(request, 'account/login.html', context)
+        if User.objects.filter(username=u).exists()==False:
+            messages.error(request, 'User doesnot exists')            
+            return redirect('auth_user')
         user = authenticate(username=u, password=p)
         if user is not None:
             auth.login(request, user)
             return redirect('dashboard')
         else:
-            context = {
-                'errmsg': 'Username or Password is Wrong'
-            }
-            return render(request, 'account/login.html', context)
+            messages.error(request, 'Username or Password is incorrect')            
+            return redirect('auth_user')
 
         
 
@@ -57,8 +52,10 @@ def register(request):
             else:
                 user = User.objects.create_user(username=username, password=password1, first_name=first_name, last_name=last_name, email=email)
                 user.save()
-                user.profile.save()                
-            return render(request,'account/login',{'msg': 'Registered Successfully'})
+                messages.success(request, 'Registered Succesfullly')
+                user.profile.save()  
+
+            return redirect('auth_user')
         else:
             messages.error(request, "Confirmed Password doesn't match")
             return redirect('register')
