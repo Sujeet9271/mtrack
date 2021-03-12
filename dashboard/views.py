@@ -27,6 +27,7 @@ def dashboard(request):
 
         incomes_list=[Income.objects.select_related('user').filter(user_id=request.user.id,date__year=year, date__month=month).aggregate(Sum('income'))['income__sum']]
         expenses_list=[Expenses.objects.select_related('user').filter(user_id=request.user.id,date__year=year, date__month=month).aggregate(Sum('costs'))['costs__sum']]
+        
         if incomes_list[0] is None:
             incomes_list[0] = 0
 
@@ -77,25 +78,17 @@ def dashboard(request):
         total_income_month=[month for month in income_month.keys()]
         total_expense_month=[month for month in expense_month.keys()]
 
-        total_month=total_expense_month+total_income_month
+        total_month= list(set(total_expense_month+total_income_month))
         
         detail_by_month={}
         for m in total_month:
             month=datetime.date(2000,m,1).strftime('%B')
             detail_by_month[month]={} 
             if m in income_month.keys() and expense_month.keys():
-                    detail_by_month[month]['Expenses']=expense_month[m]
-                    detail_by_month[month]['Incomes']=income_month[m]                    
-                    detail_by_month[month]['Savings']=(income_month[m]- expense_month[m]) if income_month[m]>expense_month[m] else 0
-            else:
-                if m in income_month.keys():
-                    detail_by_month[month]['Expenses']=0
-                    detail_by_month[month]['Incomes']=income_month[m]                    
-                    detail_by_month[month]['Savings']=income_month[m]
-                elif m in expense_month.keys():
-                    detail_by_month[month]['Expenses']=expense_month[m]
-                    detail_by_month[month]['Incomes']=0
-                    detail_by_month[month]['Savings']=0               
+                    detail_by_month[month]['Expenses']=expense_month[m] if m in expense_month.keys() else 0
+                    detail_by_month[month]['Incomes']=income_month[m] if m in income_month.keys() else 0                 
+                    detail_by_month[month]['Savings']=(detail_by_month[month]['Incomes']- detail_by_month[month]['Expenses']) if detail_by_month[month]['Incomes']>detail_by_month[month]['Expenses'] else 0
+                     
 
             
 
