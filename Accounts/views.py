@@ -52,10 +52,10 @@ def register(request):
             else:
                 user = User.objects.create_user(username=username, password=password1, first_name=first_name, last_name=last_name, email=email)
                 user.save()
+                user.email_user('Mtrack','You have successfully registered on Mtrack')
                 messages.success(request, 'Registered Succesfullly')
                 user.profile.save()  
-
-            return redirect('auth_user')
+                return redirect('auth_user')
         else:
             messages.error(request, "Confirmed Password doesn't match")
             return redirect('register')
