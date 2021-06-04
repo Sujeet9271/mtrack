@@ -6,6 +6,7 @@ from expenses.views import expenseChart
 from expenses.models import Expenses,Category
 from income.models import Income
 from income.views import incomeChart
+from .forms import DateForm
 import json,datetime
 from django.http import JsonResponse
 from django.db import connection
@@ -14,7 +15,7 @@ from django.db.models.functions import TruncMonth
 
 
 #using get and post method in django framework
-@login_required(login_url='auth_user')
+
 def dashboard(request):
     if request.method == "POST":
         from_month = request.POST.get('from_month')
@@ -60,7 +61,9 @@ def dashboard(request):
 
         return render(request, 'account/dashboard.html', context)
 
-    else:        
+    else:
+        
+
         income_by_month=[data for data in Income.objects.filter(user_id=request.user.id).values('date__month').annotate(Income=Sum('income'))]       
         expense_by_month=[data for data in Expenses.objects.filter(user_id=request.user.id).values('date__month').annotate(Expense=Sum('costs'))]
 
@@ -88,10 +91,15 @@ def dashboard(request):
                     detail_by_month[month]['Expenses']=expense_month[m] if m in expense_month.keys() else 0
                     detail_by_month[month]['Incomes']=income_month[m] if m in income_month.keys() else 0                 
                     detail_by_month[month]['Savings']=(detail_by_month[month]['Incomes']- detail_by_month[month]['Expenses']) if detail_by_month[month]['Incomes']>detail_by_month[month]['Expenses'] else 0
-                     
-
-            
-
+            elif m not in income_month.keys():
+                detail_by_month[month]['Incomes']= 0
+                detail_by_month[month]['Expenses']=expense_month[m]
+                detail_by_month[month]['Savings']=0
+            elif m not in expense_month.keys():
+                detail_by_month[month]['Expenses']= 0
+                detail_by_month[month]['Incomes']=income_month[m]
+                detail_by_month[month]['Savings']=income_month[m]
+          
         expenses = Expenses.objects.filter(user_id=request.user.id)
         categories = Category.objects.filter(user_id=request.user.id)
 
@@ -113,10 +121,22 @@ def dashboard(request):
         total_income=sum(incomes_list)
         total_expense=sum(expenses_list)
         total_savings=sum(savings_list)
+        
+       
+        income_year=[]
+        for data in Income.objects.filter(user_id=request.user.id).values('date__year'):
+            income_year.append(data['date__year'])                     
+                    
+        expense_year=[]
+        for data in Expenses.objects.filter(user_id=request.user.id).values('date__year'):
+            expense_year.append(data['date__year'])  
+        
+        total_year=list(set(income_year+expense_year)) 
 
         context = {
             'monthlydetail':json.dumps('true'),
             'month_list':json.dumps(month_list),
+            'year':total_year,
             'expenses_list':json.dumps(expenses_list),
             'incomes_list':json.dumps(incomes_list),
             'savings_list':json.dumps(savings_list),
@@ -124,8 +144,10 @@ def dashboard(request):
             'total_expenses':json.dumps(total_expense),
             'total_savings':json.dumps(total_savings),
             "expenses":json.dumps(expensedata),
-            "incomes":json.dumps(incomedata),                       
+            "incomes":json.dumps(incomedata),    
+                              
         }
+        print(context)
 
         return render(request, 'account/dashboard.html', context)
 

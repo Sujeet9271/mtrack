@@ -3,7 +3,6 @@ from . import views
 
 
 urlpatterns=[
-    path('',views.dashboard,name="dashboard"),
     path('new/',views.dashboardapiview,name="dashboardapiview"),
     path('api/', views.dashboardapi, name='dashboardapi')
 ]

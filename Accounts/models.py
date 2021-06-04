@@ -8,10 +8,13 @@ class Profile(models.Model):
     address = models.CharField(max_length=20, null=True,blank=True)
     work = models.CharField(max_length=50, null=True,blank=True)
 
+
+    
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
-            profile, created = Profile.objects.get_or_create(user=instance)
+            profile = Profile.objects.get_or_create(user=instance)
     post_save.connect(create_user_profile, sender=User)
+
 
     def __str__(self):
         return str(self.user)

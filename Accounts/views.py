@@ -65,7 +65,7 @@ def register(request):
 
 def _logout(request):
     logout(request)
-    return redirect('home')
+    return redirect('dashboard')
 
 
 @login_required(login_url='auth_user')
@@ -96,6 +96,6 @@ def profile_delete(request):
     u = User.objects.get(id=request.user.id)
     u.delete()
     messages.success(request, "Account deleted successfully")
-    return redirect('home')
+    return redirect('dashboard')
         
 
