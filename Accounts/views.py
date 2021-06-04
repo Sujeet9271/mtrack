@@ -28,11 +28,6 @@ def login(request):
             messages.error(request, 'Username or Password is incorrect')            
             return redirect('auth_user')
 
-        
-
-
-
-
 
 def register(request):
     if request.method == 'POST':

@@ -1,0 +1,18 @@
+.glyphicon-trash{
+color:red;}
+body {
+
+ background-color: #fff;
+}
+.leftside, .rightside{
+height:100vh
+width:100%
+}
+
+.leftside{
+ background:red;
+}
+
+.rightside{
+ background:blue;
+}
