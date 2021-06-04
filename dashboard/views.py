@@ -118,9 +118,9 @@ def dashboard(request):
             incomes_list.append(detail_by_month[key]['Incomes'])
             savings_list.append(detail_by_month[key]['Savings'])
             
-        total_income=sum(incomes_list)
-        total_expense=sum(expenses_list)
-        total_savings=sum(savings_list)
+        total_income  = sum(incomes_list)
+        total_expense = sum(expenses_list)
+        total_savings = total_income - total_expense if total_income>total_expense else 0
         
        
         income_year=[]
