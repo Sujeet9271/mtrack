@@ -6,9 +6,7 @@ from django.contrib.auth.models import User, auth
 from .forms import ProfileForm,UserForm
 from expenses.models import Expenses,Category
 from income.models import Income
-
-
-
+from django.contrib.auth.views import LoginView
 
 
 def login(request):
@@ -47,7 +45,7 @@ def register(request):
             else:
                 user = User.objects.create_user(username=username, password=password1, first_name=first_name, last_name=last_name, email=email)
                 user.save()
-                user.email_user('Mtrack','You have successfully registered on Mtrack')
+                # user.email_user('Mtrack','You have successfully registered on Mtrack')
                 messages.success(request, 'Registered Succesfullly')
                 user.profile.save()  
                 return redirect('auth_user')
@@ -60,7 +58,7 @@ def register(request):
 
 def _logout(request):
     logout(request)
-    return redirect('dashboard')
+    return redirect('auth_user')
 
 
 @login_required(login_url='auth_user')

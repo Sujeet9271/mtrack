@@ -1,16 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.db.models import Sum
-from expenses.views import expenseChart
 from expenses.models import Expenses,Category
 from income.models import Income
-from income.views import incomeChart
-from .forms import DateForm
 import json,datetime
 from django.http import JsonResponse
-from django.db import connection
-from django.db.models.functions import TruncMonth
 
 
 

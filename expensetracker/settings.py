@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = ')=r&ymx4dum38wax9fo!1jdcvql+_^t72#awhdwug+0qh8s-qy'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
@@ -128,13 +128,6 @@ STATICFILES_DIRS=[os.path.join(BASE_DIR, 'static')]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'sujeet9271@gmail.com'
-EMAIL_HOST_PASSWORD='nthbhpraleqyglbk'
-EMAIL_USE_TLS = True
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
