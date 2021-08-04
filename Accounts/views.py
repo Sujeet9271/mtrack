@@ -2,28 +2,28 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.contrib.auth.models import User, auth
+from django.contrib.auth.models import User
 from .forms import ProfileForm,UserForm
 from expenses.models import Expenses,Category
 from income.models import Income
-from django.contrib.auth.views import LoginView
 
 
-def login(request):
+def log_in(request):
     if request.method == 'GET':
         return render(request, 'account/login.html')
     else:
         u = request.POST.get('username')
         p = request.POST.get('password')
-        if User.objects.filter(username=u).exists()==False:
-            messages.error(request, 'User doesnot exists')            
-            return redirect('auth_user')
-        user = authenticate(username=u, password=p)
-        if user is not None:
-            auth.login(request, user)
-            return redirect('dashboard')
+        if User.objects.filter(username=u).exists():           
+            user = authenticate(username=u, password=p)
+            if user is not None:
+                login(request, user)
+                return redirect('dashboard')
+            else:
+                messages.error(request, 'Username or Password is incorrect')            
+                return redirect('auth_user')
         else:
-            messages.error(request, 'Username or Password is incorrect')            
+            messages.error(request, 'User doesnot exists')            
             return redirect('auth_user')
 
 
@@ -56,7 +56,7 @@ def register(request):
         return render(request, 'account/register.html')
 
 
-def _logout(request):
+def log_out(request):
     logout(request)
     return redirect('auth_user')
 
