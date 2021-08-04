@@ -12,9 +12,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = ')=r&ymx4dum38wax9fo!1jdcvql+_^t72#awhdwug+0qh8s-qy'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1','mtrack2.herokuapp.com']
 
 
 # Application definition
