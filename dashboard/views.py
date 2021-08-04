@@ -9,7 +9,7 @@ from django.http import JsonResponse
 
 
 #using get and post method in django framework
-
+@login_required(login_url='/auth/login/')
 def dashboard(request):
     if request.method == "POST":
         from_month = request.POST.get('from_month')
@@ -56,11 +56,6 @@ def dashboard(request):
         return render(request, 'account/dashboard.html', context)
 
     else:
-        
-
-        income_by_month=[data for data in Income.objects.filter(user_id=request.user.id).values('date__month').annotate(Income=Sum('income'))]       
-        expense_by_month=[data for data in Expenses.objects.filter(user_id=request.user.id).values('date__month').annotate(Expense=Sum('costs'))]
-
         income_month={}
         for data in Income.objects.filter(user_id=request.user.id).values('date__month').annotate(Income=Sum('income')):
             month=data['date__month']           
@@ -84,7 +79,7 @@ def dashboard(request):
             if m in income_month.keys() and expense_month.keys():
                     detail_by_month[month]['Expenses']=expense_month[m] if m in expense_month.keys() else 0
                     detail_by_month[month]['Incomes']=income_month[m] if m in income_month.keys() else 0                 
-                    detail_by_month[month]['Savings']=(detail_by_month[month]['Incomes']- detail_by_month[month]['Expenses']) if detail_by_month[month]['Incomes']>detail_by_month[month]['Expenses'] else 0
+                    detail_by_month[month]['Savings']=(detail_by_month[month]['Incomes'] - detail_by_month[month]['Expenses']) if detail_by_month[month]['Incomes']>detail_by_month[month]['Expenses'] else 0
             elif m not in income_month.keys():
                 detail_by_month[month]['Incomes']= 0
                 detail_by_month[month]['Expenses']=expense_month[m]
@@ -141,8 +136,6 @@ def dashboard(request):
             "incomes":json.dumps(incomedata),    
                               
         }
-        print(context)
-
         return render(request, 'account/dashboard.html', context)
 
 
@@ -223,7 +216,7 @@ def dashboardapiview(request):
 #     }
     
 #     return JsonResponse(context)
-
+@login_required(login_url='/auth/login/')
 def dashboardapi(request):    
     if request.GET.get('from_month'):
         from_month=request.GET.get('from_month')
