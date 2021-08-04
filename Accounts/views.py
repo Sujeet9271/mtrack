@@ -18,6 +18,7 @@ def log_in(request):
             user = authenticate(username=u, password=p)
             if user is not None:
                 login(request, user)
+                messages.success(request, f'Welcome {user.get_username()}')
                 return redirect('dashboard')
             else:
                 messages.error(request, 'Username or Password is incorrect')            
@@ -48,7 +49,8 @@ def register(request):
                 # user.email_user('Mtrack','You have successfully registered on Mtrack')
                 messages.success(request, 'Registered Succesfullly')
                 user.profile.save()  
-                return redirect('auth_user')
+                login(request, user)
+                return redirect('profile')
         else:
             messages.error(request, "Confirmed Password doesn't match")
             return redirect('register')
@@ -58,6 +60,7 @@ def register(request):
 
 def log_out(request):
     logout(request)
+    messages.success(request, 'Logged Out')
     return redirect('home')
 
 
@@ -84,11 +87,9 @@ def profile(request):
 
 @login_required(login_url='auth_user')
 def profile_delete(request):
-    income=Income.objects.filter(user_id=request.user.id).count()
-    expense=Expenses.objects.filter(user_id=request.user.id).count()
     u = User.objects.get(id=request.user.id)
     u.delete()
     messages.success(request, "Account deleted successfully")
-    return redirect('dashboard')
+    return redirect('home')
         
 
