@@ -172,3 +172,129 @@ def dashboard(request):
         return render(request, 'account/dashboard.html', context)
 
 
+#using dashboardapi view for data
+@login_required(login_url='/auth/login/')
+def dashboardapiview(request):
+    return render(request,'account/dashboard_.html')
+
+
+@login_required(login_url='/auth/login/')
+def dashboardapi(request):    
+    if request.GET.get('from_month'):
+        from_month=request.GET.get('from_month')
+        year = int(from_month[:4])
+        month=int(from_month[5:])
+
+        month_name=datetime.date(year,month,1).strftime('%B %Y')
+
+        income = Income.objects.filter(user_id=request.user.id,date__year=year, date__month=month).aggregate(Sum('income'))
+        expense = Expenses.objects.filter(user_id=request.user.id,date__year=year, date__month=month).aggregate(Sum('costs'))        
+
+        expenses = Expenses.objects.filter(user_id=request.user.id,date__year=year, date__month=month)
+        categories = Category.objects.filter(user_id=request.user.id)
+
+        incomes=Income.objects.filter(user_id=request.user.id,date__year=year, date__month=month)
+        incomedata=incomeChartapi(incomes)
+        expensedata=expenseChartapi(expenses,categories)
+        if income['income__sum'] is None:
+            income['income__sum'] = 0
+
+        if expense['costs__sum'] is None:
+            expense['costs__sum'] = 0
+
+        if (income['income__sum'] < expense['costs__sum']):
+            savings = 0
+        else:
+            savings = income['income__sum'] - expense['costs__sum']
+            
+        
+        detail_dict={}
+        detail_dict['Expense']= expense['costs__sum']
+        detail_dict['Income']= income['income__sum']
+        detail_dict['Savings']= savings        
+        
+        context = {
+            "details":detail_dict,
+            "expenses":expensedata,
+            "incomes":incomedata,
+            "month":month_name ,
+                   }
+        
+        return JsonResponse(context)
+    else:
+        month_name=''
+        income = Income.objects.filter(user_id=request.user.id).aggregate(Sum('income'))
+        expense = Expenses.objects.filter(user_id=request.user.id).aggregate(Sum('costs'))
+
+        
+
+        income_month={}
+        for data in Income.objects.filter(user_id=request.user.id).values('date__month').annotate(Income=Sum('income')):
+            month=data['date__month']           
+            income_month[month]=data['Income']        
+        
+
+        expense_month={}
+        for data in Expenses.objects.filter(user_id=request.user.id).values('date__month').annotate(Expense=Sum('costs')):
+            month=data['date__month']  
+            expense_month[month]=data['Expense']
+
+        total_income_month=[month for month in income_month.keys()]
+        total_expense_month=[month for month in expense_month.keys()]
+
+        total_month=total_expense_month+total_income_month
+
+        
+        detail_by_month={}
+        for m in total_month:
+            month=datetime.date(2000,m,1).strftime('%B')
+            detail_by_month[month]={} 
+            if m in income_month.keys() and expense_month.keys():
+                    detail_by_month[month]['Expenses']=expense_month[m]
+                    detail_by_month[month]['Incomes']=income_month[m]                    
+                    detail_by_month[month]['Savings']=(income_month[m]- expense_month[m]) if income_month[m]>expense_month[m] else 0
+            else:
+                if m in income_month.keys():
+                    detail_by_month[month]['Expenses']=0
+                    detail_by_month[month]['Incomes']=income_month[m]                    
+                    detail_by_month[month]['Savings']=(income_month[m]- expense_month[m]) if income_month[m]>expense_month[m] else 0
+                elif m in expense_month.keys():
+                    detail_by_month[month]['Expenses']=expense_month[m]
+                    detail_by_month[month]['Incomes']=0
+                    detail_by_month[month]['Savings']=0
+                
+
+            
+
+        expenses = Expenses.objects.filter(user_id=request.user.id)
+        categories = Category.objects.filter(user_id=request.user.id)
+
+        incomes=Income.objects.filter(user_id=request.user.id)
+
+        incomedata=incomeChartapi(incomes)
+        expensedata=expenseChartapi(expenses,categories)
+
+            
+        
+        # detail_dict={}
+        # detail_dict['Expense']= expense['costs__sum']
+        # detail_dict['Income']= income['income__sum']
+        # detail_dict['Savings']= savings
+
+        
+        
+        context = {
+            # "details":detail_dict,
+            "detail_by_month":detail_by_month,
+            "expenses":expensedata,
+            "incomes":incomedata,
+            "month":month_name ,
+            "income_by_month":income_month,
+            "expense_by_month":expense_month
+        }
+        
+        return JsonResponse(context)
+
+
+
+
