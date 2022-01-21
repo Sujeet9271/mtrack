@@ -66,6 +66,9 @@ def log_out(request):
 
 @login_required(login_url='auth_user')
 def profile(request):
+    income=Income.objects.filter(user_id=request.user.id).count()
+    expense=Expenses.objects.filter(user_id=request.user.id).count()
+    category=Category.objects.filter(user_id=request.user.id).count()
     if request.method == 'POST':
         user_form = UserForm(request.POST, instance=request.user)
         profile_form = ProfileForm(request.POST, instance=request.user.profile)
@@ -79,9 +82,6 @@ def profile(request):
     else:
         user_form = UserForm(instance=request.user)
         profile_form = ProfileForm(instance=request.user.profile)
-        income=Income.objects.filter(user_id=request.user.id).count()
-        expense=Expenses.objects.filter(user_id=request.user.id).count()
-        category=Category.objects.filter(user_id=request.user.id).count()
 
     return render(request, 'account/profile.html', {'user_form': user_form,'profile_form': profile_form,'income':income,'expense':expense,'category':category})
 
