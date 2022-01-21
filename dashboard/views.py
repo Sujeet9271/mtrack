@@ -72,6 +72,12 @@ def dashboard(request):
 
         incomedata=incomeChartapi(incomes)
         expensedata=expenseChartapi(expenses,categories)
+
+        if len(incomedata)==0:
+            incomedata={'None':0}
+
+        if len(expensedata)==0:
+            expensedata = {'None':0}
         
         context = {
             'month_list':json.dumps(month_list),
@@ -155,6 +161,12 @@ def dashboard(request):
         
         total_year=list(set(income_year+expense_year)) 
 
+        if len(incomedata)==0:
+            incomedata={'None':0}
+
+        if len(expensedata)==0:
+            expensedata = {'None':0}
+        
         context = {
             'monthlydetail':json.dumps('true'),
             'month_list':json.dumps(month_list),
@@ -273,13 +285,6 @@ def dashboardapi(request):
 
         incomedata=incomeChartapi(incomes)
         expensedata=expenseChartapi(expenses,categories)
-
-            
-        
-        # detail_dict={}
-        # detail_dict['Expense']= expense['costs__sum']
-        # detail_dict['Income']= income['income__sum']
-        # detail_dict['Savings']= savings
 
         
         

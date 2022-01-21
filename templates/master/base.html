@@ -15,17 +15,11 @@
     {% block 'css' %}
     {% endblock %}
 
-<style>
-  .dark-mode {
-  background-color:rgb(28, 29, 28,0.5);
-  color: white;
-}
-</style>
 </head>
-<body>
+<body style="background: #83bb6370;">
 
   {% if user.is_authenticated %}
-  <nav class="navbar sticky-top navbar-expand-lg navbar-light" style="background-color:#85bb65; background: rgba(133, 187, 101);">
+  <nav class="navbar sticky-top navbar-expand-lg navbar-light" style="background-color:#85bb65; background: rgb(100, 150, 72);">
     <a class="navbar-brand" href="{% url 'dashboard' %}">M-Track</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -46,9 +40,9 @@
 
       </ul>
 
-      <a href="{% url 'profile' %}"><button class="btn btn-success my-2 my-sm-0" style="margin:5px;"  type="submit">Profile</button></a>
+      <a href="{% url 'profile' %}"><button class="btn btn-success my-2 my-sm-0" style="margin:5px; border-radius: 10%;"  type="submit">Profile</button></a>
 
-      <a href="{% url 'logout' %}"><button class="btn btn-success my-2 my-sm-0" style="margin:5px;" type="submit">LogOut</button></a>
+      <a href="{% url 'log_out' %}"><button class="btn btn-success my-2 my-sm-0" style="margin:5px; border-radius: 10%;" type="submit">LogOut</button></a>
 
     </div>
 </nav>

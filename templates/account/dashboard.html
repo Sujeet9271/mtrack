@@ -1,304 +1,324 @@
-{% extends 'master/base.html' %}
+{% extends 'master/base.html' %} {% load static %} {% block 'title' %} Dashboard
+{% endblock %} {% block 'css' %}{% endblock %} {% block 'content' %}
 
-{% load static %}
+<div class="container pt-5">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="{% url 'dashboard' %}">M-Track</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+    </ol>
+  </nav>
+</div>
 
-{% block 'title' %} Dashboard {% endblock %}
+<div class="container">
+  <!-- DEtail row -->
+  <div class="row">
+    <!-- Detail Form -->
+    <div class="col-md-6">
+      <div
+        class="card table-responsive"
+        style="
+          background: rgba(133, 187, 101, 0.1);
+          width: 500;
+          height: 60vh;
+          margin-bottom: 20px;
+        "
+      >
+        <div class="container" style="margin-top: 8px; margin-bottom: 8px">
+          <form class="form" name="datefilter" method="POST">
+            {% csrf_token %}
+            <label>From year:</label>
+            <select name="year" class="form-control">
+              {% for year in year %}
+              <option value="{{year}}">{{year}}</option>
+              {% endfor %}
+            </select>
+            <label>From Month:</label>
+            <input
+              class="form-control input"
+              type="text"
+              name="from_month"
+              placeholder="Select Month"
+              id="from_month"
+              onfocus="(this.type='month')"
+              onblur="(this.type='text')"
+              value="{{month}}"
+              onChange="datefilter.submit();"
+              required
+            />
+          </form>
+        </div>
 
-{% block 'css' %}{% endblock %}
+        <div class="container">
+          <fieldset>
+            <legend>Total Details:</legend>
 
-{% block 'content' %}
+            <label>Income:</label>
+            <input
+              class="form-control"
+              id="income"
+              type="number"
+              name="income"
+              value="{{total_income}}"
+              readonly
+            />
+            <label>Expenses:</label>
+            <input
+              class="form-control"
+              id="expense"
+              type="number"
+              name="expense"
+              value="{{total_expenses}}"
+              readonly
+            />
+            <label>Savings:</label>
+            <input
+              class="form-control"
+              id="saving"
+              type="number"
+              name="savings"
+              value="{{total_savings}}"
+              readonly
+            />
 
-    <div class="container pt-5">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">M-Track</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-        </ol>
-    </nav>
+            <div class="container pt-3">
+              <a href="{% url 'inc_create' %}"
+                ><button class="btn btn-primary mt-1 mb-1" value="Add Income">
+                  ADD Income
+                </button></a
+              >
+              <a href="{% url 'exp_create' %}"
+                ><button class="btn btn-primary mt-1 mb-1" value="Add Expense">
+                  ADD Expense
+                </button></a
+              >
+            </div>
+          </fieldset>
+        </div>
+      </div>
     </div>
 
-    <div class="container">  
-        <!-- DEtail row -->
-    <div class="row">
-        <!-- Detail Form -->
-        <div class="col-md-6">
-
-        <div class="card table-responsive" style="background: rgba(133, 187, 101, 0.1);width: 500; height: 60vh;">
-
-            <div class="container" style="margin-top:20px; margin-bottom: 20px;">
-                <form class="form" name="datefilter" method="POST">
-                 
-                    {% csrf_token %}
-                    <label>From year:</label>
-                    <select name="year" class="form-control">
-                        {% for year in year %}
-                        <option value={{year}}>{{year}}</option>
-                        {% endfor %}
-                    </select>
-                        <label>From Month:</label>
-                        <input class="form-control input" type="text" name="from_month" placeholder="Select Month" id="from_month" onfocus="(this.type='month')" onblur="(this.type='text')" value="{{month}}" onChange="datefilter.submit();" required>
-    
-                             
-                </form>  
-            </div>
-    
-            <div class="container">
-    
-                <fieldset>
-    
-                                <legend>
-                                    Total Details:
-                                </legend>
-    
-                                <label>Income:</label>
-                                    <input class="form-control" id='income' type="number" name="income" value="{{total_income}}" readonly>
-                                <label>Expenses:</label>
-                                    <input class="form-control" id='expense' type="number" name="expense" value="{{total_expenses}}" readonly>
-                                <label>Savings:</label>
-                                    <input class="form-control" id='saving' type="number" name="savings" value="{{total_savings}}" readonly>
-    
-                                <div class="container pt-3">
-                                    <a href="{% url 'inc_create' %}"><button class="btn btn-primary mt-1 mb-1" value="Add Income">ADD Income</button></a>
-                                    <a href="{% url 'exp_create' %}"><button class="btn btn-primary mt-1 mb-1" value="Add Expense">ADD Expense</button></a>
-                                </div>
-    
-                </fieldset>
-    
-            </div>
-    
-            
-
-        </div>
-
-        </div>
-        <!-- Detail Chart -->
-        <div class="col-md-6">
-            <div class="card" style="width: 500; height: 60vh;  margin-bottom: 20px;">
-            
-                <canvas id="details"></canvas>
-            
-            </div>
-        </div>
-
-    </div>   
-
+    <!-- Detail Chart -->
+    <div class="col-md-6">
+      <div class="card" style="width: 500; height: 60vh; margin-bottom: 20px">
+        <canvas id="details"></canvas>
+      </div>
     </div>
+  </div>
+</div>
 
-    <div class="container">
-        <!-- expense/income chart row -->
-        <div class="row">
-        <!-- expense chart -->
-        <div class="col-md-6">
-    
-            <div class="card" style="width: 500; height: 60vh;  margin-bottom: 20px;">
-            <canvas id="expenseChart"></canvas>
-            </div>
-    
-        </div>
-            <!-- income chart -->
-            <div class="col-md-6">
-            <div class="card" style="width: 500; height: 60vh;  margin-bottom: 20px;">            
-                <canvas id="incomeChart"></canvas>            
-            </div>
-            </div>
-    
-        </div>   
-    
+<div class="container">
+  <!-- expense/income chart row -->
+  <div class="row">
+    <!-- expense chart -->
+    <div class="col-md-6">
+      <div class="card" style="width: 500; height: 60vh; margin-bottom: 20px">
+        <canvas id="expenseChart"></canvas>
+      </div>
     </div>
-    
-    {% for message in messages %}
-    <script>
-      alert("{{message}}");
-    </script>
-    {% endfor %}
+    <!-- income chart -->
+    <div class="col-md-6">
+      <div class="card" style="width: 500; height: 60vh; margin-bottom: 20px">
+        <canvas id="incomeChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <script>
+{% for message in messages %}
+<script>
+  alert("{{message}}");
+</script>
+{% endfor %}
 
-            const rendermonthlydetailChart=(monthlist,expenselist,incomelist,savingslist) => {  
-                var ctx = document.getElementById('details').getContext('2d');
-                    var detailChart = new Chart(ctx, {
-                        type: 'bar',
-                        //data_start
-                        data: {
-                            labels:monthlist,
-                            datasets: [
-                                        {
-                                        label: 'Expenses',
-                                        data:expenselist,
-                                        backgroundColor: 'rgba(255, 99, 132, 0.75)',
-                                        borderColor: 'rgba(255, 99, 132, 1)',
-                                        borderWidth: 2
-                                    },
-                                    {
-                                        label: 'Income',
-                                        data:incomelist ,
-                                        backgroundColor: 'rgba(54, 162, 235, 0.75)',
-                                        borderColor: 'rgba(54, 162, 235, 1)',
-                                        borderWidth: 2
-                                    },
-                                    {
-                                        label: 'Savings',
-                                        data:savingslist ,
-                                        backgroundColor: 'rgba(255, 206, 86, 0.75)',
-                                        borderColor: 'rgba(255, 206, 86, 1)',
-                                        borderWidth: 2
-                                    }
-                                    ]
-                        },
-                            //data_end,option_start
-                        options: {
-                            title:{
-                            display:true,
-                            text:'Money Details in year '+'2021'
-                            },
-                            legend:{
-                                display:true,
-                                position:'bottom'
-                            },
-                            responsive:true,
-                            maintainAspectRatio:false,
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }]
-                            }
-                        }//option_end                
-                    }
-                );
-            }
+<script>
 
-            const renderexpenseChart=(category,expense) => {
-                    var ctx = document.getElementById('expenseChart').getContext('2d');
-                    var detailChart = new Chart(ctx, {
-                        type: 'doughnut',
-                        data: {
-                            labels:category,
-                            datasets: [{
-                                label: 'Expense Detail',
-                                data:expense,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.75)',
-                                    'rgba(54, 162, 235, 0.75)',
-                                    'rgba(255, 206, 86, 0.75)',
-                                    'rgba(75, 192, 192, 0.75)',
-                                    'rgba(153, 102, 255, 0.75)',
-                                    'rgba(255, 159, 64, 0.75)'
-                                ],
-                                borderColor: [
-                                    'rgba(255, 99, 132, 1)',
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 159, 64, 1)'
-                                ],
-                                borderWidth: 2
-                            }]
-                        },
-                        options: {
-                            title:{
-                            display:true,
-                            text:'Expenses Detail'
-                            },
-                            legend:{
-                                display:true,
-                                text:'Expense Detail',
-                                position:'bottom',
-                                align:'center'                     
-                            
+      const rendermonthlydetailChart=(monthlist,expenselist,incomelist,savingslist) => {
+          var ctx = document.getElementById('details').getContext('2d');
+              var detailChart = new Chart(ctx, {
+                  type: 'bar',
+                  //data_start
+                  data: {
+                      labels:monthlist,
+                      datasets: [
+                                  {
+                                  label: 'Expenses',
+                                  data:expenselist,
+                                  backgroundColor: 'rgba(255, 99, 132, 0.75)',
+                                  borderColor: 'rgba(255, 99, 132, 1)',
+                                  borderWidth: 2
+                              },
+                              {
+                                  label: 'Income',
+                                  data:incomelist ,
+                                  backgroundColor: 'rgba(54, 162, 235, 0.75)',
+                                  borderColor: 'rgba(54, 162, 235, 1)',
+                                  borderWidth: 2
+                              },
+                              {
+                                  label: 'Savings',
+                                  data:savingslist ,
+                                  backgroundColor: 'rgba(255, 206, 86, 0.75)',
+                                  borderColor: 'rgba(255, 206, 86, 1)',
+                                  borderWidth: 2
+                              }
+                              ]
+                  },
+                      //data_end,option_start
+                  options: {
+                      title:{
+                      display:true,
+                      text:'Money Details in year '+'2021'
+                      },
+                      legend:{
+                          display:true,
+                          position:'bottom'
+                      },
+                      responsive:true,
+                      maintainAspectRatio:false,
+                      scales: {
+                          yAxes: [{
+                              ticks: {
+                                  beginAtZero: true
+                              }
+                          }]
+                      }
+                  }//option_end
+              }
+          );
+      }
 
-                            },
-                            responsive:true,
-                            maintainAspectRatio:false
-                            
-                        },                
-                    });
-            }
-
-            const renderincomeChart=(source,income) => {
-                var ctx = document.getElementById('incomeChart').getContext('2d');
-                var detailChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels:source,
-                        datasets: [{
-                            label: 'Income Detail',
-                            data:income ,
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.75)',
-                                'rgba(54, 162, 235, 0.75)',
-                                'rgba(255, 206, 86, 0.75)',
-                                'rgba(75, 192, 192, 0.75)',
-                                'rgba(153, 102, 255, 0.75)',
-                                'rgba(255, 159, 64, 0.75)'
-                            ],
-                            borderColor: [
-                                'rgba(255, 99, 132, 1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)'
-                            ],
-                            borderWidth: 2
-                        }]
-                    },
-                    options: {
-                        title:{
-                        display:true,
-                        text:'Income Detail'
-                        },
-                        legend:{
-                            display:true,
-                            text:'Income Detail',
-                            position:'bottom',
-                            align:'center'                     
-                        
-
-                        },
-                        responsive:true,
-                        maintainAspectRatio:false
-                        
-                    },                
-                });
-            }
-                
-
-            const getmonthlyChartData =() =>{
-                        var monthlist={{month_list|safe}};
-                        var expenselist={{expenses_list|safe}};
-                        var incomelist={{incomes_list|safe}};
-                        var savingslist={{savings_list|safe}};
-                    rendermonthlydetailChart(monthlist,expenselist,incomelist,savingslist)
-
-            }
+      const renderexpenseChart=(category,expense) => {
+              var ctx = document.getElementById('expenseChart').getContext('2d');
+              var detailChart = new Chart(ctx, {
+                  type: 'doughnut',
+                  data: {
+                      labels:category,
+                      datasets: [{
+                          label: 'Expense Detail',
+                          data:expense,
+                          backgroundColor: [
+                              'rgba(255, 99, 132, 0.75)',
+                              'rgba(54, 162, 235, 0.75)',
+                              'rgba(255, 206, 86, 0.75)',
+                              'rgba(75, 192, 192, 0.75)',
+                              'rgba(153, 102, 255, 0.75)',
+                              'rgba(255, 159, 64, 0.75)'
+                          ],
+                          borderColor: [
+                              'rgba(255, 99, 132, 1)',
+                              'rgba(54, 162, 235, 1)',
+                              'rgba(255, 206, 86, 1)',
+                              'rgba(75, 192, 192, 1)',
+                              'rgba(153, 102, 255, 1)',
+                              'rgba(255, 159, 64, 1)'
+                          ],
+                          borderWidth: 2
+                      }]
+                  },
+                  options: {
+                      title:{
+                      display:true,
+                      text:'Expenses Detail'
+                      },
+                      legend:{
+                          display:true,
+                          text:'Expense Detail',
+                          position:'bottom',
+                          align:'center'
 
 
-            const getexpenseChartData = () => {
-                        const data2={{expenses|safe}};           
-                        var category = Object.keys(data2)
-                        var expense = Object.values(data2)
-                    renderexpenseChart(category,expense)              
-                };
+                      },
+                      responsive:true,
+                      maintainAspectRatio:false
 
-            const getincomeChartData = () => {
-                        const data3={{incomes|safe}};               
-                        var source = Object.keys(data3)
-                        var income = Object.values(data3) 
-                    renderincomeChart(source,income)             
-                };
-                
-            function mycharts() {    
-                    getmonthlyChartData();
-                    getexpenseChartData();
-                    getincomeChartData();
-            }
+                  },
+              });
+      }
+
+      const renderincomeChart=(source,income) => {
+          var ctx = document.getElementById('incomeChart').getContext('2d');
+          var detailChart = new Chart(ctx, {
+              type: 'doughnut',
+              data: {
+                  labels:source,
+                  datasets: [{
+                      label: 'Income Detail',
+                      data:income ,
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.75)',
+                          'rgba(54, 162, 235, 0.75)',
+                          'rgba(255, 206, 86, 0.75)',
+                          'rgba(75, 192, 192, 0.75)',
+                          'rgba(153, 102, 255, 0.75)',
+                          'rgba(255, 159, 64, 0.75)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 2
+                  }]
+              },
+              options: {
+                  title:{
+                  display:true,
+                  text:'Income Detail'
+                  },
+                  legend:{
+                      display:true,
+                      text:'Income Detail',
+                      position:'bottom',
+                      align:'center'
 
 
-        document.onload = mycharts();
-    </script>
+                  },
+                  responsive:true,
+                  maintainAspectRatio:false
+
+              },
+          });
+      }
+
+
+      const getmonthlyChartData =() =>{
+                  var monthlist={{month_list|safe}};
+                  var expenselist={{expenses_list|safe}};
+                  var incomelist={{incomes_list|safe}};
+                  var savingslist={{savings_list|safe}};
+              rendermonthlydetailChart(monthlist,expenselist,incomelist,savingslist)
+
+      }
+
+
+      const getexpenseChartData = () => {
+                  const data2={{expenses|safe}};
+                  var category = Object.keys(data2)
+                  var expense = Object.values(data2)
+              renderexpenseChart(category,expense)
+          };
+
+      const getincomeChartData = () => {
+                  const data3={{incomes|safe}};
+                  var source = Object.keys(data3)
+                  var income = Object.values(data3)
+              renderincomeChart(source,income)
+          };
+
+      function mycharts() {
+              getmonthlyChartData();
+              getexpenseChartData();
+              getincomeChartData();
+      }
+
+
+  document.onload = mycharts();
+</script>
 
 {% endblock %}
-
