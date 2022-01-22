@@ -6,7 +6,15 @@
   Profile
 {% endblock %}
 {% block 'css' %}
-    
+    <style>
+      .card{
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        max-width: 250px;
+        margin: auto;
+        text-align: center;
+        font-family: arial;
+      }
+    </style>
 {% endblock %}
 
 {% block 'content' %}
@@ -21,12 +29,16 @@
     <div class="jumbotron" style="background: rgba(132, 187, 101, 0); ">
 
                 <div class="container">
-
-                  <form method="POST">
-                          {% csrf_token %}
+                  
+                  <br />
+                  <form method="POST" enctype="multipart/form-data" >
+                    {% csrf_token %}
                     <fieldset>
-
-                     <legend>Profile:</legend>
+                      
+                      <legend>Profile:</legend>
+                      <div class="card">
+                        <img src="{{request.user.profile.img_url}}" alt="Profile Picture" width="250" height="250">
+                      </div>
 
                       {% csrf_token %}
                       {{ user_form.as_p }}

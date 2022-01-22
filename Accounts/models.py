@@ -8,11 +8,19 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     address = models.CharField(max_length=20, null=True,blank=True)
     work = models.CharField(max_length=50, null=True,blank=True)
-    profile_pic = models.ImageField(default='default.jpg',upload_to='media/profile',blank=True,null=True)
+    profile_pic = models.ImageField(default='default.jpg',upload_to='profile',blank=True,null=True)
 
     def __str__(self):
         return str(self.user)
 
+
+    def img_url(self):
+        try:
+            print(self.profile_pic.url)
+            return self.profile_pic.url
+        except:
+            print('exception')
+            return None
 
     def create_user_profile(sender, instance, created, **kwargs):
         if created:

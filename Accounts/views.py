@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -71,9 +72,14 @@ def profile(request):
     category=Category.objects.filter(user_id=request.user.id).count()
     if request.method == 'POST':
         user_form = UserForm(request.POST, instance=request.user)
-        profile_form = ProfileForm(request.POST, instance=request.user.profile)
+        profile_form = ProfileForm(request.POST,request.FILES, instance=request.user.profile)
+        print(request.FILES)
         if user_form.is_valid() and profile_form.is_valid():            
             user_form.save()
+            # image_path = request.user.profile.profile_pic.path
+            # if os.path.exists(image_path):
+            #     os.remove(image_path)
+
             profile_form.save()
             messages.success(request, ('Your profile was successfully updated!'))
             return redirect('profile')
