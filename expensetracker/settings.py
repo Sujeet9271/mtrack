@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'expensetracker.wsgi.application'
 # SESSION_SAVE_EVERY_REQUEST = True  
 CSRF_COOKIE_SECURE=False if DEBUG else True
 SESSION_COOKIE_SECURE=False if DEBUG else True
-
+SECURE_SSL_REDIRECT = False if DEBUG else True
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
