@@ -195,6 +195,11 @@ Expense Summary
     </div>    
 </div>
 
+{% for message in messages %}
+    <script>
+    alert("{{message}}")
+    </script>
+{% endfor %}
 
 <script>
          function _delete(url){

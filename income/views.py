@@ -4,128 +4,75 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import IncomeForm
 from django.db.models import Sum
-from datetime import datetime
+from datetime import date,datetime
 import json
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
+def incomeChart(incomes):
+    incomedata = {}
+    def source_sum(source): 
+        inc = incomes.filter(source=source).aggregate(Sum('income'))       
+        return inc['income__sum']
+    
+    source_list=[]
+    for income in incomes:
+        source_list.append(income.source)       
 
-# @login_required(login_url='/auth/login/')
-# def incomes(request):
-#     if request.method == "POST":
-#         from_date = request.POST.get('from_date')
-#         to_date = request.POST.get('to_date')
-#         search_incomes = Income.objects.filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
+    source_list=list(set(source_list))
+        
+    for income in incomes:
+        for source in source_list:
+            incomedata[source]=source_sum(source)
 
-#         context = {
-#             'income': search_incomes
-#         }
-#         return render(request, 'income.html', context)
-#     else:
-#         income = Income.objects.filter(user_id=request.user.id).order_by('-date')
-#         context = {
-#             'income': income,
-#         }
-#         return render(request, 'income.html', context)
+    sources=[source for source in incomedata.keys()]
+    amount=[amount for amount in incomedata.values()] 
+    return {'sources':sources,'amount':amount}
+
+def pages(incomes,no,page):
+    data = incomeChart(incomes=incomes)
+    sources = data['sources']
+    amount = data['amount']
+    paginator = Paginator(incomes, no)
+    try:
+        income = paginator.page(page)
+    except PageNotAnInteger:
+        income = paginator.page(1)
+    except EmptyPage:
+        income = paginator.page(paginator.num_pages)
+    return income,sources,amount
+
 
 @login_required(login_url='/auth/login/')
 def incomes(request):  # Expenditure_detail page
-    from_date=request.GET.get('from_date')    
-    to_date=request.GET.get('to_date')
-    no=request.GET.get('no')
+    from_date=request.GET.get('from_date',f'{date.today().year}-01-01')    
+    to_date=request.GET.get('to_date',str(date.today()))
+
+    context={}
+    if from_date=='' or to_date=='':
+        from_date=f'{date.today().year}-01-01'    
+        to_date=str(date.today())
+
+    no = request.GET.get('no')   
+    page = request.GET.get('page', 1)
 
     if request.GET.get('no'):        
-        def pages(incomes):
-            no=request.GET.get('no')
-            page = request.GET.get('page', 1)
-            paginator = Paginator(incomes, no)
-            try:
-                income = paginator.page(page)
-                # count= paginator.count
-            except PageNotAnInteger:
-                income = paginator.page(1)
-            except EmptyPage:
-                income = paginator.page(paginator.num_pages)
-            return income    
-
-        if from_date is None or to_date is None:
-            incomes = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
-            income=pages(incomes)
-                
-
-            context = {
-                'incomes': income                     
-                }           
-        else:
-            if from_date=='' and to_date=='':
-                incomes = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
-                income=pages(incomes)
-                context = {
-                'incomes': income                    
-                }
-            elif from_date=='' or to_date=='':
-                if to_date=='':
-                    incomes = Income.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('-date')
-                    income=pages(incomes)
-                    context = {
-                        'incomes': incomes,
-                        'from_date':from_date                   
-                    }
-                elif from_date=='':                
-                    incomes = Income.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date)
-                    income=pages(incomes)  
-                    context = {
-                        'incomes': incomes,
-                        
-                        'from_date':from_date,
-                        'to_date':to_date                    
-                    }
-                        
-            else:
-                incomes =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
-                income=pages(incomes)
-                context={
-                    'incomes':income,
-                    'from_date':from_date,
-                    'to_date':to_date
-                }
+        query =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
+        queryset=pages(incomes=query,page=page,no=no)
+        incomes = queryset[0]
+        sources = queryset[1]
+        amount = queryset[2]
     else:
-        if from_date is None or to_date is None:
-            incomes = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
-            
-            context = {
-                'incomes': incomes                     
-                }           
-        else:
-            if from_date=='' and to_date=='':
-                incomes = Income.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
-                
-                context = {
-                'incomes': incomes                    
-                }
-            elif from_date=='' or to_date=='':
-                if to_date=='':
-                    incomes = Income.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('-date')
-                    
-                    context = {
-                        'incomes': incomes,
-                        'from_date':from_date                   
-                    }
-                elif from_date=='':                
-                    incomes = Income.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date)                     
-                    context = {
-                        'incomes': incomes,
-                        'from_date':from_date,
-                        'to_date':to_date                    
-                    }
-                        
-            else:
-                incomes =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')               
-                context={
-                    'incomes':incomes,
-                    'from_date':from_date,
-                    'to_date':to_date
-                }
+        incomes =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')               
+        data = incomeChart(incomes)
+        sources = data['sources']
+        amount = data['amount']
+
     context['no']=no    
+    context['from_date'] = from_date
+    context['to_date'] = to_date
+    context['incomes'] =incomes 
+    context['source'] = sources
+    context['amount'] =amount
     return render(request, 'income.html', context)
 
 
@@ -147,25 +94,7 @@ def incomes_home(request):
 
     return render(request, 'incomes/income_home.html',context)
 
-def incomeChart(incomes):
-    incomedata = {}
-    def source_sum(source): 
-        inc = incomes.filter(source=source).aggregate(Sum('income'))       
-        return inc['income__sum']
-    
-    source_list=[]
-    for income in incomes:
-        source_list.append(income.source)       
 
-    source_list=list(set(source_list))
-        
-    for income in incomes:
-        for source in source_list:
-            incomedata[source]=source_sum(source)
-
-    sources=[source for source in incomedata.keys()]
-    amount=[amount for amount in incomedata.values()] 
-    return {'sources':sources,'amount':amount}
 
 
 @login_required(login_url='/auth/login/')
@@ -195,17 +124,14 @@ def create(request):
 def edit(request, id):
     data = Income.objects.get(pk=id)
     form = IncomeForm(request.user.id, request.POST or None, instance=data)
-    if form.is_valid():
-        form.save()
-        context = {
-            'form': form,
-            'msg': 'Edited Successfully!!'
-        }
-        return render(request, 'incomes/edit.html', context)
-        context = {
-            'form': form,
-            'msg': 'Failed to update'
-        }
+    context={}
+    context['form'] = form
+    if request.method=='POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Edited Successfully')
+            return redirect('incomes_home')
+        messages.error(request,'Failed to update')
     return render(request, 'incomes/edit.html', context)
 
 @login_required(login_url='/auth/login/')

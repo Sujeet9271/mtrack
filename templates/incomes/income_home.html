@@ -61,6 +61,8 @@ M-Track| Income
                                </fieldset>
 
                      </div>
+
+                     
                     <div class="card" style="width: 500; height: 50vh; margin-bottom: 20px;">
                         
                             <canvas id="incomeChart" ></canvas>
@@ -137,10 +139,7 @@ M-Track| Income
     const getincomeChartData = () => {
         var sources = {{sources|safe}};
             var amount = {{amount|safe}};   
-            
-            
-                    renderincomeChart(amount,sources)
-                
+            renderincomeChart(amount,sources)
             };
     
     document.onload = getincomeChartData(); 

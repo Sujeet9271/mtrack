@@ -9,6 +9,21 @@ import json
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
 from datetime import date
 
+def expenseChart(expenses,categories):
+    data = {}
+    def category_sum(category):
+        cost = expenses.filter(category__title=category).aggregate(Sum('costs'))          
+        return cost['costs__sum']
+
+    for expense in expenses:
+        for category in categories:
+            data[category]=category_sum(category)
+
+
+    categories=[category for category in data.keys()]
+    amount=[amount for amount in data.values()]  
+    return {'category':categories,'amount':amount} 
+
 def pages(expenses,page,no,categories):
     amount=[]
     for category in categories:
@@ -62,22 +77,7 @@ def expenses(request):  # Expenditure_detail page
 
     return render(request, 'expenses.html', context)
 
-def expenseChart(expenses,categories):
-    data = {}
-    def category_sum(category):
-        cost = expenses.filter(category__title=category).aggregate(Sum('costs'))          
-        return cost['costs__sum']
 
-    categories=[category.title for category in categories]
-
-    for expense in expenses:
-        for category in categories:
-            data[category]=category_sum(category)
-
-
-    categories=[category for category in data.keys()]
-    amount=[amount for amount in data.values()]  
-    return {'category':categories,'amount':amount} 
 
 @login_required(login_url='/auth/login/')
 def expenses_home(request):
@@ -85,7 +85,7 @@ def expenses_home(request):
     current_month=today.month
     current_year=today.year
     expenses = Expenses.objects.filter(user_id=request.user.id, date__year=current_year,date__month=current_month).order_by('-date') 
-    categories= Category.objects.filter(user_id=request.user.id)
+    categories= Category.objects.filter(user_id=request.user.id).values_list('title',flat=True)
     data=expenseChart(expenses,categories)  
 
     context={
@@ -151,14 +151,16 @@ def create(request):  # Adding Expense
 
 @login_required(login_url='/auth/login/')
 def edit(request, id):
+    context={}
     data = Expenses.objects.get(pk=id)
-    form = ExpensesForm(request.user.id, instance=data)
-    if request.method=="POST":
-        form = ExpensesForm(request.user.id, request.POST or None, instance=data)
+    form = ExpensesForm(request.user.id, request.POST or None, instance=data)
+    context['form'] = form
+    if request.method=='POST':
         if form.is_valid():
             form.save()
             messages.success(request,'Edited Sucessfully!!')            
             return redirect('expenses_home')
+        messages.error(request,'Failed to update')
     return render(request, 'expenses/edit.html',{'form':form})
 
 @login_required(login_url='/auth/login/')

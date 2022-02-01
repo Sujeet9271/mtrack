@@ -1,6 +1,6 @@
 {% extends 'master/base.html' %}
 {% block 'title' %}
-Income
+Income Summary
 {% endblock %}
 
 
@@ -106,13 +106,13 @@ Income
           </button>
           
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="?no=5">5</a>
+              <a class="dropdown-item" href="?no=5&from_date={{from_date}}&to_date={{to_date}}">5</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="?no=10">10</a>
+              <a class="dropdown-item" href="?no=10&from_date={{from_date}}&to_date={{to_date}}">10</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="?no=15">15</a>
+              <a class="dropdown-item" href="?no=15&from_date={{from_date}}&to_date={{to_date}}">15</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="?no=20">20</a>
+              <a class="dropdown-item" href="?no=20&from_date={{from_date}}&to_date={{to_date}}">20</a>
             </div>        
         </div>
       </div>
@@ -162,20 +162,20 @@ Income
     <nav aria-label="Page navigation example">
       <ul class="pagination">
         {% if incomes.has_previous %}
-        <li class="page-item"><a class="page-link" href="?no={{no}}&page={{ incomes.previous_page_number }}">Previous</a></li>
+        <li class="page-item"><a class="page-link" href="?no={{no}}&page={{ incomes.previous_page_number }}&from_date={{from_date}}&to_date={{to_date}}">Previous</a></li>
         {% else %}
         <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
         {% endif %}
 
         {% for i in incomes.paginator.page_range %}
             {% if incomes.number == i %}
-            <li class="page-item active"><a class="page-link" href="?no={{no}}&page={{ i }}">{{ i }}</a></li>
+            <li class="page-item active"><a class="page-link" href="?no={{no}}&page={{ i }}&from_date={{from_date}}&to_date={{to_date}}">{{ i }}</a></li>
             {% else %}
-        <li class="page-item"><a class="page-link" href="?no={{no}}&page={{ i }}">{{ i }}</a></li>
+        <li class="page-item"><a class="page-link" href="?no={{no}}&page={{ i }}&from_date={{from_date}}&to_date={{to_date}}">{{ i }}</a></li>
         {% endif %}
         {% endfor %}
         {% if incomes.has_next %}
-        <li class="page-item"><a class="page-link" href="?no={{no}}&page={{ incomes.next_page_number }}">Next</a></li>
+        <li class="page-item"><a class="page-link" href="?no={{no}}&page={{ incomes.next_page_number }}&from_date={{from_date}}&to_date={{to_date}}">Next</a></li>
         {% else %}
         <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
         {% endif %}
@@ -191,6 +191,13 @@ Income
     
 
 </div>
+
+{% for message in messages %}
+    <script>
+    alert("{{message}}")
+    </script>
+{% endfor %}
+
 <script>
       function _delete(url){
       bootbox.confirm("Confirmation to delete?", function(result){
@@ -215,38 +222,7 @@ Income
 </script>
 
 <script>
-  //for sum
-  // $(function() {
 
-  //       var TotalValue = 0;
-  //       $("tr #income").each(function(index,value){
-  //         currentRow = parseFloat($(this).text());
-  //         TotalValue += currentRow
-  //       });
-
-  //       document.getElementById('total').innerHTML = TotalValue;
-
-  //       });
-    // for search
-//         $(document).ready(function search(){
-//         $("#myInput").on("keyup", function() {
-//             var value = $(this).val().toLowerCase();
-//             $("#income tr").filter(function() {
-//             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-//             });
-//         });
-//         $(function() {
-
-// var TotalValue = 0;
-// $("tr #amount").each(function(index,value){
-//   currentRow = parseFloat($(this).text());
-//   TotalValue += currentRow
-// });
-
-// document.getElementById('total').innerHTML = TotalValue;
-
-// });
-//         });
 
 
   function sub() {
@@ -368,7 +344,7 @@ document.getElementById('total').innerHTML += sum;
   
   const getChartData = () => {
       var sources = {{source|safe}};
-      var amount = {{income|safe}};     
+      var amount = {{amount|safe}};     
       renderChart(amount,sources);
              };      
 

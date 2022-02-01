@@ -1,6 +1,6 @@
 {% extends 'master/base.html' %}
 {% block 'title' %}
-M-Track| Expenses
+Edit|Income
 {% endblock %}
 
 
@@ -32,13 +32,13 @@ M-Track| Expenses
         </div>
     </div>
 </div>
-<script>
 
-        {% if msg %}
-             alert('{{msg}}')
-        {% endif %}
 
-</script>
+{% for message in messages %}
+    <script>
+    alert("{{message}}")
+    </script>
+{% endfor %}
        
 
 {% endblock %}

@@ -1,6 +1,6 @@
 {% extends 'master/base.html' %}
 {% block 'title' %}
-M-Track| Expenses
+Edit|Expense
 {% endblock %}
 
 
@@ -43,5 +43,11 @@ M-Track| Expenses
         </div>
 
     </div>
+
+    {% for message in messages %}
+    <script>
+    alert("{{message}}")
+    </script>
+{% endfor %}
 
 {% endblock %}
