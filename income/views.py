@@ -56,13 +56,13 @@ def incomes(request):  # Expenditure_detail page
     page = request.GET.get('page', 1)
 
     if request.GET.get('no'):        
-        query =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
+        query =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
         queryset=pages(incomes=query,page=page,no=no)
         incomes = queryset[0]
         sources = queryset[1]
         amount = queryset[2]
     else:
-        incomes =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')               
+        incomes =  Income.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')               
         data = incomeChart(incomes)
         sources = data['sources']
         amount = data['amount']

@@ -57,12 +57,12 @@ def expenses(request):  # Expenditure_detail page
     categories = list(Category.objects.filter(user_id=request.user.id).values_list('title',flat=True))
 
     if no:    
-        query =  Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
+        query =  Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
         queryset=pages(query,page,no,categories)
         expenses=queryset[0]
         amount=queryset[1]
     else:
-        expenses =  Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
+        expenses =  Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('date')
         amount=[]
         for category in categories:
             expense = expenses.filter(category__title=category).aggregate(Sum('costs'))
