@@ -74,9 +74,10 @@ WSGI_APPLICATION = 'expensetracker.wsgi.application'
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True     # opional, as this will log you out when browser is closed
 # SESSION_COOKIE_AGE = 60                   # 0r 5 * 60, same thing
 # SESSION_SAVE_EVERY_REQUEST = True  
-# CSRF_COOKIE_SECURE=False if DEBUG else True
-# SESSION_COOKIE_SECURE=False if DEBUG else True
-# SECURE_SSL_REDIRECT = False if DEBUG else True
+CSRF_COOKIE_SECURE=False if DEBUG else True
+SESSION_COOKIE_SECURE=False if DEBUG else True
+SECURE_SSL_REDIRECT = False if DEBUG else True
+
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 

@@ -6,8 +6,6 @@ Income Summary
 
 {% block 'css' %}
 
-
-
     <style>
             #myInput {
               font-size: 16px;
@@ -134,7 +132,7 @@ Income Summary
                             <td>{{e.source}}</td>
                             <td class='amount'>{{e.income}}</td>
                             <td>{{e.date}}</td>
-                            <td><a href="#" onclick="_edit('{% url 'inc_edit' e.id %}')">e</a>|<a href="#" onclick="_delete('{% url 'inc_delete' e.id %}')">d</a> </td>
+                            <td><a href="#" onclick="_edit('{% url 'inc_edit' e.id %}')"><i class="fas fa-edit"></i></a>|<a href="#" onclick="_delete('{% url 'inc_delete' e.id %}')"><i class="far fa-trash-alt" style="color: red;"></i></a> </td>
                         </tr>
                         <tr class="p">
                             <td colspan="6" class="hiddenRow">
