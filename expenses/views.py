@@ -7,116 +7,77 @@ from .forms import ExpensesForm
 from datetime import datetime
 import json
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
+from datetime import date
 
+def pages(expenses,page,no,categories):
+    amount=[]
+    for category in categories:
+        expense = expenses.filter(category__title=category).aggregate(Sum('costs'))
+        amount.append(expense['costs__sum'] if expense['costs__sum'] is not None else 0)
 
+    paginator = Paginator(expenses, no)
+    try:
+        expense = paginator.page(page)
+    except PageNotAnInteger:
+        expense = paginator.page(1)
+    except EmptyPage:
+        expense = paginator.page(paginator.num_pages)
+
+    return expense,amount 
 
 
 @login_required(login_url='/auth/login/')
 def expenses(request):  # Expenditure_detail page
-    from_date=request.GET.get('from_date')    
-    to_date=request.GET.get('to_date')
+
+    from_date=request.GET.get('from_date',f'{date.today().year}-01-01')    
+    to_date=request.GET.get('to_date',str(date.today()))
+
+    context={}
+    if from_date=='' or to_date=='':
+        from_date=f'{date.today().year}-01-01'    
+        to_date=str(date.today())
+
     no = request.GET.get('no')   
+    page = request.GET.get('page', 1)
+    categories = list(Category.objects.filter(user_id=request.user.id).values_list('title',flat=True))
 
-
-    if request.GET.get('no'):     
-        def pages(expenses):
-            page = request.GET.get('page', 1)
-            no = request.GET.get('no')
-            paginator = Paginator(expenses, no)
-            try:
-                expense = paginator.page(page)
-            except PageNotAnInteger:
-                expense = paginator.page(1)
-            except EmptyPage:
-                expense = paginator.page(paginator.num_pages)
-            return expense    
-
-        if from_date is None or to_date is None:
-            expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('-date') 
-            expense=pages(expenses)      
-
-            context = {
-                'expenses': expense                     
-                }           
-        else:
-            if from_date=='' and to_date=='':
-                expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
-                expense=pages(expenses)
-                context = {
-                'expenses': expense                    
-                }
-            elif from_date=='' or to_date=='':
-                if to_date=='':
-                    expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('-date')
-                    expense=pages(expenses)
-                    context = {
-                        'expenses': expenses,
-                        'from_date':from_date                   
-                    }
-                elif from_date=='':                
-                    expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date).order_by('-date')
-                    expense=pages(expenses)  
-                    context = {
-                        'expenses': expenses,
-                        
-                        'from_date':from_date,
-                        'to_date':to_date                    
-                    }
-                        
-            else:
-                expenses =  Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
-                expense=pages(expenses)
-                context={
-                    'expenses':expense,
-                    'from_date':from_date,
-                    'to_date':to_date
-                }
-        
+    if no:    
+        query =  Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
+        queryset=pages(query,page,no,categories)
+        expenses=queryset[0]
+        amount=queryset[1]
     else:
-        if from_date is None or to_date is None:
-            expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')       
+        expenses =  Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
+        amount=[]
+        for category in categories:
+            expense = expenses.filter(category__title=category).aggregate(Sum('costs'))
+            amount.append(expense['costs__sum'] if expense['costs__sum'] is not None else 0)
 
-            context = {
-                'expenses': expenses                     
-                }           
-        else:
-            if from_date=='' and to_date=='':
-                expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id).order_by('-date')
-                
-                context = {
-                'expenses': expenses                  
-                }
-            elif from_date=='' or to_date=='':
-                if to_date=='':
-                    expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id, date__gte=from_date).order_by('-date')
-                    
-                    context = {
-                        'expenses': expenses,
-                        'from_date':from_date                   
-                    }
-                elif from_date=='':                
-                    expenses = Expenses.objects.select_related('user').filter(user_id=request.user.id,date__lte=to_date).order_by('-date')
-                      
-                    context = {
-                        'expenses': expenses,
-                        
-                        'from_date':from_date,
-                        'to_date':to_date                    
-                    }
-                        
-            else:
-                expenses =  Expenses.objects.select_related('user').filter(user_id=request.user.id, date__range=[from_date, to_date]).order_by('-date')
-                
-                context={
-                    'expenses':expenses,
-                    'from_date':from_date,
-                    'to_date':to_date
-                }
-    
+    context['categories'] = categories
     context['no']=no
-    
+    context['from_date'] = from_date
+    context['to_date'] = to_date
+    context['expenses'] =expenses 
+    context['amount'] =amount
+
     return render(request, 'expenses.html', context)
 
+def expenseChart(expenses,categories):
+    data = {}
+    def category_sum(category):
+        cost = expenses.filter(category__title=category).aggregate(Sum('costs'))          
+        return cost['costs__sum']
+
+    categories=[category.title for category in categories]
+
+    for expense in expenses:
+        for category in categories:
+            data[category]=category_sum(category)
+
+
+    categories=[category for category in data.keys()]
+    amount=[amount for amount in data.values()]  
+    return {'category':categories,'amount':amount} 
 
 @login_required(login_url='/auth/login/')
 def expenses_home(request):
@@ -137,22 +98,6 @@ def expenses_home(request):
     return render(request, 'expenses/expenses_home.html', context)
 
 
-def expenseChart(expenses,categories):
-    data = {}
-    def category_sum(category):
-        cost = expenses.filter(category__title=category).aggregate(Sum('costs'))          
-        return cost['costs__sum']
-
-    categories=[category.title for category in categories]
-
-    for expense in expenses:
-        for category in categories:
-            data[category]=category_sum(category)
-
-
-    categories=[category for category in data.keys()]
-    amount=[amount for amount in data.values()]  
-    return {'category':categories,'amount':amount} 
 
 @login_required(login_url='/auth/login/')
 def exp_category(request):  # Category Page

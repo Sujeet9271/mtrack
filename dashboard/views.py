@@ -8,6 +8,7 @@ from django.http import JsonResponse
 
 def expenseChartapi(expenses,categories):
     data = {}
+    
     def category_sum(category):
         cost = expenses.filter(category__title=category).aggregate(Sum('costs'))          
         return cost['costs__sum']
@@ -179,7 +180,6 @@ def dashboard(request):
             'total_savings':json.dumps(total_savings),
             "expenses":json.dumps(expensedata),
             "incomes":json.dumps(incomedata),    
-                              
         }
         return render(request, 'account/dashboard.html', context)
 

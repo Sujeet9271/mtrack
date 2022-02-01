@@ -77,7 +77,6 @@ Expense Summary
                         <div class="col-sm-3"><input type="text" id="myInput" placeholder=" Search Category,title,..." onkeyup="searchTable()" style="margin-top:20px; margin-left: 2vw;" ></div>
                         <div class="col-sm-1"><input type="button"class="btn" value="Clear" id="clear" onclick="cleardate()" style=" margin-top: 25px; margin-bottom: 20px; margin-left: 2vw;"></div>
                         <div class="col-sm-2"><div class="dropdown">
-
                         </div></div>
                       </div>
                     
@@ -102,17 +101,18 @@ Expense Summary
       </button>
       
         <div class="dropdown-menu">
-          <a class="dropdown-item" href="?no=5">5</a>
+          <a class="dropdown-item" href="?no=5&from_date={{from_date}}&to_date={{to_date}}">5</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="?no=10">10</a>
+          <a class="dropdown-item" href="?no=10&from_date={{from_date}}&to_date={{to_date}}">10</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="?no=15">15</a>
+          <a class="dropdown-item" href="?no=15&from_date={{from_date}}&to_date={{to_date}}">15</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="?no=20">20</a>
+          <a class="dropdown-item" href="?no=20&from_date={{from_date}}&to_date={{to_date}}">20</a>
         </div>        
     </div>
       
-    <div class="table-responsive">     
+    <div class="table-responsive">  
+      <p>From:{{from_date}} To: {{to_date}}</p>   
      <table class="table table-hover table-bordered table-light" name="expensetable">
         <thead>
         <th>Category</th>
@@ -153,14 +153,14 @@ Expense Summary
         </tfoot>
     </table>
     </div>
-    <!-- pagination and chart -->
+    <!-- pagination -->
     <div class="container">
       {% if expenses.has_other_pages %}
       <nav aria-label="Page navigation example">
         <ul class="pagination">
   
           {% if expenses.has_previous %}
-              <li class="page-item"><a class="page-link" href="?no={{no}}&page={{ expenses.previous_page_number }}">Previous</a></li>
+              <li class="page-item"><a class="page-link" href="?no={{no}}&page={{ expenses.previous_page_number }}&from_date={{from_date}}&to_date={{to_date}}">Previous</a></li>
             {% else %}
               <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
           {% endif %}
@@ -168,15 +168,15 @@ Expense Summary
           {% for i in expenses.paginator.page_range %}
   
               {% if expenses.number == i %}
-              <li class="page-item active"><a class="page-link" href="?no={{no}}&page={{ i }}">{{ i }}</a></li>
+              <li class="page-item active"><a class="page-link" href="?no={{no}}&page={{ i }}&from_date={{from_date}}&to_date={{to_date}}">{{ i }}</a></li>
                {% else %}
-              <li class="page-item"><a class="page-link" href="?no={{no}}&page={{ i }}">{{ i }}</a></li>
+              <li class="page-item"><a class="page-link" href="?no={{no}}&page={{ i }}&from_date={{from_date}}&to_date={{to_date}}">{{ i }}</a></li>
               {% endif %}
               
           {% endfor %}
   
           {% if expenses.has_next %}
-              <li class="page-item"><a class="page-link" href="?no={{no}}&page={{ expenses.next_page_number }}">Next</a></li>
+              <li class="page-item"><a class="page-link" href="?no={{no}}&page={{ expenses.next_page_number }}&from_date={{from_date}}&to_date={{to_date}}">Next</a></li>
             {% else %}
               <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
           {% endif %}
@@ -184,11 +184,14 @@ Expense Summary
         </ul>
       </nav>
       {% endif %}
+      <!-- end pagination -->
+
+      <!-- chart -->
 
       <div class="card" style="width: 500; height: 50vh; margin-bottom: 20px;">
         <canvas id='expenseChart'></canvas>
       </div>
-
+      <!-- end chart  -->
     </div>    
 </div>
 
@@ -266,20 +269,25 @@ Expense Summary
             
         } else {
             x.style.display = "none"; 
-             
-                   
                        
         }
+        
         }
         function cleardate(){
-            document.getElementById("from_date").value="";
-            document.getElementById("to_date").value=""; 
+          var today = new Date();
+          var dd = String(today.getDate()).padStart(2, '0');
+          var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+          var yyyy = today.getFullYear();
+
+            document.getElementById("from_date").value=yyyy+'-01-01';
+            document.getElementById("to_date").value=yyyy+'-'+mm+'-'+dd;
             datefilter.submit();
         }
 
 </script>
 
 <script>
+
   const renderChart=(amount,category) => {
           var ctx = document.getElementById('expenseChart').getContext('2d');
           var myChart = new Chart(ctx, {
@@ -309,33 +317,34 @@ Expense Summary
                   }]
               },
               options: {
-            title:{
-              display:true,
-              text:'Money Details'
-            },
-            legend:{
-                display:true,
-                text:'Money Detail',
-                position:'bottom',
-                align:'center'
-               
-
-            },
-            responsive:true,
-            maintainAspectRatio:false
-            
-        },                
+                    title:{
+                      display:true,
+                      text:'Money Details'
+                    },
+                    legend:{
+                        display:true,
+                        text:'Money Detail',
+                        position:'bottom',
+                        align:'center'
+                      },
+                    responsive:true,
+                    maintainAspectRatio:false
+                    
+                },                
           });
   }
   
   const getChartData = () => {
-      var category = {{categories|safe}};
-      var amount = {{expenses|safe}};     
+    var category = {{categories|safe}};
+    var amount = {{amount|safe}};     
+    console.log(category,amount)
       renderChart(amount,category);
              };    
 
   
-  document.onload = getChartData();</script>
+  document.onload = getChartData();
+  
+  </script>
 
 
 {% endblock %}
