@@ -155,11 +155,18 @@ def edit(request, id):
     data = Expenses.objects.get(pk=id)
     form = ExpensesForm(request.user.id, request.POST or None, instance=data)
     context['form'] = form
+    if request.method=='GET':
+        referer = request.META.get('HTTP_REFERER')
+        request.session['expenses_referer'] = referer 
     if request.method=='POST':
         if form.is_valid():
             form.save()
-            messages.success(request,'Edited Sucessfully!!')            
-            return redirect('expenses_home')
+            messages.success(request,'Edited Sucessfully!!')    
+            expense_referer = request.session.get('expenses_referer')  
+            if expense_referer:     
+                return redirect(expense_referer)
+            else:
+                return redirect('expenses')
         messages.error(request,'Failed to update')
     return render(request, 'expenses/edit.html',{'form':form})
 

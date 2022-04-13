@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from .forms import IncomeForm
 from django.db.models import Sum
 from datetime import date,datetime
-import json
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
 def incomeChart(incomes):
@@ -43,7 +42,7 @@ def pages(incomes,no,page):
 
 
 @login_required(login_url='/auth/login/')
-def incomes(request):  # Expenditure_detail page
+def incomes(request):  # income_detail_page
     from_date=request.GET.get('from_date',f'{date.today().year}-01-01')    
     to_date=request.GET.get('to_date',str(date.today()))
 
@@ -126,11 +125,17 @@ def edit(request, id):
     form = IncomeForm(request.user.id, request.POST or None, instance=data)
     context={}
     context['form'] = form
+    if request.method=='GET':
+        request.session['income_referer'] = request.META.get('HTTP_REFERER') 
     if request.method=='POST':
         if form.is_valid():
             form.save()
             messages.success(request,'Edited Successfully')
-            return redirect('incomes_home')
+            income_referer = request.session.get('income_referer')
+            if income_referer!=None:
+                return redirect(income_referer)
+            else:
+                return redirect('income_details')
         messages.error(request,'Failed to update')
     return render(request, 'incomes/edit.html', context)
 
