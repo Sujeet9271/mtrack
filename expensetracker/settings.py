@@ -73,9 +73,10 @@ WSGI_APPLICATION = 'expensetracker.wsgi.application'
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True     # opional, as this will log you out when browser is closed
 # SESSION_COOKIE_AGE = 60                   # 0r 5 * 60, same thing
 # SESSION_SAVE_EVERY_REQUEST = True  
-CSRF_COOKIE_SECURE=False if DEBUG else True
-SESSION_COOKIE_SECURE=False if DEBUG else True
-SECURE_SSL_REDIRECT = False if DEBUG else True
+if DEBUG:
+    CSRF_COOKIE_SECURE=False
+    SESSION_COOKIE_SECURE=False
+    SECURE_SSL_REDIRECT=False
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -125,7 +126,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
-STATICFILES_DIRS=[os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS=[os.path.join(BASE_DIR, 'staticfiles')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
