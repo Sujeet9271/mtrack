@@ -1,4 +1,3 @@
-import django_heroku
 import os
 from decouple import config
 
@@ -14,10 +13,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = config('DEBUG',default=False,cast=bool)
 # DEBUG = config('DEBUG',cast=bool)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1','mtrack2.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -137,7 +136,3 @@ EMAIL_PORT = config('EMAIL_PORT')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD=config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS',cast=bool)
-
-# Activate Django-Heroku.
-django_heroku.settings(locals())
-
